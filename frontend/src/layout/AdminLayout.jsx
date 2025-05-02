@@ -33,9 +33,9 @@ const tab = [
   { name: 'Quản lý đơn hàng', path: '/admin/orders' }
 ]
 
-const MenuItems = ['Đăng xuất', '1', '2']
+const MenuItems = ['Đăng xuất']
 
-export default function AdminHome() {
+export default function AdminLayout() {
   // const theme = useTheme()
   const [open, setOpen] = React.useState(true)
   const [anchorEl, setAnchorEl] = React.useState(null)

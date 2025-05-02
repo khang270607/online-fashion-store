@@ -1,9 +1,9 @@
-function Home() {
+function UserHome() {
   return (
     <>
-      <h2>HOME PAGE</h2>
+      <h1>Home page</h1>
     </>
   )
 }
 
-export default Home
+export default UserHome

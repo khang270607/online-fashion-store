@@ -1,34 +1,45 @@
-import React from 'react'
-import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 
-// page admin
+// Trang người dùng
+import UserHome from '~/pages/user/Home'
+import UserLogin from '~/pages/user/Auth/Login'
+import UserRegister from '~/pages/user/Auth/Register'
+import UserLayout from '~/layout/UserLayout'
+
+// Trang admin
+import AdminHome from '~/pages/admin/Home'
 import AdminLayout from '~/layout/AdminLayout'
 import UserManagement from '~/pages/admin/UserManagement'
 import Dashboard from '~/pages/admin/Dashboard'
 import ProductManagement from '~/pages/admin/ProductManagement'
 import CategorieManagement from '~/pages/admin/CategorieManagement'
 import OrderManagement from '~/pages/admin/OrderManagement'
-// page user
+
+// Trang 404
+import NotFound from '~/pages/404/NotFound'
 
 function App() {
   return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          {/*Router quản trị*/}
-          <Route path='/admin' element={<AdminLayout />}>
-            <Route path='dashboard' element={<Dashboard />} />
-            <Route path='users' element={<UserManagement />} />
-            <Route path='products' element={<ProductManagement />} />
-            <Route path='categories' element={<CategorieManagement />} />
-            <Route path='orders' element={<OrderManagement />} />
-          </Route>
-          {/*Router khách hàng*/}
-          <Route path='' element={<div>Trang chủ</div>}></Route>
-          <Route path='' element={<div>Không tìm thấy trang</div>} />
-        </Routes>
-      </BrowserRouter>
-    </>
+    <Routes>
+      {/*Customer*/}
+      <Route path='/' element={<UserLayout />}>
+        <Route path='login' element={<UserLogin />} />
+        <Route path='register' element={<UserRegister />} />
+        <Route index element={<UserHome />} />
+      </Route>
+
+      {/*Admin*/}
+      <Route path='/admin' element={<AdminLayout />}>
+        <Route path='dashboard' element={<Dashboard />} />
+        <Route path='users' element={<UserManagement />} />
+        <Route path='products' element={<ProductManagement />} />
+        <Route path='categories' element={<CategorieManagement />} />
+        <Route path='orders' element={<OrderManagement />} />
+      </Route>
+
+      {/*Trang 404*/}
+      <Route path='*' element={<NotFound />} />
+    </Routes>
   )
 }
 

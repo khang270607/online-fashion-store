@@ -1,8 +1,7 @@
 import mongoose from 'mongoose'
 
-const MONGODB_URI = 'mongodb://127.0.0.1:27017/'
-const DATABASE_NAME = 'online-fashion-store'
+import { env } from '~/config/environment'
 
 export async function CONNECT_DB() {
-  await mongoose.connect(MONGODB_URI + DATABASE_NAME)
+  await mongoose.connect(env.MONGODB_URI + env.DATABASE_NAME)
 }

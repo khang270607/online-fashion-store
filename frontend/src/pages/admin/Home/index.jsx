@@ -1,13 +1,9 @@
-import { useParams } from 'react-router-dom'
-
-function ExamplePage() {
-  const { exampleId } = useParams()
-
+function AdminHome() {
   return (
     <>
-      <h2>EXAMPLE PARAM: {exampleId}</h2>
+      <h2>ADMIN HOME PAGE</h2>
     </>
   )
 }
 
-export default ExamplePage
+export default AdminHome

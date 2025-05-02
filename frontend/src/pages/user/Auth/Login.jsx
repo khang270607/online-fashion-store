@@ -1,16 +1,14 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { Card as MuiCard } from '@mui/material'
+import { Card as MuiCard, Typography } from '@mui/material'
 import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
 import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
-import Typography from '@mui/material/Typography'
-import TrungQuanDevIcon from '../assets/trungquandev-logo.png'
 import authorizedAxiosInstance from '~/utils/authorizedAxios.js'
 // import { toast } from 'react-toastify'
-import { API_ROOT } from '~/utils/constants'
+import { API_ROOT } from '~/utils/constants.js'
 import { useNavigate } from 'react-router-dom'
 
 function Login() {
@@ -24,7 +22,7 @@ function Login() {
 
   const submitLogIn = async (data) => {
     const res = await authorizedAxiosInstance.post(
-      `${API_ROOT}/v1/users/login`,
+      `${API_ROOT}/v1/auth/login`,
       data
     )
     console.log('Data from API: ', res.data)
@@ -45,7 +43,7 @@ function Login() {
     localStorage.setItem('refreshToken', res.data.refreshToken)
     localStorage.setItem('userInfo', JSON.stringify(userInfo))
 
-    navigate('/dashboard')
+    navigate('/')
   }
 
   return (
@@ -75,7 +73,7 @@ function Login() {
             }}
           >
             <Box sx={{ width: '70px', bgcolor: 'white', margin: '0 auto' }}>
-              <img src={TrungQuanDevIcon} alt='trungquandev' width='100%' />
+              <img alt='' width='100%' />
             </Box>
             <Box
               sx={{
@@ -83,13 +81,12 @@ function Login() {
                 justifyContent: 'center',
                 color: (theme) => theme.palette.grey[500]
               }}
-            >
-              <Box>
-                <Typography>Hint: trungquandev.official@gmail.com</Typography>
-                <Typography>Pass: trungquandev@123</Typography>
-              </Box>
-            </Box>
+            ></Box>
+
             <Box sx={{ padding: '0 1em 1em 1em' }}>
+              <Typography>Email: anh@gmail.com</Typography>
+              <Typography>Pass: Anh@88888888</Typography>
+
               <Box sx={{ marginTop: '1.2em' }}>
                 <TextField
                   autoFocus
@@ -141,13 +138,14 @@ function Login() {
             </Box>
             <CardActions sx={{ padding: '0.5em 1em 1em 1em' }}>
               <Button
+                className='interceptor-loading'
                 type='submit'
                 variant='contained'
                 color='primary'
                 size='large'
                 fullWidth
               >
-                Login
+                Đăng nhập
               </Button>
             </CardActions>
           </MuiCard>

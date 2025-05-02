@@ -22,7 +22,7 @@ function Resgister() {
 
   const submitLogIn = async (data) => {
     const res = await authorizedAxiosInstance.post(
-      `${API_ROOT}/v1/auth/login`,
+      `${API_ROOT}/v1/auth/register`,
       data
     )
     console.log('Data from API: ', res.data)
@@ -84,8 +84,33 @@ function Resgister() {
             ></Box>
 
             <Box sx={{ padding: '0 1em 1em 1em' }}>
-              <Typography>Email: anh@gmail.com</Typography>
+              <Typography>Email đăng ký không được trùng nhau</Typography>
               <Typography>Pass: Anh@88888888</Typography>
+
+              <Box sx={{ marginTop: '1.2em' }}>
+                <TextField
+                  autoFocus
+                  fullWidth
+                  label='Enter Name...'
+                  type='text'
+                  variant='outlined'
+                  error={!!errors.name}
+                  {...register('name', {
+                    required: 'This field is required.'
+                  })}
+                />
+                {errors.name && (
+                  <Alert
+                    severity='error'
+                    sx={{
+                      mt: '0.7em',
+                      '.MuiAlert-message': { overflow: 'hidden' }
+                    }}
+                  >
+                    {errors.name.message}
+                  </Alert>
+                )}
+              </Box>
 
               <Box sx={{ marginTop: '1.2em' }}>
                 <TextField
@@ -132,6 +157,30 @@ function Resgister() {
                     }}
                   >
                     {errors.password.message}
+                  </Alert>
+                )}
+              </Box>
+
+              <Box sx={{ marginTop: '1em' }}>
+                <TextField
+                  fullWidth
+                  label='Enter Confirm Password...'
+                  type='password'
+                  variant='outlined'
+                  error={!!errors.confirmPassword}
+                  {...register('confirmPassword', {
+                    required: 'This field is required.'
+                  })}
+                />
+                {errors.confirmPassword && (
+                  <Alert
+                    severity='error'
+                    sx={{
+                      mt: '0.7em',
+                      '.MuiAlert-message': { overflow: 'hidden' }
+                    }}
+                  >
+                    {errors.confirmPassword.message}
                   </Alert>
                 )}
               </Box>

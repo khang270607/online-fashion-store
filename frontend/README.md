@@ -6,3 +6,6 @@
 - Git: version mới nhất
 - Yarn: version mới nhất 
 
+cài đặt:
+yarn add react-router-dom 
+yarn add @mui/icons-material

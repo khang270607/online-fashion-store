@@ -8,6 +8,8 @@ import ApiError from '~/utils/ApiError'
 import { JwtProvider } from '~/providers/JwtProvider'
 import { env } from '~/config/environment'
 import { pickUser } from '~/utils/formatters'
+import { WEBSITE_DOMAIN } from '~/utils/constants'
+import { BrevoProvider } from '~/providers/BrevoProvider'
 
 const register = async (reqBody) => {
   // Kiểm tra email đã tồn tại?
@@ -39,6 +41,24 @@ const register = async (reqBody) => {
 
   //   Làm thêm các xử lý logic khác với các Collection khác tùy đặc thù dự án
   //   Bắn email, notification về cho admin khi có 1 cái user mới được tạo
+
+  const verificationLink = `${WEBSITE_DOMAIN}/account/verifycation?email=${newUser.email}&token=${newUser.verifyToken}`
+  const customSubject =
+    'Online Shop Store: Vui lòng xác thực tài khoản của bạn.'
+
+  const htmlContent = `
+<h3>Đây là liên kết xác thực tài khoản của bạn: </h3>
+<h3>${verificationLink}</h3>
+<h3>Trân trọng!, <br/> - Online Shop Store - </h3>
+`
+
+  // Gọi tới cái Provider để gửi email
+  await BrevoProvider.sendEmail(
+    newUser.name,
+    newUser.email,
+    customSubject,
+    htmlContent
+  )
 
   return pickUser(user)
 }

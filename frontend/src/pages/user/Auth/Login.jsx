@@ -1,6 +1,6 @@
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { Card as MuiCard, Typography } from '@mui/material'
+import { Card as MuiCard, Grid, Typography } from '@mui/material'
 import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
@@ -10,6 +10,10 @@ import authorizedAxiosInstance from '~/utils/authorizedAxios.js'
 // import { toast } from 'react-toastify'
 import { API_ROOT } from '~/utils/constants.js'
 import { useNavigate } from 'react-router-dom'
+import { Facebook, GitHub, Google } from '@mui/icons-material'
+import React from 'react'
+import { styled } from '@mui/system'
+import ArrowBack from '@mui/icons-material/ArrowBack'
 
 function Login() {
   const {
@@ -38,14 +42,37 @@ function Login() {
       email: res.data.email
     }
 
-    // Lưu token và thông tin của User vào Localstoge, dùng JS thuần
     localStorage.setItem('accessToken', res.data.accessToken)
     localStorage.setItem('refreshToken', res.data.refreshToken)
     localStorage.setItem('userInfo', JSON.stringify(userInfo))
 
     navigate('/')
   }
-
+  const SocialButton = styled(Button)({
+    padding: '8px',
+    borderRadius: '50%',
+    minWidth: '40px',
+    height: '40px',
+    borderColor: '#e0e0e0',
+    '&:hover': {
+      borderColor: '#1976d2',
+      backgroundColor: '#f5f5f5'
+    }
+  })
+  const StyledButton = styled(Button)({
+    backgroundColor: '#1976d2',
+    color: '#fff',
+    padding: '12px',
+    fontSize: '16px',
+    fontWeight: 600,
+    borderRadius: '8px',
+    textTransform: 'none',
+    '&:hover': {
+      backgroundColor: '#1565c0',
+      transform: 'translateY(-1px)',
+      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)'
+    }
+  })
   return (
     <Box
       sx={{
@@ -53,90 +80,95 @@ function Login() {
         flexDirection: 'column',
         minHeight: '100vh',
         alignItems: 'center',
-        justifyContent: 'flex-start',
-        background: 'url("src/assets/trungquandev-bg-img.jpeg")',
+        justifyContent: 'center',
+        backgroundImage:
+          'url("https://inuv247.com/wp-content/uploads/2022/12/11702107_21201466-2-1536x614.jpg")',
         backgroundRepeat: 'no-repeat',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        boxShadow: 'inset 0 0 0 2000px rgba(0, 0, 0, 0.4)'
+        boxShadow: 'inset 0 0 0 2000px rgba(0, 0, 0, 0.4)',
+        p: 2
       }}
     >
+      {/* Nút quay về trang chủ */}
+      <Button
+        variant='contained'
+        color='secondary'
+        onClick={() => navigate('/')}
+        sx={{
+          position: 'absolute',
+          top: 16,
+          left: 16,
+          zIndex: 10,
+          borderRadius: 2,
+          textTransform: 'none',
+          fontWeight: 500,
+          px: 2
+        }}
+        startIcon={<ArrowBack />}
+      >
+        Trang chủ
+      </Button>
       <form onSubmit={handleSubmit(submitLogIn)}>
         <Zoom in={true} style={{ transitionDelay: '200ms' }}>
           <MuiCard
+            elevation={6}
             sx={{
-              minWidth: 380,
-              maxWidth: 380,
-              marginTop: '6em',
-              p: '0.5em 0',
-              borderRadius: 2
+              width: { xs: '90vw', sm: 400 },
+              p: 3,
+              borderRadius: 3,
+              backdropFilter: 'blur(8px)',
+              backgroundColor: 'rgba(255, 255, 255, 0.85)',
+              marginTop: '50px'
             }}
           >
-            <Box sx={{ width: '70px', bgcolor: 'white', margin: '0 auto' }}>
-              <img alt='' width='100%' />
+            <Box sx={{ textAlign: 'center', mb: 2 }}>
+              <Typography variant='h5' fontWeight='bold' gutterBottom>
+                Chào mừng trở lại
+              </Typography>
+              <Typography variant='body2' color='text.secondary'>
+                Vui lòng đăng nhập để tiếp tục
+              </Typography>
             </Box>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                color: (theme) => theme.palette.grey[500]
-              }}
-            ></Box>
 
-            <Box sx={{ padding: '0 1em 1em 1em' }}>
-              <Typography>Email: anh@gmail.com</Typography>
-              <Typography>Pass: Anh@88888888</Typography>
-
-              <Box sx={{ marginTop: '1.2em' }}>
-                <TextField
-                  autoFocus
-                  fullWidth
-                  label='Enter Email...'
-                  type='text'
-                  variant='outlined'
-                  error={!!errors.email}
-                  {...register('email', {
-                    required: 'This field is required.'
-                  })}
-                />
-                {errors.email && (
-                  <Alert
-                    severity='error'
-                    sx={{
-                      mt: '0.7em',
-                      '.MuiAlert-message': { overflow: 'hidden' }
-                    }}
-                  >
-                    {errors.email.message}
-                  </Alert>
-                )}
-              </Box>
-
-              <Box sx={{ marginTop: '1em' }}>
-                <TextField
-                  fullWidth
-                  label='Enter Password...'
-                  type='password'
-                  variant='outlined'
-                  error={!!errors.password}
-                  {...register('password', {
-                    required: 'This field is required.'
-                  })}
-                />
-                {errors.password && (
-                  <Alert
-                    severity='error'
-                    sx={{
-                      mt: '0.7em',
-                      '.MuiAlert-message': { overflow: 'hidden' }
-                    }}
-                  >
-                    {errors.password.message}
-                  </Alert>
-                )}
-              </Box>
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                autoFocus
+                fullWidth
+                label='Email'
+                type='email'
+                variant='outlined'
+                error={!!errors.email}
+                {...register('email', {
+                  required: 'Email không được để trống.'
+                })}
+              />
+              {errors.email && (
+                <Alert severity='error' sx={{ mt: 1 }}>
+                  {errors.email.message}
+                </Alert>
+              )}
             </Box>
-            <CardActions sx={{ padding: '0.5em 1em 1em 1em' }}>
+
+            <Box sx={{ mb: 2 }}>
+              <TextField
+                fullWidth
+                label='Mật khẩu'
+                type='password'
+                variant='outlined'
+                error={!!errors.password}
+                {...register('password', {
+                  required: 'Mật khẩu không được để trống.'
+                })}
+              />
+              {errors.password && (
+                <Alert severity='error' sx={{ mt: 1 }}>
+                  {errors.password.message}
+                </Alert>
+              )}
+            </Box>
+
+            <CardActions sx={{ justifyContent: 'center', mt: 2 }}>
               <Button
                 className='interceptor-loading'
                 type='submit'
@@ -144,10 +176,66 @@ function Login() {
                 color='primary'
                 size='large'
                 fullWidth
+                sx={{ py: 1.2, borderRadius: 2 }}
               >
                 Đăng nhập
               </Button>
             </CardActions>
+            <Grid item xs={12}>
+              <Typography
+                align='center'
+                sx={{ mt: 1.5, color: '#666', fontSize: '0.9rem' }}
+              >
+                <a
+                  href='/forgot-password'
+                  style={{
+                    color: '#1976d2',
+                    textDecoration: 'none',
+                    fontWeight: 500
+                  }}
+                >
+                  Quên mật khẩu?
+                </a>
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Typography
+                align='center'
+                sx={{ mt: 1, color: '#666', fontSize: '0.9rem' }}
+              >
+                Bạn chưa có tài khoản?{' '}
+                <a
+                  href='/Register'
+                  style={{
+                    color: '#1976d2',
+                    textDecoration: 'none',
+                    fontWeight: 500
+                  }}
+                >
+                  Đăng ký ngay
+                </a>
+              </Typography>
+            </Grid>
+            <Grid item xs={12}>
+              <Box
+                sx={{
+                  mt: 2,
+                  display: 'flex',
+                  justifyContent: 'center',
+                  gap: 2
+                }}
+              >
+                <SocialButton variant='outlined'>
+                  <Facebook sx={{ color: '#3b5998' }} />
+                </SocialButton>
+                <SocialButton variant='outlined'>
+                  <Google sx={{ color: '#db4437' }} />
+                </SocialButton>
+                <SocialButton variant='outlined'>
+                  <GitHub sx={{ color: '#333333' }} />
+                </SocialButton>
+              </Box>
+            </Grid>
           </MuiCard>
         </Zoom>
       </form>

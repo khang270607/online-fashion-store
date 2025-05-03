@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import UserHome from '~/pages/user/Home'
 import UserLogin from '~/pages/user/Auth/Login'
 import UserRegister from '~/pages/user/Auth/Register'
+import AccountVerification from '~/pages/user/Auth/AccountVerification'
 import UserLayout from '~/layout/UserLayout'
 
 // Trang admin
@@ -21,10 +22,13 @@ import NotFound from '~/pages/404/NotFound'
 function App() {
   return (
     <Routes>
+      {/*Authentication*/}
+      <Route path='login' element={<UserLogin />} />
+      <Route path='register' element={<UserRegister />} />
+      <Route path='/account/verifycation' element={<AccountVerification />} />
+
       {/*Customer*/}
       <Route path='/' element={<UserLayout />}>
-        <Route path='login' element={<UserLogin />} />
-        <Route path='register' element={<UserRegister />} />
         <Route index element={<UserHome />} />
       </Route>
 
@@ -37,7 +41,7 @@ function App() {
         <Route path='orders' element={<OrderManagement />} />
       </Route>
 
-      {/*Trang 404*/}
+      {/*Not found 404*/}
       <Route path='*' element={<NotFound />} />
     </Routes>
   )

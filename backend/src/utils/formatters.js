@@ -21,6 +21,7 @@ export const pickUser = (user) => {
   if (!user) return {}
 
   return pick(user, [
+    '_id',
     'name',
     'email',
     'role',

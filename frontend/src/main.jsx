@@ -6,20 +6,27 @@ import { Provider } from 'react-redux'
 import { BrowserRouter } from 'react-router-dom'
 import { ToastContainer } from 'react-toastify'
 
+//Cấu hình Redux-Persit
+import { PersistGate } from 'redux-persist/integration/react'
+import { persistStore } from 'redux-persist'
+
 import App from './App.jsx'
 import theme from './theme.js'
 import { store } from '~/redux/store'
 
+// Cấu hình Redux-Persit
+const persistor = persistStore(store)
+
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <BrowserRouter basename='/'>
-      <Provider store={store}>
+  <BrowserRouter basename='/'>
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
           <App />
           <ToastContainer theme='colored' />
         </ThemeProvider>
-      </Provider>
-    </BrowserRouter>
-  </StrictMode>
+      </PersistGate>
+    </Provider>
+  </BrowserRouter>
 )

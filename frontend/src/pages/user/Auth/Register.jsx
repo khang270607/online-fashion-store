@@ -7,10 +7,13 @@ import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
 import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
-import authorizedAxiosInstance from '~/utils/authorizedAxios.js'
-import { API_ROOT } from '~/utils/constants.js'
+import ArrowBack from '@mui/icons-material/ArrowBack'
 import { useNavigate } from 'react-router-dom'
-import ArrowBack from '@mui/icons-material/ArrowBack' // ICON mới thêm
+
+import authorizedAxiosInstance from '~/utils/authorizedAxios'
+import { API_ROOT } from '~/utils/constants'
+import { registerUserAPI } from '~/apis'
+import { toast } from 'react-toastify'
 
 function Register() {
   const {
@@ -21,22 +24,31 @@ function Register() {
 
   const navigate = useNavigate()
 
-  const submitLogIn = async (data) => {
-    const res = await authorizedAxiosInstance.post(
-      `${API_ROOT}/v1/auth/register`,
-      data
-    )
+  const submitRegister = async (data) => {
+    toast
+      .promise(registerUserAPI(data), {
+        pending: 'Đang đăng ký tài khoản...'
+      })
+      .then((userInfo) => {
+        navigate(`/login?rigisteredEmail=${userInfo.email}`)
+      })
 
-    const userInfo = {
-      id: res.data.id,
-      email: res.data.email
-    }
-
-    localStorage.setItem('accessToken', res.data.accessToken)
-    localStorage.setItem('refreshToken', res.data.refreshToken)
-    localStorage.setItem('userInfo', JSON.stringify(userInfo))
-
-    navigate('/')
+    // //Cách 2
+    // const res = await authorizedAxiosInstance.post(
+    //   `${API_ROOT}/v1/auth/register`,
+    //   data
+    // )
+    //
+    // const userInfo = {
+    //   id: res.data.id,
+    //   email: res.data.email
+    // }
+    //
+    // localStorage.setItem('accessToken', res.data.accessToken)
+    // localStorage.setItem('refreshToken', res.data.refreshToken)
+    // localStorage.setItem('userInfo', JSON.stringify(userInfo))
+    //
+    // navigate('/')
   }
 
   return (
@@ -77,7 +89,7 @@ function Register() {
         Trang chủ
       </Button>
 
-      <form onSubmit={handleSubmit(submitLogIn)}>
+      <form onSubmit={handleSubmit(submitRegister)}>
         <Zoom in={true} style={{ transitionDelay: '200ms' }}>
           <MuiCard
             elevation={6}

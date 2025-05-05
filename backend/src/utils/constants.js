@@ -10,3 +10,9 @@ export const WEBSITE_DOMAIN =
   env.BUILD_MODE === 'prod'
     ? env.WEBSITE_DOMAIN_PRODUCTION
     : env.WEBSITE_DOMAIN_DEVLOPMENT
+
+// Các quyền trong dự án
+export const ROLE = {
+  ADMIN: 'admin',
+  CUSTOMER: 'customer'
+}

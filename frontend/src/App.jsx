@@ -1,4 +1,7 @@
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route, Navigate, Outlet } from 'react-router-dom'
+import { useSelector } from 'react-redux'
+
+import { selectCurrentUser } from '~/redux/user/userSlice'
 
 // Trang người dùng
 
@@ -23,21 +26,35 @@ import OrderManagement from '~/pages/admin/OrderManagement'
 // Trang 404
 import NotFound from '~/pages/404/NotFound'
 
+// Giải pháp Clean Code trong việc xác định các route nào cần đăng nhập tài khoản xong thì mới được truy cập
+const ProtectedRoute = ({ user }) => {
+  if (!user) {
+    return <Navigate to='/login' replace={true} />
+  }
+
+  return <Outlet />
+}
+
 function App() {
+  const currentUser = useSelector(selectCurrentUser)
+
   return (
     <Routes>
       {/*Authentication*/}
       <Route path='login' element={<Login />} />
       <Route path='register' element={<Register />} />
-      <Route path='/account/verifycation' element={<AccountVerification />} />
+      <Route path='/account/verification' element={<AccountVerification />} />
 
       {/*Customer*/}
       <Route path='/' element={<UserLayout />}>
-        <Route path='product' element={<Product />} />
-        <Route path='productdetail' element={<ProductDetail />} />
-        <Route path='payment' element={<Payment />} />
-        <Route path='cart' element={<Cart />} />
-
+        {/*Protected Routes (Hiểu đơn giản trong dự án của chúng ta là những route chỉ cho phép truy cập sau khi đã login)*/}
+        <Route element={<ProtectedRoute user={currentUser} />}>
+          {/*<Outlet/> của react-router-dom sẽ chạy vào các child route trong này*/}
+          <Route path='product' element={<Product />} />
+          <Route path='productdetail' element={<ProductDetail />} />
+          <Route path='payment' element={<Payment />} />
+          <Route path='cart' element={<Cart />} />
+        </Route>
         <Route index element={<UserHome />} />
       </Route>
 

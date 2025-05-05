@@ -1,13 +1,8 @@
 import { StatusCodes } from 'http-status-codes'
 
-import { slugify } from '~/utils/formatters'
 import { UserModel } from '~/models/userModel'
 import ApiError from '~/utils/ApiError'
-import { JwtProvider } from '~/providers/JwtProvider'
-import { env } from '~/config/environment'
 import { pickUser } from '~/utils/formatters'
-import { WEBSITE_DOMAIN } from '~/utils/constants'
-import { BrevoProvider } from '~/providers/BrevoProvider'
 import { ROLE } from '~/utils/constants'
 
 const getUserList = async () => {

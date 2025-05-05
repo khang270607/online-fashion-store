@@ -1,22 +1,26 @@
 import * as React from 'react'
+import {
+  Typography,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Pagination,
+  Stack
+} from '@mui/material'
 import { styled } from '@mui/material/styles'
-import Typography from '@mui/material/Typography'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell, { tableCellClasses } from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import Pagination from '@mui/material/Pagination'
-import Stack from '@mui/material/Stack'
+import { tableCellClasses } from '@mui/material/TableCell'
 import BorderColorIcon from '@mui/icons-material/BorderColor'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
-
 import EditUserModal from '~/components/modals/EditUserModal'
 import DeleteUserModal from '~/components/modals/DeleteUserModal'
 import ViewUserModal from '~/components/modals/ViewUserModal'
+import { API_ROOT } from '~/utils/constants'
+import AuthorizedAxiosInstance from '~/utils/authorizedAxios'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -25,17 +29,16 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
     fontWeight: 'bold',
     borderRight: '1px solid #e0e0e0',
     padding: '8px',
-    whiteSpace: 'nowrap' // Ngăn văn bản xuống dòng
+    whiteSpace: 'nowrap'
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
     borderRight: '1px solid #e0e0e0',
     padding: '8px',
-    whiteSpace: 'nowrap', // Ngăn văn bản xuống dòng
+    whiteSpace: 'nowrap',
     overflow: 'hidden',
     textOverflow: 'ellipsis'
   },
-  // Ẩn cột không quan trọng trên mobile
   [theme.breakpoints.down('sm')]: {
     '&.hide-on-mobile': {
       display: 'none'
@@ -50,9 +53,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
-  overflowX: 'auto', // Cho phép cuộn ngang
-  maxWidth: '100%', // Không vượt quá màn hình
-  // Tùy chỉnh thanh cuộn
+  overflowX: 'auto',
+  maxWidth: '100%',
   '&::-webkit-scrollbar': {
     height: '8px'
   },
@@ -63,150 +65,76 @@ const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
   '&::-webkit-scrollbar-track': {
     backgroundColor: '#f1f1f1'
   },
-  // Đảm bảo bảng đủ rộng để kích hoạt thanh cuộn trên mobile
   [theme.breakpoints.down('sm')]: {
-    minWidth: '600px' // Chiều rộng tối thiểu để chứa các cột
+    minWidth: '600px'
   }
 }))
 
-const rows = [
-  {
-    name: 'Nguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn ANguyễn Văn A',
-    email:
-      'vana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.comvana@gmail.com',
-    role: 'user',
-    registrationDate: '01/01/2024',
-    updateDate: '01/01/2024'
-  },
-  {
-    name: 'Trần Thị B',
-    email: 'thib@gmail.com',
-    role: 'admin',
-    registrationDate: '15/01/2024',
-    updateDate: '15/01/2024'
-  },
-  {
-    name: 'Lê Văn C',
-    email: 'vanc@gmail.com',
-    role: 'user',
-    registrationDate: '20/02/2024',
-    updateDate: '20/02/2024'
-  },
-  {
-    name: 'Nguyễn Văn D',
-    email: 'alsdfhal@gmail.com',
-    role: 'user',
-    registrationDate: '20/02/2024',
-    updateDate: '20/02/2024'
-  },
-  {
-    name: 'Nguyễn Văn E',
-    email: 'dahfad#gmai.com',
-    role: 'user',
-    registrationDate: '20/02/2024',
-    updateDate: '20/02/2024'
-  },
-  {
-    name: 'Nguyễn Văn A',
-    email: 'vana@gmail.com',
-    role: 'user',
-    registrationDate: '01/01/2024',
-    updateDate: '01/01/2024'
-  },
-  {
-    name: 'Trần Thị B',
-    email: 'thib@gmail.com',
-    role: 'user',
-    registrationDate: '15/01/2024',
-    updateDate: '15/01/2024'
-  },
-  {
-    name: 'Lê Văn C',
-    email: 'vanc@gmail.com',
-    role: 'user',
-    registrationDate: '20/02/2024',
-    updateDate: '20/02/2024'
-  },
-  {
-    name: 'Nguyễn Văn D',
-    email: 'alsdfhal@gmail.com',
-    role: 'admin',
-    registrationDate: '20/02/2024',
-    updateDate: '20/02/2024'
-  },
-  {
-    name: 'Nguyễn Văn E',
-    email: 'dahfad#gmai.com',
-    role: 'user',
-    registrationDate: '20/02/2024',
-    updateDate: '20/02/2024'
-  },
-  {
-    name: 'Nguyễn Văn A',
-    email: 'vana@gmail.com',
-    role: 'user',
-    registrationDate: '01/01/2024',
-    updateDate: '01/01/2024'
-  },
-  {
-    name: 'Trần Thị B',
-    email: 'thib@gmail.com',
-    role: 'user',
-    registrationDate: '15/01/2024',
-    updateDate: '15/01/2024'
-  },
-  {
-    name: 'Lê Văn C',
-    email: 'vanc@gmail.com',
-    role: 'user',
-    registrationDate: '20/02/2024',
-    updateDate: '20/02/2024'
-  },
-  {
-    name: 'Nguyễn Văn D',
-    email: 'alsdfhal@gmail.com',
-    role: 'admin',
-    registrationDate: '20/02/2024',
-    updateDate: '20/02/2024'
-  },
-  {
-    name: 'Nguyễn Văn E',
-    email: 'dahfad#gmai.com',
-    role: 'user',
-    registrationDate: '20/02/2024',
-    updateDate: '20/02/2024'
-  }
-]
 const ROWS_PER_PAGE = 10
 
 export default function UserManagement() {
   const [page, setPage] = React.useState(1)
+  const [users, setUsers] = React.useState([])
+  const [totalPages, setTotalPages] = React.useState(1)
   const [selectedUser, setSelectedUser] = React.useState(null)
   const [modalType, setModalType] = React.useState(null)
 
+  const fetchUsers = async () => {
+    try {
+      const response = await AuthorizedAxiosInstance.get(`${API_ROOT}/v1/users`)
+      console.log('Dữ liệu users trả về:', response.data)
+
+      // Nếu API trả về dạng { data: [...], total: n }
+      if (Array.isArray(response.data)) {
+        setUsers(response.data)
+        setTotalPages(Math.ceil(response.data.length / ROWS_PER_PAGE))
+      } else if (response.data.data) {
+        setUsers(response.data.data)
+        setTotalPages(Math.ceil(response.data.total / ROWS_PER_PAGE))
+      } else {
+        console.error('Dữ liệu trả về không hợp lệ')
+        setUsers([])
+        setTotalPages(1)
+      }
+    } catch (error) {
+      console.error('Lỗi khi lấy danh sách người dùng:', error)
+      setUsers([])
+      setTotalPages(1)
+    }
+  }
+
   const handleOpenModal = (type, user) => {
+    console.log('User được chọn:', user) // Debug
+    if (!user || !user.id) {
+      console.error('ID người dùng không hợp lệ')
+      return
+    }
     setSelectedUser(user)
     setModalType(type)
   }
+
+  React.useEffect(() => {
+    fetchUsers()
+  }, [page])
 
   const handleCloseModal = () => {
     setSelectedUser(null)
     setModalType(null)
   }
 
-  const handleSaveEdit = (updatedUser) => {
-    console.log('Cập nhật:', updatedUser)
+  const handleSaveEdit = () => {
+    fetchUsers()
+    handleCloseModal()
   }
 
-  const handleDeleteUser = (user) => {
-    console.log('Xoá:', user)
+  const handleDeleteUser = async (user) => {
+    try {
+      await AuthorizedAxiosInstance.delete(`${API_ROOT}/v1/users/${user.id}`)
+      fetchUsers()
+    } catch (error) {
+      console.error('Lỗi khi xoá người dùng:', error)
+    }
   }
-
-  const pageCount = Math.ceil(rows.length / ROWS_PER_PAGE)
-  const displayedRows = rows.slice(
-    (page - 1) * ROWS_PER_PAGE,
-    page * ROWS_PER_PAGE
-  )
 
   const handleChangePage = (event, value) => {
     setPage(value)
@@ -217,16 +145,12 @@ export default function UserManagement() {
       <Typography variant='h5' sx={{ mb: 2 }}>
         Quản lý người dùng
       </Typography>
+
       <StyledTableContainer component={Paper}>
-        <Table
-          sx={{
-            tableLayout: 'fixed', // Đảm bảo chiều rộng cột cố định
-            minWidth: '100%' // Bảng chiếm toàn bộ không gian container
-          }}
-        >
+        <Table sx={{ tableLayout: 'fixed', minWidth: '100%' }}>
           <TableHead>
             <TableRow>
-              <StyledTableCell sx={{ width: '30px', textAlign: 'center' }}>
+              <StyledTableCell sx={{ width: '50px', textAlign: 'center' }}>
                 STT
               </StyledTableCell>
               <StyledTableCell sx={{ width: '200px' }}>
@@ -252,98 +176,74 @@ export default function UserManagement() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {displayedRows.map((row, index) => (
-              <StyledTableRow key={`${row.email}-${index}`}>
+            {users.map((user, index) => (
+              <StyledTableRow key={user.id || index}>
                 <StyledTableCell sx={{ textAlign: 'center' }}>
                   {(page - 1) * ROWS_PER_PAGE + index + 1}
                 </StyledTableCell>
-                <StyledTableCell>
-                  <span
-                    style={{
-                      display: 'block',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      width: '100%'
-                    }}
-                    title={row.name}
-                  >
-                    {row.name}
-                  </span>
+                <StyledTableCell title={user.name}>{user.name}</StyledTableCell>
+                <StyledTableCell title={user.email}>
+                  {user.email}
                 </StyledTableCell>
                 <StyledTableCell>
-                  <span
-                    style={{
-                      display: 'block',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      width: '100%'
-                    }}
-                    title={row.email}
-                  >
-                    {row.email}
-                  </span>
-                </StyledTableCell>
-                <StyledTableCell>
-                  {row.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}
+                  {user.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}
                 </StyledTableCell>
                 <StyledTableCell className='hide-on-mobile'>
-                  {row.registrationDate}
+                  {new Date(user.createdAt).toLocaleDateString()}
                 </StyledTableCell>
                 <StyledTableCell className='hide-on-mobile'>
-                  {row.updateDate}
+                  {new Date(user.updatedAt).toLocaleDateString()}
                 </StyledTableCell>
-                <StyledTableCell
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}
-                >
-                  <RemoveRedEyeIcon
-                    sx={{ cursor: 'pointer', fontSize: '20px' }}
-                    onClick={() => handleOpenModal('view', row)}
-                  />
-                  <BorderColorIcon
-                    sx={{ cursor: 'pointer', fontSize: '20px' }}
-                    onClick={() => handleOpenModal('edit', row)}
-                  />
-                  <DeleteForeverIcon
-                    sx={{ cursor: 'pointer', fontSize: '20px' }}
-                    onClick={() => handleOpenModal('delete', row)}
-                  />
+                <StyledTableCell>
+                  <Stack direction='row' spacing={1}>
+                    <RemoveRedEyeIcon
+                      sx={{ cursor: 'pointer', fontSize: '20px' }}
+                      onClick={() => handleOpenModal('view', user)}
+                    />
+                    <BorderColorIcon
+                      sx={{ cursor: 'pointer', fontSize: '20px' }}
+                      onClick={() => handleOpenModal('edit', user)}
+                    />
+                    <DeleteForeverIcon
+                      sx={{ cursor: 'pointer', fontSize: '20px' }}
+                      onClick={() => handleOpenModal('delete', user)}
+                    />
+                  </Stack>
                 </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
-        {modalType === 'view' && (
-          <ViewUserModal
-            open={true}
-            onClose={handleCloseModal}
-            user={selectedUser}
-          />
-        )}
-        {modalType === 'edit' && (
-          <EditUserModal
-            open={true}
-            onClose={handleCloseModal}
-            user={selectedUser}
-            onSave={handleSaveEdit}
-          />
-        )}
-        {modalType === 'delete' && (
-          <DeleteUserModal
-            open={true}
-            onClose={handleCloseModal}
-            user={selectedUser}
-            onDelete={handleDeleteUser}
-          />
-        )}
       </StyledTableContainer>
+
+      {/* Modal Hiển thị */}
+      {modalType === 'view' && selectedUser && (
+        <ViewUserModal
+          open={true}
+          onClose={handleCloseModal}
+          user={selectedUser}
+        />
+      )}
+      {modalType === 'edit' && selectedUser && selectedUser.id && (
+        <EditUserModal
+          open={true}
+          onClose={handleCloseModal}
+          user={selectedUser}
+          onSave={handleSaveEdit}
+        />
+      )}
+      {modalType === 'delete' && selectedUser && (
+        <DeleteUserModal
+          open={true}
+          onClose={handleCloseModal}
+          user={selectedUser}
+          onDelete={handleDeleteUser}
+        />
+      )}
+
       <Stack spacing={2} sx={{ mt: 2 }} alignItems='center'>
         <Pagination
-          count={pageCount}
+          count={totalPages}
           page={page}
           onChange={handleChangePage}
           color='primary'

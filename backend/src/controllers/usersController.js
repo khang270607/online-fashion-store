@@ -1,8 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
-import ms from 'ms'
 
 import { usersService } from '~/services/usersService'
-import ApiError from '~/utils/ApiError'
 
 const getUserList = async (req, res, next) => {
   try {

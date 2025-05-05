@@ -29,10 +29,14 @@ export default function ViewUserModal({ open, onClose, user }) {
             <strong>Quyền:</strong> {user?.role}
           </Typography>
           <Typography>
-            <strong>Ngày tạo:</strong> {user?.registrationDate}
+            <strong>Ngày tạo:</strong>{' '}
+            {user?.createdAt &&
+              new Date(user.createdAt).toLocaleString('vi-VN')}
           </Typography>
           <Typography>
-            <strong>Ngày cập nhật:</strong> {user?.updateDate}
+            <strong>Ngày cập nhật:</strong>{' '}
+            {user?.updatedAt &&
+              new Date(user.updatedAt).toLocaleString('vi-VN')}
           </Typography>
         </DialogContent>
       </div>

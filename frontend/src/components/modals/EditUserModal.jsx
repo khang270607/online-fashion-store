@@ -1,84 +1,87 @@
-import React from 'react'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import InputLabel from '@mui/material/InputLabel'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
+import React, { useEffect } from 'react'
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField
+} from '@mui/material'
+import { useForm } from 'react-hook-form'
+import AuthorizedAxiosInstance from '~/utils/authorizedAxios'
+import { API_ROOT } from '~/utils/constants'
 
-export default function EditUserModal({ open, onClose, user, onSave }) {
-  const [formData, setFormData] = React.useState(
-    user || { name: '', email: '', role: '' }
-  )
+const EditUserModal = ({ open, onClose, user, onSave }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm()
 
-  // Update formData when user prop changes
-  React.useEffect(() => {
-    setFormData(user || { name: '', email: '', role: '' })
-  }, [user])
+  useEffect(() => {
+    if (user) {
+      reset({
+        name: user.name || '',
+        email: user.email || '',
+        role: user.role || 'user'
+      })
+    }
+  }, [user, reset])
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
-
-  const handleSave = () => {
-    onSave(formData)
-    onClose()
+  const onSubmit = async (data) => {
+    try {
+      await AuthorizedAxiosInstance.put(`${API_ROOT}/v1/users/${user.id}`, data)
+      onSave()
+    } catch (error) {
+      console.error('Lỗi khi cập nhật người dùng:', error)
+    }
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: '14px'
-        }
-      }}
-    >
-      <DialogTitle>Sửa thông tin người dùng</DialogTitle>
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Chỉnh sửa người dùng</DialogTitle>
       <DialogContent>
-        <TextField
-          label='Tên'
-          fullWidth
-          margin='dense'
-          name='name'
-          value={formData.name || ''}
-          onChange={handleChange}
-        />
-        <TextField
-          label='Email'
-          fullWidth
-          margin='dense'
-          name='email'
-          value={formData.email || ''}
-          onChange={handleChange}
-        />
-        <InputLabel id='role-label'>Quyền</InputLabel>
-        <Select
-          labelId='role-label'
-          name='role'
-          value={formData.role || ''}
-          label='Quyền'
-          onChange={handleChange}
-          fullWidth
-        >
-          <MenuItem value=''>-- Chọn quyền --</MenuItem>
-          <MenuItem value='user'>Người dùng</MenuItem>
-          <MenuItem value='admin'>Quản trị viên</MenuItem>
-        </Select>
+        <form id='edit-user-form' onSubmit={handleSubmit(onSubmit)}>
+          <TextField
+            label='Tên'
+            fullWidth
+            margin='normal'
+            {...register('name', { required: 'Tên không được để trống' })}
+            error={!!errors.name}
+            helperText={errors.name?.message}
+          />
+          <TextField
+            label='Email'
+            fullWidth
+            margin='normal'
+            {...register('email', {
+              required: 'Email không được để trống',
+              pattern: {
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: 'Email không hợp lệ'
+              }
+            })}
+            error={!!errors.email}
+            helperText={errors.email?.message}
+          />
+          <TextField
+            label='Quyền'
+            fullWidth
+            margin='normal'
+            {...register('role', { required: 'Vai trò là bắt buộc' })}
+            error={!!errors.role}
+            helperText={errors.role?.message}
+          />
+        </form>
       </DialogContent>
-      <DialogActions style={{ padding: '24px' }}>
-        <Button onClick={onClose} sx={{ color: '#001f5d' }}>
-          Huỷ
-        </Button>
+      <DialogActions>
+        <Button onClick={onClose}>Hủy</Button>
         <Button
-          sx={{ backgroundColor: '#001f5d' }}
+          type='submit'
+          form='edit-user-form'
           variant='contained'
-          onClick={handleSave}
+          color='primary'
         >
           Lưu
         </Button>
@@ -86,3 +89,5 @@ export default function EditUserModal({ open, onClose, user, onSave }) {
     </Dialog>
   )
 }
+
+export default EditUserModal

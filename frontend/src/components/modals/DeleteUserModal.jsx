@@ -1,44 +1,44 @@
 import React from 'react'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import Button from '@mui/material/Button'
-import Typography from '@mui/material/Typography'
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button
+} from '@mui/material'
+import { useForm } from 'react-hook-form'
 
-export default function DeleteUserModal({ open, onClose, user, onDelete }) {
+const DeleteUserModal = ({ open, onClose, user, onDelete }) => {
+  const { handleSubmit } = useForm()
+
+  const onSubmit = async () => {
+    try {
+      await onDelete(user)
+      onClose()
+    } catch (error) {
+      console.error('Xóa người dùng thất bại:', error)
+    }
+  }
+
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      PaperProps={{
-        sx: {
-          borderRadius: '14px'
-        }
-      }}
-    >
-      <DialogTitle>Xoá người dùng</DialogTitle>
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Xác nhận xóa người dùng</DialogTitle>
       <DialogContent>
-        <Typography>
-          Bạn có chắc chắn muốn xoá tài khoản của <strong>{user?.name}</strong>{' '}
-          không?
-        </Typography>
+        Bạn có chắc chắn muốn xóa người dùng <strong>{user?.name}</strong>{' '}
+        không?
       </DialogContent>
       <DialogActions>
-        <Button sx={{ color: '#001f5d' }} onClick={onClose}>
-          Huỷ
-        </Button>
+        <Button onClick={onClose}>Hủy</Button>
         <Button
           variant='contained'
           color='error'
-          onClick={() => {
-            onDelete(user)
-            onClose()
-          }}
+          onClick={handleSubmit(onSubmit)}
         >
-          Xoá
+          Xóa
         </Button>
       </DialogActions>
     </Dialog>
   )
 }
+
+export default DeleteUserModal

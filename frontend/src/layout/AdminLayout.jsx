@@ -26,7 +26,7 @@ import MenuItem from '@mui/material/MenuItem'
 import '~/layout/AdminLayout.css' // Import file CSS
 
 const tab = [
-  { name: 'Thống kê', path: '/admin/dashboard' },
+  { name: 'Thống kê', path: '/admin' },
   { name: 'Quản lý người dùng', path: '/admin/users' },
   { name: 'Quản lý danh mục', path: '/admin/categories' },
   { name: 'Quản lý sản phẩm', path: '/admin/products' },
@@ -86,7 +86,7 @@ export default function AdminLayout() {
       />
 
       <Menu
-        sx={{ marginTop: '30px' }}
+        sx={{ marginTop: '30px', zIndex: '99999' }}
         anchorEl={anchorEl}
         anchorOrigin={{
           vertical: 'top',
@@ -127,7 +127,7 @@ export default function AdminLayout() {
             color='inherit'
             aria-label='open drawer'
             onClick={handleDrawerOpen}
-            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+            sx={{ mr: 2 }}
           >
             <MenuIcon />
           </IconButton>

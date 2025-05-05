@@ -13,9 +13,9 @@ import Payment from '~/pages/user/Payment/Payment'
 import Cart from '~/pages/user/Cart/Cart'
 
 // Trang admin
-import AdminLayout from '~/layout/AdminLayout'
+import AdminLayout from '~/layout/AdminLayout.jsx'
+import AdminHome from '~/pages/admin/Home/index.jsx'
 import UserManagement from '~/pages/admin/UserManagement'
-import Dashboard from '~/pages/admin/Dashboard'
 import ProductManagement from '~/pages/admin/ProductManagement'
 import CategorieManagement from '~/pages/admin/CategorieManagement'
 import OrderManagement from '~/pages/admin/OrderManagement'
@@ -43,7 +43,7 @@ function App() {
 
       {/*Admin*/}
       <Route path='/admin' element={<AdminLayout />}>
-        <Route path='dashboard' element={<Dashboard />} />
+        <Route index element={<AdminHome />} />
         <Route path='users' element={<UserManagement />} />
         <Route path='products' element={<ProductManagement />} />
         <Route path='categories' element={<CategorieManagement />} />

@@ -6,25 +6,36 @@ import Typography from '@mui/material/Typography'
 
 export default function ViewUserModal({ open, onClose, user }) {
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
-      <DialogTitle>Thông tin người dùng</DialogTitle>
-      <DialogContent>
-        <Typography>
-          <strong>Tên:</strong> {user?.name}
-        </Typography>
-        <Typography>
-          <strong>Email:</strong> {user?.email}
-        </Typography>
-        <Typography>
-          <strong>Quyền:</strong> {user?.role}
-        </Typography>
-        <Typography>
-          <strong>Ngày tạo:</strong> {user?.registrationDate}
-        </Typography>
-        <Typography>
-          <strong>Ngày cập nhật:</strong> {user?.updateDate}
-        </Typography>
-      </DialogContent>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: '14px'
+        }
+      }}
+    >
+      <div style={{ padding: '24px' }}>
+        <DialogTitle>Thông tin người dùng</DialogTitle>
+        <DialogContent>
+          <Typography>
+            <strong>Tên:</strong> {user?.name}
+          </Typography>
+          <Typography>
+            <strong>Email:</strong> {user?.email}
+          </Typography>
+          <Typography>
+            <strong>Quyền:</strong> {user?.role}
+          </Typography>
+          <Typography>
+            <strong>Ngày tạo:</strong> {user?.registrationDate}
+          </Typography>
+          <Typography>
+            <strong>Ngày cập nhật:</strong> {user?.updateDate}
+          </Typography>
+        </DialogContent>
+      </div>
     </Dialog>
   )
 }

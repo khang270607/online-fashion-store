@@ -226,7 +226,9 @@ export default function UserManagement() {
         >
           <TableHead>
             <TableRow>
-              <StyledTableCell sx={{ width: '60px' }}>STT</StyledTableCell>
+              <StyledTableCell sx={{ width: '30px', textAlign: 'center' }}>
+                STT
+              </StyledTableCell>
               <StyledTableCell sx={{ width: '200px' }}>
                 Tên người dùng
               </StyledTableCell>
@@ -252,7 +254,7 @@ export default function UserManagement() {
           <TableBody>
             {displayedRows.map((row, index) => (
               <StyledTableRow key={`${row.email}-${index}`}>
-                <StyledTableCell>
+                <StyledTableCell sx={{ textAlign: 'center' }}>
                   {(page - 1) * ROWS_PER_PAGE + index + 1}
                 </StyledTableCell>
                 <StyledTableCell>
@@ -298,6 +300,10 @@ export default function UserManagement() {
                     gap: '8px'
                   }}
                 >
+                  <RemoveRedEyeIcon
+                    sx={{ cursor: 'pointer', fontSize: '20px' }}
+                    onClick={() => handleOpenModal('view', row)}
+                  />
                   <BorderColorIcon
                     sx={{ cursor: 'pointer', fontSize: '20px' }}
                     onClick={() => handleOpenModal('edit', row)}
@@ -306,15 +312,18 @@ export default function UserManagement() {
                     sx={{ cursor: 'pointer', fontSize: '20px' }}
                     onClick={() => handleOpenModal('delete', row)}
                   />
-                  <RemoveRedEyeIcon
-                    sx={{ cursor: 'pointer', fontSize: '20px' }}
-                    onClick={() => handleOpenModal('view', row)}
-                  />
                 </StyledTableCell>
               </StyledTableRow>
             ))}
           </TableBody>
         </Table>
+        {modalType === 'view' && (
+          <ViewUserModal
+            open={true}
+            onClose={handleCloseModal}
+            user={selectedUser}
+          />
+        )}
         {modalType === 'edit' && (
           <EditUserModal
             open={true}
@@ -329,13 +338,6 @@ export default function UserManagement() {
             onClose={handleCloseModal}
             user={selectedUser}
             onDelete={handleDeleteUser}
-          />
-        )}
-        {modalType === 'view' && (
-          <ViewUserModal
-            open={true}
-            onClose={handleCloseModal}
-            user={selectedUser}
           />
         )}
       </StyledTableContainer>

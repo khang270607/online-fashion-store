@@ -29,7 +29,16 @@ export default function EditUserModal({ open, onClose, user, onSave }) {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      PaperProps={{
+        sx: {
+          borderRadius: '14px'
+        }
+      }}
+    >
       <DialogTitle>Sửa thông tin người dùng</DialogTitle>
       <DialogContent>
         <TextField
@@ -62,7 +71,7 @@ export default function EditUserModal({ open, onClose, user, onSave }) {
           <MenuItem value='admin'>Quản trị viên</MenuItem>
         </Select>
       </DialogContent>
-      <DialogActions>
+      <DialogActions style={{ padding: '24px' }}>
         <Button onClick={onClose} sx={{ color: '#001f5d' }}>
           Huỷ
         </Button>

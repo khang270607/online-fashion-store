@@ -60,9 +60,10 @@ a {
     margin-left: 240px;
     transition: margin 0.2s ease;
 }
-.admin-layout.open .app-bar {
-    margin-left: 240px;
-    width: calc(100% - 240px);
+.admin-layout .app-bar {
+    margin-left: -240px;
+    width: 100%;
+    z-index: 9999;
 }
 /* Drawer paper */
 .drawer-paper {

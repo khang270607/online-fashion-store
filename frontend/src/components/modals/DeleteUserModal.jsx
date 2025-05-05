@@ -8,7 +8,15 @@ import Typography from '@mui/material/Typography'
 
 export default function DeleteUserModal({ open, onClose, user, onDelete }) {
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      PaperProps={{
+        sx: {
+          borderRadius: '14px'
+        }
+      }}
+    >
       <DialogTitle>Xoá người dùng</DialogTitle>
       <DialogContent>
         <Typography>
@@ -17,7 +25,9 @@ export default function DeleteUserModal({ open, onClose, user, onDelete }) {
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Huỷ</Button>
+        <Button sx={{ color: '#001f5d' }} onClick={onClose}>
+          Huỷ
+        </Button>
         <Button
           variant='contained'
           color='error'

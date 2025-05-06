@@ -1,38 +1,52 @@
 import React, { useEffect } from 'react'
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField
-} from '@mui/material'
+import Dialog from '@mui/material/Dialog'
+import DialogTitle from '@mui/material/DialogTitle'
+import DialogContent from '@mui/material/DialogContent'
+import DialogActions from '@mui/material/DialogActions'
+import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import MenuItem from '@mui/material/MenuItem'
+import Select from '@mui/material/Select'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
+import CircularProgress from '@mui/material/CircularProgress'
 import { useForm } from 'react-hook-form'
-import AuthorizedAxiosInstance from '~/utils/authorizedAxios'
-import { API_ROOT } from '~/utils/constants'
+import AuthorizedAxiosInstance from '~/utils/authorizedAxios.js'
+import { API_ROOT } from '~/utils/constants.js'
 
-const EditUserModal = ({ open, onClose, user, onSave }) => {
+const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors }
-  } = useForm()
+    formState: { errors, isSubmitting }
+  } = useForm({
+    defaultValues: {
+      name: '',
+      email: '',
+      role: 'customer'
+    }
+  })
 
+  // Cập nhật form khi user thay đổi
   useEffect(() => {
-    if (user) {
+    if (open && user) {
       reset({
         name: user.name || '',
         email: user.email || '',
-        role: user.role || 'user'
+        role: user.role || 'customer'
       })
     }
-  }, [user, reset])
+  }, [open, user, reset])
 
   const onSubmit = async (data) => {
     try {
-      await AuthorizedAxiosInstance.put(`${API_ROOT}/v1/users/${user.id}`, data)
+      // Chỉ gửi trường role để cập nhật
+      await AuthorizedAxiosInstance.patch(`${API_ROOT}/v1/users/${user._id}`, {
+        role: data.role
+      })
       onSave()
+      onClose()
     } catch (error) {
       console.error('Lỗi khi cập nhật người dùng:', error)
     }
@@ -43,51 +57,64 @@ const EditUserModal = ({ open, onClose, user, onSave }) => {
       <DialogTitle>Chỉnh sửa người dùng</DialogTitle>
       <DialogContent>
         <form id='edit-user-form' onSubmit={handleSubmit(onSubmit)}>
+          {/* Trường Tên - Chỉ hiển thị */}
           <TextField
-            label='Tên'
+            label='Tên người dùng'
             fullWidth
             margin='normal'
-            {...register('name', { required: 'Tên không được để trống' })}
-            error={!!errors.name}
-            helperText={errors.name?.message}
+            value={user?.name || ''}
+            InputProps={{ readOnly: true }}
+            disabled
           />
+
+          {/* Trường Email - Chỉ hiển thị */}
           <TextField
             label='Email'
             fullWidth
             margin='normal'
-            {...register('email', {
-              required: 'Email không được để trống',
-              pattern: {
-                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-                message: 'Email không hợp lệ'
-              }
-            })}
-            error={!!errors.email}
-            helperText={errors.email?.message}
+            value={user?.email || ''}
+            InputProps={{ readOnly: true }}
+            disabled
           />
-          <TextField
-            label='Quyền'
-            fullWidth
-            margin='normal'
-            {...register('role', { required: 'Vai trò là bắt buộc' })}
-            error={!!errors.role}
-            helperText={errors.role?.message}
-          />
+
+          {/* Trường Quyền - Cho phép chỉnh sửa */}
+          <FormControl fullWidth margin='normal' error={!!errors.role}>
+            <InputLabel id='role-label'>Quyền</InputLabel>
+            <Select
+              labelId='role-label'
+              label='Quyền'
+              {...register('role', { required: 'Vai trò là bắt buộc' })}
+              defaultValue={user?.role || 'customer'}
+              disabled={isSubmitting}
+            >
+              <MenuItem value='customer'>Người dùng</MenuItem>
+              <MenuItem value='admin'>Quản trị viên</MenuItem>
+            </Select>
+            {errors.role && (
+              <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
+                {errors.role.message}
+              </p>
+            )}
+          </FormControl>
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Hủy</Button>
+        <Button onClick={onClose} disabled={isSubmitting}>
+          Hủy
+        </Button>
         <Button
           type='submit'
           form='edit-user-form'
           variant='contained'
           color='primary'
+          disabled={isSubmitting}
+          startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
         >
-          Lưu
+          {isSubmitting ? 'Đang lưu' : 'Lưu'}
         </Button>
       </DialogActions>
     </Dialog>
   )
-}
+})
 
 export default EditUserModal

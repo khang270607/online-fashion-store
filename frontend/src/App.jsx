@@ -16,12 +16,12 @@ import Payment from '~/pages/user/Payment/Payment'
 import Cart from '~/pages/user/Cart/Cart'
 
 // Trang admin
-import AdminLayout from '~/layout/AdminLayout.jsx'
-import AdminHome from '~/pages/admin/Home/index.jsx'
-import UserManagement from '~/pages/admin/UserManagement'
-import ProductManagement from '~/pages/admin/ProductManagement'
-import CategorieManagement from '~/pages/admin/CategorieManagement'
-import OrderManagement from '~/pages/admin/OrderManagement'
+import AdminLayout from '~/layout/AdminLayout'
+import AdminHome from '~/pages/admin/Home/index'
+import UserManagement from '~/pages/admin/UserManagement/index'
+import ProductManagement from '~/pages/admin/ProductManagement/index.jsx'
+import CategorieManagement from '~/pages/admin/CategorieManagement/index.jsx'
+import OrderManagement from '~/pages/admin/OrderManagement/index'
 
 // Trang 404
 import NotFound from '~/pages/404/NotFound'
@@ -61,10 +61,10 @@ function App() {
       {/*Admin*/}
       <Route path='/admin' element={<AdminLayout />}>
         <Route index element={<AdminHome />} />
-        <Route path='users' element={<UserManagement />} />
-        <Route path='products' element={<ProductManagement />} />
-        <Route path='categories' element={<CategorieManagement />} />
-        <Route path='orders' element={<OrderManagement />} />
+        <Route path='user-management' element={<UserManagement />} />
+        <Route path='product-management' element={<ProductManagement />} />
+        <Route path='categorie-management' element={<CategorieManagement />} />
+        <Route path='order-management' element={<OrderManagement />} />
       </Route>
 
       {/*Not found 404*/}

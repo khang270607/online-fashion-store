@@ -27,10 +27,10 @@ import '~/layout/AdminLayout.css' // Import file CSS
 
 const tab = [
   { name: 'Thống kê', path: '/admin' },
-  { name: 'Quản lý người dùng', path: '/admin/users' },
-  { name: 'Quản lý danh mục', path: '/admin/categories' },
-  { name: 'Quản lý sản phẩm', path: '/admin/products' },
-  { name: 'Quản lý đơn hàng', path: '/admin/orders' }
+  { name: 'Quản lý người dùng', path: '/admin/user-management' },
+  { name: 'Quản lý danh mục', path: '/admin/categorie-management' },
+  { name: 'Quản lý sản phẩm', path: '/admin/product-management' },
+  { name: 'Quản lý đơn hàng', path: '/admin/order-management' }
 ]
 
 const MenuItems = ['Đăng xuất']

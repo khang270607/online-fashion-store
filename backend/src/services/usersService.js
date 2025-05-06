@@ -1,6 +1,6 @@
 import { StatusCodes } from 'http-status-codes'
 
-import { UserModel } from '~/models/userModel'
+import { UserModel } from '~/models/UserModel'
 import ApiError from '~/utils/ApiError'
 import { pickUser } from '~/utils/formatters'
 import { ROLE } from '~/utils/constants'

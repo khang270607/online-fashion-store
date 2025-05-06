@@ -6,6 +6,7 @@ import { authMiddleware } from '~/middlewares/authMiddleware'
 // Router
 import { authRoute } from '~/routes/v1/authRoute'
 import { usersRoute } from '~/routes/v1/usersRoute'
+import { categoriesRoute } from '~/routes/v1/categoriesRoute'
 
 const Router = express.Router()
 
@@ -21,5 +22,8 @@ Router.use('/auth', authRoute)
 
 // Users APIs
 Router.use('/users', usersRoute)
+
+// Categories APIs
+Router.use('/categories', categoriesRoute)
 
 export const APIs_V1 = Router

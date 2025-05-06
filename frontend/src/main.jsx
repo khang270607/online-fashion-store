@@ -17,6 +17,11 @@ import { store } from '~/redux/store'
 // Cấu hình Redux-Persit
 const persistor = persistStore(store)
 
+// Kỹ thuật Inject Store
+import { injectStore } from '~/utils/authorizedAxios'
+
+injectStore(store)
+
 createRoot(document.getElementById('root')).render(
   <BrowserRouter basename='/'>
     <Provider store={store}>

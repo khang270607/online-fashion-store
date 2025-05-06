@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 import { v4 as uuidv4 } from 'uuid'
 
 import { slugify } from '~/utils/formatters'
-import { UserModel } from '~/models/userModel'
+import { UserModel } from '~/models/UserModel'
 import { password } from '~/utils/password'
 import ApiError from '~/utils/ApiError'
 import { JwtProvider } from '~/providers/JwtProvider'
@@ -143,7 +143,6 @@ const login = async (reqBody) => {
     const accessToken = await JwtProvider.generateToken(
       userInfo,
       env.ACCESS_TOKEN_SECRET_SIGNATURE,
-      // 10
       env.ACCESS_TOKEN_LIFE
     )
 

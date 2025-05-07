@@ -3,6 +3,7 @@ import express from 'express'
 import cors from 'cors'
 import mongoose from 'mongoose'
 import exitHook from 'async-exit-hook'
+import cookieParser from 'cookie-parser'
 
 import { CONNECT_DB } from '~/config/mongodb'
 import { env } from '~/config/environment'
@@ -12,6 +13,9 @@ import { corsOptions } from '~/config/cors'
 
 const START_SERVER = () => {
   const app = express()
+
+  // Middleware cấu hình Cookie Parser
+  app.use(cookieParser())
 
   // Middleware để xử lý CORS
   app.use(cors(corsOptions))

@@ -54,6 +54,37 @@ const register = async (req, res, next) => {
   }
 }
 
+const verify = async (req, res, next) => {
+  // Xác thực dữ liệu đầu vào correctCondition: điều kiện đúng
+  const correctCondition = Joi.object({
+    email: Joi.string()
+      .email({
+        // Bắt buộc đúng định dạng email
+        tlds: { allow: false }
+      })
+      .max(100) // Độ dài tối đa 100 ký tự
+      .trim()
+      .required(),
+
+    token: Joi.string().required() // Bắt token
+  })
+
+  try {
+    await correctCondition.validateAsync(req.body, {
+      abortEarly: false // Không dừng lại khi gặp lỗi đầu tiên
+    })
+
+    next() // Nếu không có lỗi, tiếp tục xử lý request sang controller
+  } catch (err) {
+    const errorMessage = new Error(err).message
+    const customError = new ApiError(
+      StatusCodes.UNPROCESSABLE_ENTITY,
+      errorMessage
+    )
+    next(customError) // Gọi middleware xử lý lỗi tập trung
+  }
+}
+
 const login = async (req, res, next) => {
   // Xác thực dữ liệu đầu vào correctCondition: điều kiện đúng
   const correctCondition = Joi.object({
@@ -95,5 +126,6 @@ const login = async (req, res, next) => {
 
 export const authValidation = {
   register,
+  verify,
   login
 }

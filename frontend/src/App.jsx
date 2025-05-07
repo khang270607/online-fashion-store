@@ -15,7 +15,7 @@ import ProductDetail from '~/pages/user/ProductDetail/ProductDetail'
 import Payment from '~/pages/user/Payment/Payment'
 import Cart from '~/pages/user/Cart/Cart'
 
-// Trang admin
+// Trang Header
 import AdminLayout from '~/layout/AdminLayout'
 import AdminHome from '~/pages/admin/Home/index'
 import UserManagement from '~/pages/admin/UserManagement/index'

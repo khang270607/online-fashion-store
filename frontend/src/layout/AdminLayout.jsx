@@ -25,6 +25,8 @@ import MenuItem from '@mui/material/MenuItem'
 
 import '~/layout/AdminLayout.css' // Import file CSS
 
+import HeaderAdmin from '~/components/Header/Header'
+
 const tab = [
   { name: 'Thống kê', path: '/admin' },
   { name: 'Quản lý người dùng', path: '/admin/user-management' },
@@ -52,10 +54,6 @@ export default function AdminLayout() {
     setOpen(false)
   }
 
-  const handleProfileMenuOpen = (event) => {
-    setAnchorEl(event.currentTarget)
-  }
-
   const handleMenuClose = () => {
     setAnchorEl(null)
     setMobileMoreAnchorEl(null)
@@ -66,7 +64,6 @@ export default function AdminLayout() {
   }
 
   const menuId = 'primary-search-account-menu'
-  const mobileMenuId = 'primary-search-account-menu-mobile'
 
   return (
     <Box className={`admin-layout ${open ? 'open' : ''}`}>
@@ -135,31 +132,8 @@ export default function AdminLayout() {
             Xin chào {/*tên quản trị viên*/}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-            <IconButton
-              size='large'
-              edge='end'
-              aria-label='account of current user'
-              aria-controls={menuId}
-              aria-haspopup='true'
-              onClick={handleProfileMenuOpen}
-              color='inherit'
-            >
-              <AccountCircle />
-            </IconButton>
-          </Box>
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size='large'
-              aria-label='show more'
-              aria-controls={mobileMenuId}
-              aria-haspopup='true'
-              onClick={handleProfileMenuOpen}
-              color='inherit'
-            >
-              <MoreIcon />
-            </IconButton>
-          </Box>
+          {/*  profile */}
+          <HeaderAdmin />
         </Toolbar>
       </AppBar>
 

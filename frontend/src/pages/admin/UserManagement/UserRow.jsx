@@ -13,7 +13,7 @@ export default React.memo(function UserRow({ user, index, handleOpenModal }) {
       <StyledTableCell title={user.name}>{user.name}</StyledTableCell>
       <StyledTableCell title={user.email}>{user.email}</StyledTableCell>
       <StyledTableCell>
-        {user.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}
+        {user.role === 'Header' ? 'Quản trị viên' : 'Người dùng'}
       </StyledTableCell>
       <StyledTableCell className='hide-on-mobile'>
         {new Date(user.createdAt).toLocaleDateString()}

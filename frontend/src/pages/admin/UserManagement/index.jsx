@@ -4,15 +4,9 @@ import UserTable from './UserTable'
 import UserPagination from './UserPagination'
 import useUsers from '~/hook/useUsers'
 // Lazy load các modal
-const EditUserModal = React.lazy(
-  () => import('../../../components/modals/EditUserModal.jsx')
-)
-const DeleteUserModal = React.lazy(
-  () => import('../../../components/modals/DeleteUserModal.jsx')
-)
-const ViewUserModal = React.lazy(
-  () => import('../../../components/modals/ViewUserModal.jsx')
-)
+const EditUserModal = React.lazy(() => import('./modal/EditUserModal.jsx'))
+const DeleteUserModal = React.lazy(() => import('./modal/DeleteUserModal.jsx'))
+const ViewUserModal = React.lazy(() => import('./modal/ViewUserModal.jsx'))
 
 const ROWS_PER_PAGE = 10
 
@@ -38,21 +32,15 @@ export default function UserManagement() {
     setModalType(type)
 
     if (type === 'view') {
-      const { default: Modal } = await import(
-        '../../../components/modals/ViewUserModal.jsx'
-      )
+      const { default: Modal } = await import('./modal/ViewUserModal.jsx')
       setEditUserModal(() => Modal)
     }
     if (type === 'edit') {
-      const { default: Modal } = await import(
-        '../../../components/modals/EditUserModal.jsx'
-      )
+      const { default: Modal } = await import('./modal/EditUserModal.jsx')
       setEditUserModal(() => Modal)
     }
     if (type === 'delete') {
-      const { default: Modal } = await import(
-        '../../../components/modals/DeleteUserModal.jsx'
-      )
+      const { default: Modal } = await import('./modal/DeleteUserModal.jsx')
       setEditUserModal(() => Modal)
     }
   }

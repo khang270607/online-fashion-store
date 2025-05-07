@@ -26,7 +26,10 @@ export default function UserManagement() {
 
   // Gọi API duy nhất một lần khi component mount
   React.useEffect(() => {
-    fetchUsers(page)
+    const loadData = async () => {
+      await fetchUsers(page)
+    }
+    loadData()
   }, [page])
 
   const handleOpenModal = async (type, user) => {

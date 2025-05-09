@@ -1,6 +1,6 @@
 // components/HeaderActions.jsx
 import React, { useState, useEffect } from 'react'
-import { IconButton, Menu, MenuItem, Badge } from '@mui/material'
+import { IconButton, Menu, MenuItem, Badge, Grow, Paper } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import { Link } from 'react-router-dom'
@@ -27,7 +27,7 @@ const HeaderAction = () => {
     handleClose()
   }
 
-  // Tự động đóng khi scroll
+  // Tự động đóng menu khi scroll
   useEffect(() => {
     const handleScroll = () => {
       if (anchorEl) handleClose()
@@ -51,7 +51,16 @@ const HeaderAction = () => {
         onClose={handleClose}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-        PaperProps={{ sx: { mt: 1, minWidth: 150 } }}
+        TransitionComponent={Grow} // Hiệu ứng mượt
+        PaperProps={{
+          component: Paper,
+          elevation: 4,
+          sx: {
+            mt: 1,
+            minWidth: 150,
+            zIndex: (theme) => theme.zIndex.tooltip + 10 // đảm bảo cao hơn header
+          }
+        }}
       >
         {currentUser ? (
           <>

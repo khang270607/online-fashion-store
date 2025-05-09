@@ -56,10 +56,10 @@ function App() {
           <Route path='productdetail' element={<ProductDetail />} />
           <Route path='payment' element={<Payment />} />
           <Route path='cart' element={<Cart />} />
+          <Route path='profile' element={<Profile />} />
+          <Route path='order' element={<Order />} />
         </Route>
         <Route index element={<UserHome />} />
-        <Route path='profile' element={<Profile />} />
-        <Route path='order' element={<Order />} />
       </Route>
 
       {/*Admin*/}

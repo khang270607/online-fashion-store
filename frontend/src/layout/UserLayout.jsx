@@ -1,5 +1,5 @@
 import { Outlet, Link } from 'react-router-dom'
-import Footer from '../components/Footer'
+import Footer from '../components/Footer/Footer'
 import HeaderUser from '../components/HeaderUser/HeaderUser'
 import { Box } from '@mui/material'
 function UserLayout() {

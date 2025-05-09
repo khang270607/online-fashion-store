@@ -32,23 +32,6 @@ function Register() {
       .then((userInfo) => {
         navigate(`/login?rigisteredEmail=${userInfo.email}`)
       })
-
-    // //Cách 2
-    // const res = await authorizedAxiosInstance.post(
-    //   `${API_ROOT}/v1/auth/register`,
-    //   data
-    // )
-    //
-    // const userInfo = {
-    //   id: res.data.id,
-    //   email: res.data.email
-    // }
-    //
-    // localStorage.setItem('accessToken', res.data.accessToken)
-    // localStorage.setItem('refreshToken', res.data.refreshToken)
-    // localStorage.setItem('userInfo', JSON.stringify(userInfo))
-    //
-    // navigate('/')
   }
 
   return (

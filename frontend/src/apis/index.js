@@ -19,7 +19,7 @@ export const verifyUserAPI = async (data) => {
     `${API_ROOT}/v1/auth/verify`,
     data
   )
-  toast.success('Tạo tài khoản thành công! Vui lòng xác thực tài khoản.')
+  toast.success('Xác thực tài khoản thành công.')
 
   return response.data
 }

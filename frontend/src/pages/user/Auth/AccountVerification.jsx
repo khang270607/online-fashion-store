@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams, Navigate } from 'react-router-dom'
 
-import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner.jsx'
+import PageLoadingSpinner from '~/components/Loading/PageLoadingSpinner'
 import { verifyUserAPI } from '~/apis'
 
 function AccountVerification() {

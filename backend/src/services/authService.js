@@ -12,51 +12,50 @@ import { WEBSITE_DOMAIN } from '~/utils/constants'
 import { BrevoProvider } from '~/providers/BrevoProvider'
 
 const register = async (reqBody) => {
-  // Kiểm tra email đã tồn tại?
-  const exists = await UserModel.exists({ email: reqBody.email })
+  const { name, email, password: rawPassword, avatarUrl } = reqBody
+
+  // Chuẩn hóa email và tên
+  const normalizedEmail = email.trim().toLowerCase()
+  const normalizedName = name.trim()
+
+  // Kiểm tra email đã tồn tại
+  const exists = await UserModel.exists({ email: normalizedEmail })
   if (exists) {
-    // Trả về lỗi rõ ràng
     throw new ApiError(StatusCodes.CONFLICT, 'Email đã tồn tại!')
   }
 
-  // Băm mật khẩu (Hash) trước khi lưu vào DB
-  const passwordHash = await password.hash(reqBody.password)
+  // Băm mật khẩu
+  const hashedPassword = await password.hash(rawPassword)
 
+  // Tạo user mới
   const newUser = {
-    name: reqBody.name,
-    email: reqBody.email,
-    password: passwordHash,
-    avatarUrl: reqBody.avatarUrl,
+    name: normalizedName,
+    email: normalizedEmail,
+    password: hashedPassword,
+    avatarUrl,
     role: 'customer',
-    slug: slugify(reqBody.name),
+    slug: slugify(normalizedName, { lower: true }),
     destroy: false,
-    verifyToken: uuidv4(),
-    createdAt: reqBody.createdAt,
-    updatedAt: reqBody.updatedAt
+    verifyToken: uuidv4()
+    // Nếu model đã set timestamps, thì không cần set createdAt, updatedAt thủ công
   }
 
-  // Gọi tới tần Model để xử lý lưu bản ghi user vào trong Database
   // Lưu user vào DB
   const user = await UserModel.create(newUser)
 
-  //   Làm thêm các xử lý logic khác với các Collection khác tùy đặc thù dự án
-  //   Bắn email, notification về cho admin khi có 1 cái user mới được tạo
-
-  const verificationLink = `${WEBSITE_DOMAIN}/account/verification?email=${newUser.email}&token=${newUser.verifyToken}`
-  const customSubject =
-    'Online Shop Store: Vui lòng xác thực tài khoản của bạn.'
-
+  // Gửi email xác thực
+  const verificationLink = `${WEBSITE_DOMAIN}/account/verification?email=${normalizedEmail}&token=${newUser.verifyToken}`
+  const subject = 'Online Shop Store: Vui lòng xác thực tài khoản của bạn.'
   const htmlContent = `
-  <h3>Đây là liên kết xác thực tài khoản của bạn: </h3>
-  <h3>${verificationLink}</h3>
-  <h3>Trân trọng!, <br/> - Online Shop Store - </h3>
-   `
+  <h3>Đây là liên kết xác thực tài khoản của bạn:</h3>
+  <a href="${verificationLink}">${verificationLink}</a>
+  <p>Trân trọng,<br/>- Online Shop Store -</p>
+`
 
-  // Gọi tới cái Provider để gửi email
   await BrevoProvider.sendEmail(
-    newUser.name,
-    newUser.email,
-    customSubject,
+    normalizedName,
+    normalizedEmail,
+    subject,
     htmlContent
   )
 

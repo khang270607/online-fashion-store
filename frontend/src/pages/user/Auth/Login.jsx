@@ -11,14 +11,8 @@ import { Facebook, GitHub, Google } from '@mui/icons-material'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 import { styled } from '@mui/system'
 import { useDispatch } from 'react-redux'
-import { Navigate, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
-
-import authorizedAxiosInstance from '~/utils/authorizedAxios'
-import { API_ROOT } from '~/utils/constants'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { loginUserAPI } from '~/redux/user/userSlice'
-import { registerUserAPI } from '~/apis/index.js'
-import { selectCurrentUser } from '~/redux/user/userSlice'
 
 function Login() {
   const dispatch = useDispatch()
@@ -29,11 +23,9 @@ function Login() {
     formState: { errors }
   } = useForm()
 
-  // const currentUser = useSelector(selectCurrentUser)
-  //
-  // if (currentUser) {
-  //   return <Navigate to='/' replace={true} />
-  // }
+  const [searchParams] = useSearchParams()
+  const registeredEmail = searchParams.get('rigisteredEmail')
+  const verifiedEmail = searchParams.get('verifiedEmail')
 
   const submitLogIn = async (data) => {
     toast
@@ -42,34 +34,10 @@ function Login() {
       })
       .then((res) => {
         // Đoạn này phải kiểm tra không có lỗi thì mới redirect về route /
-        console.log(res)
         if (!res.error) {
           navigate('/')
         }
       })
-
-    // const res = await authorizedAxiosInstance.post(
-    //   `${API_ROOT}/v1/auth/login`,
-    //   data
-    // )
-    // console.log('Data from API: ', res.data)
-    //
-    // const userInfoFromLocalstorage = localStorage.getItem('userInfo')
-    // console.log(
-    //   'Data from Localstorage: ',
-    //   JSON.parse(userInfoFromLocalstorage)
-    // )
-    //
-    // const userInfo = {
-    //   id: res.data.id,
-    //   email: res.data.email
-    // }
-    //
-    // localStorage.setItem('accessToken', res.data.accessToken)
-    // localStorage.setItem('refreshToken', res.data.refreshToken)
-    // localStorage.setItem('userInfo', JSON.stringify(userInfo))
-    //
-    // navigate('/')
   }
   const SocialButton = styled(Button)({
     padding: '8px',
@@ -152,6 +120,28 @@ function Login() {
               <Typography variant='body2' color='text.secondary'>
                 Vui lòng đăng nhập để tiếp tục
               </Typography>
+
+              {/*=========State User========*/}
+              {verifiedEmail && (
+                <Alert
+                  variant='outlined'
+                  severity='success'
+                  sx={{ textAlign: 'left' }}
+                >
+                  Tài khoản đã được xác thực.
+                </Alert>
+              )}
+
+              {registeredEmail && (
+                <Alert
+                  variant='outlined'
+                  severity='info'
+                  sx={{ textAlign: 'left' }}
+                >
+                  Vui lòng vào gmail <b>{registeredEmail}</b> để xác thực tài
+                  khoản trước khi sử dụng dịch vụ.
+                </Alert>
+              )}
             </Box>
 
             <Box sx={{ mb: 2 }}>
@@ -184,6 +174,7 @@ function Login() {
                   required: 'Mật khẩu không được để trống.'
                 })}
               />
+
               {errors.password && (
                 <Alert severity='error' sx={{ mt: 1 }}>
                   {errors.password.message}

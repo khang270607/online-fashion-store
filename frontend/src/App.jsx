@@ -49,11 +49,12 @@ function App() {
 
       {/*Customer*/}
       <Route path='/' element={<UserLayout />}>
+        <Route path='product' element={<Product />} />
+        <Route path='productdetail' element={<ProductDetail />} />
+
         {/*Protected Routes (Hiểu đơn giản trong dự án của chúng ta là những route chỉ cho phép truy cập sau khi đã login)*/}
         <Route element={<ProtectedRoute user={currentUser} />}>
           {/*<Outlet/> của react-router-dom sẽ chạy vào các child route trong này*/}
-          <Route path='product' element={<Product />} />
-          <Route path='productdetail' element={<ProductDetail />} />
           <Route path='payment' element={<Payment />} />
           <Route path='cart' element={<Cart />} />
           <Route path='profile' element={<Profile />} />

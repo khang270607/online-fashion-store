@@ -24,8 +24,7 @@ import {
 import ArrowBack from '@mui/icons-material/ArrowBack'
 import { styled } from '@mui/system'
 import { useDispatch } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
-
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { loginUserAPI } from '~/redux/user/userSlice'
 
 function Login() {
@@ -39,6 +38,9 @@ function Login() {
 
   const [showPassword, setShowPassword] = useState(false)
   const toggleShowPassword = () => setShowPassword((prev) => !prev)
+  const [searchParams] = useSearchParams()
+  const registeredEmail = searchParams.get('rigisteredEmail')
+  const verifiedEmail = searchParams.get('verifiedEmail')
 
   const submitLogIn = async (data) => {
     toast
@@ -46,6 +48,7 @@ function Login() {
         pending: 'Đang đăng nhập...'
       })
       .then((res) => {
+        // Đoạn này phải kiểm tra không có lỗi thì mới redirect về route /
         if (!res.error) {
           navigate('/')
         }
@@ -120,6 +123,28 @@ function Login() {
               <Typography variant='body2' color='text.secondary'>
                 Vui lòng đăng nhập để tiếp tục
               </Typography>
+
+              {/*=========State User========*/}
+              {verifiedEmail && (
+                <Alert
+                  variant='outlined'
+                  severity='success'
+                  sx={{ textAlign: 'left' }}
+                >
+                  Tài khoản đã được xác thực.
+                </Alert>
+              )}
+
+              {registeredEmail && (
+                <Alert
+                  variant='outlined'
+                  severity='info'
+                  sx={{ textAlign: 'left' }}
+                >
+                  Vui lòng vào gmail <b>{registeredEmail}</b> để xác thực tài
+                  khoản trước khi sử dụng dịch vụ.
+                </Alert>
+              )}
             </Box>
 
             <Box sx={{ mb: 2 }}>
@@ -165,6 +190,7 @@ function Login() {
                   )
                 }}
               />
+
               {errors.password && (
                 <Alert severity='error' sx={{ mt: 1 }}>
                   {errors.password.message}

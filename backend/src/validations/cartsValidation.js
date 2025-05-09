@@ -5,27 +5,30 @@ import ApiError from '~/utils/ApiError'
 import validObjectId from '~/utils/validObjectId'
 
 const verifyId = (req, res, next) => {
-  const categoryId = req.params.categoryId
+  const cartId = req.params.productId
 
   // Kiểm tra format ObjectId
-  validObjectId(categoryId, next)
+  validObjectId(cartId, next)
 
   next()
 }
 
-const category = async (req, res, next) => {
+const cart = async (req, res, next) => {
   // Xác thực dữ liệu đầu vào correctCondition: điều kiện đúng
   const correctCondition = Joi.object({
-    name: Joi.string() // name bắt buộc, chuỗi
-      .min(3) // tối thiểu 3 ký tự
-      .max(50) // tối đa 50 ký tự
-      .trim() // loại bỏ khoảng trắng đầu/cuối
-      .required(), // bắt buộc
+    // cartItems là mảng các item trong giỏ
+    cartItems: Joi.array()
+      .items(
+        Joi.object({
+          // productId là ObjectId của sản phẩm - bắt buộc
+          productId: Joi.string().hex().length(24).required(),
 
-    description: Joi.string() // description không bắt buộc
-      .max(500) // bạn có thể giới hạn độ dài nếu muốn
-      .trim()
-      .allow('', null) // cho phép bỏ trống hoặc null
+          // quantity là số lượng sản phẩm - bắt buộc, tối thiểu 1
+          quantity: Joi.number().integer().min(1).required()
+        })
+      )
+      .min(1) // Yêu cầu phải có ít nhất 1 item trong giỏ
+      .required()
   })
 
   try {
@@ -44,7 +47,7 @@ const category = async (req, res, next) => {
   }
 }
 
-export const categoriesValidation = {
+export const cartsValidation = {
   verifyId,
-  category
+  cart
 }

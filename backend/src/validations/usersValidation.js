@@ -1,26 +1,12 @@
-import mongoose from 'mongoose'
-import { StatusCodes } from 'http-status-codes'
+import validObjectId from '~/utils/validObjectId'
 
-import ApiError from '~/utils/ApiError'
+const verifyId = (req, res, next) => {
+  const userId = req.params.userId
 
-const verifyId = async (req, res, next) => {
-  // eslint-disable-next-line no-useless-catch
-  try {
-    const userId = req.params.userId
+  // Kiểm tra format ObjectId
+  validObjectId(userId, next)
 
-    // Kiểm tra format ObjectId
-    if (!mongoose.isValidObjectId(userId)) {
-      const error = new ApiError(
-        StatusCodes.BAD_REQUEST,
-        'Không đúng định dạng MongoDB ObjectId'
-      )
-      next(error)
-    }
-
-    next()
-  } catch (err) {
-    throw err
-  }
+  next()
 }
 
 export const usersValidation = {

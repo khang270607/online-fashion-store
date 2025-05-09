@@ -32,7 +32,7 @@ const START_SERVER = () => {
   // Ruuning server
   app.listen(env.APP_PORT, env.APP_HOST, () => {
     console.log(
-      '\x1b[32m',
+      '\x1b[32m%s\x1b[0m',
       `Xin chào Dev!, Tôi đang chạy tại HOST: ${env.APP_HOST} - PORT: ${env.APP_PORT}`
     )
   })
@@ -45,7 +45,9 @@ const START_SERVER = () => {
 }
 
 CONNECT_DB()
-  .then(() => console.log('\x1b[32m', 'Kết nối thành công đến MongoDB!'))
+  .then(() =>
+    console.log('\x1b[32m%s\x1b[0m', 'Kết nối thành công đến MongoDB!')
+  )
   .then(() => {
     START_SERVER()
   })

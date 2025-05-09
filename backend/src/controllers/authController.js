@@ -41,7 +41,7 @@ const login = async (req, res, next) => {
     // Tạo cookie cho access token
     res.cookie('accessToken', result.accessToken, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       sameSite: 'none',
       maxAge: ms('14 days')
     })
@@ -49,7 +49,7 @@ const login = async (req, res, next) => {
     // Tạo cookie cho refresh token
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
-      secure: true,
+      // secure: true,
       sameSite: 'none',
       maxAge: ms('14 days')
     })

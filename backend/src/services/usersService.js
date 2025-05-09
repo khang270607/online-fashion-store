@@ -6,15 +6,20 @@ import { pickUser } from '~/utils/formatters'
 import { ROLE } from '~/utils/constants'
 
 const getUserList = async () => {
-  const result = await UserModel.find({}).lean()
-  const userList = []
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const result = await UserModel.find({}).lean()
+    const userList = []
 
-  for (let i = 0; i < result.length; i++) {
-    const user = pickUser(result[i])
-    userList.push(user)
+    for (let i = 0; i < result.length; i++) {
+      const user = pickUser(result[i])
+      userList.push(user)
+    }
+
+    return userList
+  } catch (err) {
+    throw err
   }
-
-  return userList
 }
 
 const getUser = async (userId) => {
@@ -38,7 +43,7 @@ const updateUser = async (userId, reqBody) => {
     const user = await UserModel.findById(userId)
 
     if (!user) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Không có dữ liệu người dùng.')
+      throw new ApiError(StatusCodes.NOT_FOUND, 'ID không tồn tại.')
     }
 
     const role = reqBody.role

@@ -56,8 +56,7 @@ const updateCategory = async (categoryId, reqBody) => {
     }
 
     // Cập nhật dữ liệu
-    category.name = reqBody.name
-    category.description = reqBody.description
+    Object.assign(category, reqBody)
 
     const updatedCategory = await category.save()
 

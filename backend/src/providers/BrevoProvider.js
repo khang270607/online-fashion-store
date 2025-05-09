@@ -16,7 +16,7 @@ const sendEmail = async (
   //   Khởi tạo một cái đối tượng SendSmtpEmail với thông tin cần thiết
   let sendSmtpEmail = new brevo.SendSmtpEmail()
 
-  // Tài khoản gửi email: lưu ý địa chỉ admin phải là cái email mà các bạn tạo tài khoản trên Brevo
+  // Tài khoản gửi email: lưu ý địa chỉ HeaderAdmin phải là cái email mà các bạn tạo tài khoản trên Brevo
   sendSmtpEmail.sender = {
     name: env.ADMIN_EMAIL_NAME,
     email: env.ADMIN_EMAIL_ADDRESS

@@ -90,7 +90,6 @@ const verify = async (reqBody) => {
 
     // Lưu dữ liệu thay đổi
     const updatedUser = await existsUser.save()
-
     return pickUser(updatedUser)
   } catch (err) {
     new ApiError(

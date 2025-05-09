@@ -40,7 +40,7 @@ const register = async (reqBody) => {
   const user = await UserModel.create(newUser)
 
   //   Làm thêm các xử lý logic khác với các Collection khác tùy đặc thù dự án
-  //   Bắn email, notification về cho Header khi có 1 cái user mới được tạo
+  //   Bắn email, notification về cho HeaderAdmin khi có 1 cái user mới được tạo
 
   const verificationLink = `${WEBSITE_DOMAIN}/account/verification?email=${newUser.email}&token=${newUser.verifyToken}`
   const customSubject =

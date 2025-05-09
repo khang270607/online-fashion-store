@@ -14,7 +14,7 @@ export default function UserManagement() {
   const [page, setPage] = React.useState(1)
   const [selectedUser, setSelectedUser] = React.useState(null)
   const [modalType, setModalType] = React.useState(null)
-  const [EditUserModal, setEditUserModal] = React.useState(null)
+  const [ModalComponent, setModalComponent] = React.useState(null)
 
   const { users, totalPages, fetchUsers, removeUser, Loading } = useUsers()
 
@@ -33,15 +33,15 @@ export default function UserManagement() {
 
     if (type === 'view') {
       const { default: Modal } = await import('./modal/ViewUserModal.jsx')
-      setEditUserModal(() => Modal)
+      setModalComponent(() => Modal)
     }
     if (type === 'edit') {
       const { default: Modal } = await import('./modal/EditUserModal.jsx')
-      setEditUserModal(() => Modal)
+      setModalComponent(() => Modal)
     }
     if (type === 'delete') {
       const { default: Modal } = await import('./modal/DeleteUserModal.jsx')
-      setEditUserModal(() => Modal)
+      setModalComponent(() => Modal)
     }
   }
 
@@ -73,12 +73,17 @@ export default function UserManagement() {
         {modalType === 'view' && selectedUser && (
           <ViewUserModal open onClose={handleCloseModal} user={selectedUser} />
         )}
-        {modalType === 'edit' && selectedUser && (
-          <EditUserModal
+        {ModalComponent && selectedUser && (
+          <ModalComponent
             open
             onClose={handleCloseModal}
             user={selectedUser}
-            onSave={fetchUsers}
+            onSave={modalType === 'edit' ? fetchUsers : undefined}
+            onDelete={
+              modalType === 'delete'
+                ? () => handleDeleteUser(selectedUser._id)
+                : undefined
+            }
           />
         )}
         {modalType === 'delete' && selectedUser && (

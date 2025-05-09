@@ -25,7 +25,9 @@ const DeleteProductModal = ({ open, onClose, product, onDelete }) => {
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Hủy</Button>
+        <Button onClick={onClose} color='#001f5d'>
+          Hủy
+        </Button>
         <Button onClick={handleConfirmDelete} color='error' variant='contained'>
           Xoá
         </Button>

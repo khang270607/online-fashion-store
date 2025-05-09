@@ -99,16 +99,16 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={isSubmitting}>
+        <Button onClick={onClose} disabled={isSubmitting} color='#001f5d'>
           Hủy
         </Button>
         <Button
           type='submit'
           form='edit-user-form'
           variant='contained'
-          color='primary'
           disabled={isSubmitting}
           startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
+          sx={{ backgroundColor: '#001f5d', color: 'white' }}
         >
           {isSubmitting ? 'Đang lưu' : 'Lưu'}
         </Button>

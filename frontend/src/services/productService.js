@@ -3,44 +3,15 @@ import AuthorizedAxiosInstance from '~/utils/authorizedAxios.js'
 import { API_ROOT } from '~/utils/constants.js'
 
 // Lấy danh sách sản phẩm (phân trang)
-// export const getProducts = async (page = 1, limit = 10) => {
-//   try {
-//     const response = await AuthorizedAxiosInstance.get(
-//       `${API_ROOT}/v1/products?page=${page}&limit=${limit}`
-//     )
-//     console.log('Danh sách sản phẩm:', response.data)
-//     return {
-//       products: response.data?.data || [], // giả định backend trả về dạng { data, total }
-//       total: response.data?.total || 0
-//     }
-//   } catch (error) {
-//     console.error('Lỗi khi lấy danh sách sản phẩm:', error)
-//     return { products: [], total: 0 }
-//   }
-// }
-// Mock dữ liệu sản phẩm
-export const mockProducts = [
-  {
-    id: 1,
-    name: 'Áo thun nam basic',
-    description: 'Chất liệu cotton, thoáng mát',
-    price: 1000,
-    imageProduct:
-      'https://bizweb.dktcdn.net/100/446/974/products/ao-thun-mlb-new-era-heavy-cotton-new-york-yankees-black-13086578-2.jpg?v=1691318322277',
-    category: 'Áo thun'
-  }
-]
-
-// Thử nghiệm mock API lấy sản phẩm
 export const getProducts = async (page = 1, limit = 10) => {
   try {
-    const startIndex = (page - 1) * limit
-    const endIndex = page * limit
-    const products = mockProducts.slice(startIndex, endIndex) // Giới hạn số lượng sản phẩm theo page và limit
-
+    const response = await AuthorizedAxiosInstance.get(
+      `${API_ROOT}/v1/products?page=${page}&limit=${limit}`
+    )
+    console.log('Danh sách sản phẩm:', response.data)
     return {
-      products: products,
-      total: mockProducts.length
+      products: response.data || [],
+      total: response.data.total || 0
     }
   } catch (error) {
     console.error('Lỗi khi lấy danh sách sản phẩm:', error)
@@ -51,7 +22,6 @@ export const getProducts = async (page = 1, limit = 10) => {
 // Ví dụ gọi API và lấy sản phẩm
 getProducts(1, 2).then((data) => {
   console.log('Dữ liệu sản phẩm:', data.products)
-  console.log('Tổng số sản phẩm:', data.total)
 })
 
 // Lấy chi tiết sản phẩm theo ID
@@ -76,7 +46,10 @@ export const updateProduct = async (productId, updatedData) => {
     )
     return response.data
   } catch (error) {
-    console.error('Lỗi khi cập nhật sản phẩm:', error)
+    console.error(
+      'Lỗi khi cập nhật sản phẩm:',
+      error.response ? error.response.data : error
+    )
     return null
   }
 }

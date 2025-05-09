@@ -22,11 +22,14 @@ const ProductManagement = () => {
   const [modalType, setModalType] = React.useState(null)
   const [selectedProduct, setSelectedProduct] = React.useState(null)
 
-  const { products, totalPages, fetchProducts, Loading } = useProducts()
+  const { products, totalPages, fetchProducts, loading } = useProducts()
 
   React.useEffect(() => {
     fetchProducts(page)
   }, [page])
+
+  console.log('totalPages', totalPages)
+  console.log('page', page)
 
   const handleOpenModal = (type, product = null) => {
     setSelectedProduct(product)
@@ -58,7 +61,7 @@ const ProductManagement = () => {
 
       <ProductTable
         products={products}
-        loading={Loading}
+        loading={loading}
         handleOpenModal={handleOpenModal}
       />
 

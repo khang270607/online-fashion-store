@@ -9,7 +9,12 @@ import {
   Button
 } from '@mui/material'
 import ProductRow from './ProductRow'
-
+import {
+  StyledTableCell,
+  StyledTableRow,
+  StyledTableContainer
+} from '~/pages/admin/CategorieManagement/CategoryTableStyles.jsx'
+import AddIcon from '@mui/icons-material/Add'
 const ProductTable = ({ products, loading, handleOpenModal }) => {
   if (loading) return <CircularProgress />
 
@@ -17,30 +22,38 @@ const ProductTable = ({ products, loading, handleOpenModal }) => {
     <>
       <Button
         variant='contained'
+        sx={{ mb: 2, backgroundColor: '#001f5d' }}
+        startIcon={<AddIcon />}
         onClick={() => handleOpenModal('add')}
-        sx={{ mb: 2 }}
       >
         Thêm sản phẩm
       </Button>
       <Table>
         <TableHead>
-          <TableRow>
-            <TableCell>STT</TableCell>
-            <TableCell>Tên</TableCell>
-            <TableCell>Giá</TableCell>
-            <TableCell>Danh mục</TableCell>
-            <TableCell>Thao tác</TableCell>
-          </TableRow>
+          <StyledTableRow>
+            <StyledTableCell>STT</StyledTableCell>
+            <StyledTableCell>Ảnh</StyledTableCell>
+            <StyledTableCell>Tên</StyledTableCell>
+            <StyledTableCell>Giá</StyledTableCell>
+            <StyledTableCell>Số lượng</StyledTableCell>
+            <StyledTableCell>Mô tả</StyledTableCell>
+            <StyledTableCell>Danh mục</StyledTableCell>
+            <StyledTableCell>Thao tác</StyledTableCell>
+          </StyledTableRow>
         </TableHead>
         <TableBody>
-          {products.map((p, i) => (
-            <ProductRow
-              key={p._id}
-              index={i + 1}
-              product={p}
-              handleOpenModal={handleOpenModal}
-            />
-          ))}
+          {products
+            .filter((product) => !product.destroy) // Lọc những sản phẩm không có `destroy` là true
+            .map((product, index) => {
+              return (
+                <ProductRow
+                  key={product.id ? product.id : index}
+                  index={index + 1}
+                  product={product}
+                  handleOpenModal={handleOpenModal}
+                />
+              )
+            })}
         </TableBody>
       </Table>
     </>

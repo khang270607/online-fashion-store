@@ -21,10 +21,10 @@ const DeleteCategoryModal = ({ open, onClose, category, onDelete }) => {
         Bạn có chắc chắn muốn xoá danh mục <strong>{category.name}</strong>?
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color='primary'>
+        <Button onClick={onClose} color='inherit'>
           Hủy
         </Button>
-        <Button onClick={handleDelete} color='secondary'>
+        <Button onClick={handleDelete} color='error' variant='contained'>
           Xoá
         </Button>
       </DialogActions>

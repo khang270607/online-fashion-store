@@ -12,6 +12,9 @@ import {
 const ViewProductModal = ({ open, onClose, product }) => {
   if (!product) return null
 
+  const productImage =
+    product.image && Array.isArray(product.image) ? product.image[0] : ''
+
   return (
     <Dialog
       open={open}
@@ -20,8 +23,8 @@ const ViewProductModal = ({ open, onClose, product }) => {
       fullWidth
       PaperProps={{
         sx: {
-          mt: 8, // cách top khoảng 64px, tránh bị che
-          maxHeight: '85vh' // chiều cao tối đa
+          mt: 8,
+          maxHeight: '85vh'
         }
       }}
     >
@@ -29,28 +32,30 @@ const ViewProductModal = ({ open, onClose, product }) => {
       <DialogContent
         dividers
         sx={{
-          overflowY: 'auto', // cuộn nếu nội dung vượt quá chiều cao
-          maxHeight: 'calc(85vh - 64px)' // để phù hợp với tổng chiều cao
+          overflowY: 'auto',
+          maxHeight: 'calc(85vh - 64px)'
         }}
       >
-        {/* Hiển thị ảnh sản phẩm */}
-        <Box
-          component='img'
-          src={product.imageProduct}
-          alt={product.name}
-          sx={{
-            width: '100%',
-            height: 'auto',
-            marginBottom: 2
-          }}
-        />
+        {productImage && (
+          <Box
+            component='img'
+            src={productImage}
+            alt={product.name}
+            sx={{
+              width: '100%',
+              height: 'auto',
+              marginBottom: 2
+            }}
+          />
+        )}
 
         <TextField
           fullWidth
           margin='normal'
           label='Tên sản phẩm'
           value={product.name}
-          InputProps={{ readOnly: true }}
+          disabled
+          color='#000'
         />
         <TextField
           fullWidth
@@ -59,25 +64,30 @@ const ViewProductModal = ({ open, onClose, product }) => {
           value={product.description}
           multiline
           rows={3}
-          InputProps={{ readOnly: true }}
+          disabled
+          color='#000'
         />
         <TextField
           fullWidth
           margin='normal'
           label='Giá'
-          value={product.price}
-          InputProps={{ readOnly: true }}
+          value={`${product.price.toLocaleString()} VNĐ`}
+          disabled
+          color='#000'
         />
         <TextField
           fullWidth
           margin='normal'
           label='Danh mục'
           value={product.category}
-          InputProps={{ readOnly: true }}
+          disabled
+          color='#000'
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Đóng</Button>
+        <Button color='#001f5d' onClick={onClose}>
+          Đóng
+        </Button>
       </DialogActions>
     </Dialog>
   )

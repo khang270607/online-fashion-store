@@ -78,6 +78,14 @@ const CategoryManagement = () => {
     }
   }
 
+  const styles = {
+    buttonAdd: {
+      backgroundColor: '#001f5d',
+      color: '#fff',
+      marginBottom: '16px'
+    }
+  }
+
   return (
     <>
       <Typography variant='h5' sx={{ mb: 2 }}>
@@ -85,9 +93,8 @@ const CategoryManagement = () => {
       </Typography>
       <Button
         variant='contained'
-        color='primary'
+        sx={styles.buttonAdd}
         startIcon={<AddIcon />}
-        sx={{ mb: 2 }}
         onClick={() => setModalType('add')}
       >
         Thêm danh mục

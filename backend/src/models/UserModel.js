@@ -39,7 +39,7 @@ const userSchema = new Schema(
       match: /\.(jpeg|jpg|png|gif)$/ // Chỉ cho phép các định dạng ảnh phổ biến
     },
 
-    // Vai trò người dùng: 'user' hoặc 'Header'
+    // Vai trò người dùng: 'user' hoặc 'HeaderAdmin'
     role: {
       type: String,
       enum: ['customer', 'admin'],

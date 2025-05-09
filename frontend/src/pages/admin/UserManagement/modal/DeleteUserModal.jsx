@@ -31,7 +31,7 @@ const DeleteUserModal = React.memo(({ open, onClose, user, onDelete }) => {
         không?
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={isDeleting}>
+        <Button onClick={onClose} disabled={isDeleting} color='#001f5d'>
           Hủy
         </Button>
         <Button

@@ -1,7 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { Card as MuiCard, Grid, Typography } from '@mui/material'
+import {
+  Card as MuiCard,
+  Grid,
+  Typography,
+  IconButton,
+  InputAdornment
+} from '@mui/material'
 import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
@@ -9,9 +15,9 @@ import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 import { useNavigate } from 'react-router-dom'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
 
-import authorizedAxiosInstance from '~/utils/authorizedAxios'
-import { API_ROOT } from '~/utils/constants'
 import { registerUserAPI } from '~/apis'
 import { toast } from 'react-toastify'
 
@@ -19,10 +25,17 @@ function Register() {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    watch
   } = useForm()
 
   const navigate = useNavigate()
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+
+  const toggleShowPassword = () => setShowPassword((prev) => !prev)
+  const toggleShowConfirmPassword = () =>
+    setShowConfirmPassword((prev) => !prev)
 
   const submitRegister = async (data) => {
     toast
@@ -32,23 +45,6 @@ function Register() {
       .then((userInfo) => {
         navigate(`/login?rigisteredEmail=${userInfo.email}`)
       })
-
-    // //Cách 2
-    // const res = await authorizedAxiosInstance.post(
-    //   `${API_ROOT}/v1/auth/register`,
-    //   data
-    // )
-    //
-    // const userInfo = {
-    //   id: res.data.id,
-    //   email: res.data.email
-    // }
-    //
-    // localStorage.setItem('accessToken', res.data.accessToken)
-    // localStorage.setItem('refreshToken', res.data.refreshToken)
-    // localStorage.setItem('userInfo', JSON.stringify(userInfo))
-    //
-    // navigate('/')
   }
 
   return (
@@ -66,10 +62,9 @@ function Register() {
         backgroundPosition: 'center',
         boxShadow: 'inset 0 0 0 2000px rgba(0, 0, 0, 0.4)',
         p: 2,
-        position: 'relative' // cần để hỗ trợ positioning
+        position: 'relative'
       }}
     >
-      {/* Nút quay về trang chủ */}
       <Button
         variant='contained'
         color='secondary'
@@ -133,11 +128,15 @@ function Register() {
               <TextField
                 fullWidth
                 label='Email'
-                type='email'
+                type='text'
                 variant='outlined'
                 error={!!errors.email}
                 {...register('email', {
-                  required: 'Vui lòng nhập email.'
+                  required: 'Vui lòng nhập email.',
+                  pattern: {
+                    value: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: 'Email không hợp lệ.'
+                  }
                 })}
               />
               {errors.email && (
@@ -151,12 +150,27 @@ function Register() {
               <TextField
                 fullWidth
                 label='Mật khẩu'
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 variant='outlined'
                 error={!!errors.password}
                 {...register('password', {
-                  required: 'Vui lòng nhập mật khẩu.'
+                  required: 'Vui lòng nhập mật khẩu.',
+                  pattern: {
+                    value:
+                      /^(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}\[\]:;<>,.?~\\/-])[A-Za-z\d!@#$%^&*()_+{}\[\]:;<>,.?~\\/-]{6,}$/,
+                    message:
+                      'Mật khẩu phải có ít nhất 6 ký tự, bao gồm 1 chữ in hoa và 1 ký tự đặc biệt.'
+                  }
                 })}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={toggleShowPassword} edge='end'>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
               {errors.password && (
                 <Alert severity='error' sx={{ mt: 1 }}>
@@ -169,12 +183,30 @@ function Register() {
               <TextField
                 fullWidth
                 label='Xác nhận mật khẩu'
-                type='password'
+                type={showConfirmPassword ? 'text' : 'password'}
                 variant='outlined'
                 error={!!errors.confirmPassword}
                 {...register('confirmPassword', {
-                  required: 'Vui lòng xác nhận mật khẩu.'
+                  required: 'Vui lòng xác nhận mật khẩu.',
+                  validate: (value) =>
+                    value === watch('password') || 'Mật khẩu không khớp.'
                 })}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton
+                        onClick={toggleShowConfirmPassword}
+                        edge='end'
+                      >
+                        {showConfirmPassword ? (
+                          <VisibilityOff />
+                        ) : (
+                          <Visibility />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
               {errors.confirmPassword && (
                 <Alert severity='error' sx={{ mt: 1 }}>

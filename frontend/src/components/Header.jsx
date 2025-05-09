@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { Link } from 'react-router-dom'
+
 import {
   AppBar,
   Toolbar,
@@ -24,40 +26,9 @@ import SearchIcon from '@mui/icons-material/Search'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import PersonIcon from '@mui/icons-material/Person'
 import MenuIcon from '@mui/icons-material/Menu'
-
 import { useSelector, useDispatch } from 'react-redux'
 import { selectCurrentUser, logoutUserAPI } from '~/redux/user/userSlice'
 import ListItemButton from '@mui/material/ListItemButton'
-
-// Styled Components
-const TopBar = styled(Box)(({ theme }) => ({
-  backgroundColor: '#03235e',
-  color: 'white',
-  width: '100%',
-  overflow: 'hidden',
-  whiteSpace: 'nowrap',
-  position: 'fixed',
-  top: 0,
-  left: 0,
-  height: '40px',
-  display: 'flex',
-  alignItems: 'center',
-  zIndex: 1302,
-  [theme.breakpoints.down('sm')]: {
-    height: '30px',
-    fontSize: '0.8rem'
-  }
-}))
-
-const MarqueeText = styled('div')({
-  display: 'inline-block',
-  paddingLeft: '100%',
-  animation: 'marquee 15s linear infinite',
-  '@keyframes marquee': {
-    '0%': { transform: 'translateX(0%)' },
-    '100%': { transform: 'translateX(-100%)' }
-  }
-})
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   background: 'linear-gradient(90deg, #ffffff 0%, #f8f9fa 100%)',
@@ -276,14 +247,6 @@ const Header = () => {
 
   return (
     <>
-      {/* TopBar */}
-      <TopBar>
-        <MarqueeText>
-          ⚡ Ưu đãi cực sốc lên tới 70% toàn bộ sản phẩm - Chỉ trong tuần lễ
-          vàng này! ⚡ Mua ngay hôm nay để nhận quà hấp dẫn!
-        </MarqueeText>
-      </TopBar>
-
       {/* Navbar */}
       <StyledAppBar>
         <Container maxWidth='lg'>
@@ -399,15 +362,9 @@ const Header = () => {
                   )
                 }}
               />
+
               <StyledButton color='inherit' href='/register'>
                 Đăng ký
-              </StyledButton>
-              <StyledButton
-                variant='outlined'
-                sx={{ color: 'primary' }}
-                href='/login'
-              >
-                Đăng nhập
               </StyledButton>
 
               <IconButton color='inherit' onClick={handlePersonMenuOpen}>
@@ -423,10 +380,14 @@ const Header = () => {
                   sx: { mt: 1, minWidth: 150 }
                 }}
               >
-                <MenuItem>Hồ sơ</MenuItem>
+                <MenuItem component={Link} to='/profile'>
+                  Hồ sơ
+                </MenuItem>
                 <MenuItem>Đăng xuất</MenuItem>
                 <MenuItem>Giỏ hàng</MenuItem>
-                <MenuItem>Thông tin đơn hàng</MenuItem>
+                <MenuItem component={Link} to='/order'>
+                  Thông tin đơn hàng
+                </MenuItem>
               </Menu>
               <IconButton color='inherit'>
                 <Badge badgeContent={3} color='error'>

@@ -14,6 +14,8 @@ import Product from '~/pages/user/Product/Product'
 import ProductDetail from '~/pages/user/ProductDetail/ProductDetail'
 import Payment from '~/pages/user/Payment/Payment'
 import Cart from '~/pages/user/Cart/Cart'
+import Profile from '~/pages/user/Profile/Profile'
+import Order from '~/pages/user/Order/Order'
 
 // Trang admin
 import AdminLayout from '~/layout/AdminLayout'
@@ -56,6 +58,8 @@ function App() {
           <Route path='cart' element={<Cart />} />
         </Route>
         <Route index element={<UserHome />} />
+        <Route path='profile' element={<Profile />} />
+        <Route path='order' element={<Order />} />
       </Route>
 
       {/*Admin*/}

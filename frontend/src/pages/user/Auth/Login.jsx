@@ -1,24 +1,32 @@
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { Card as MuiCard, Grid, Typography } from '@mui/material'
+import {
+  Card as MuiCard,
+  Grid,
+  Typography,
+  IconButton,
+  InputAdornment
+} from '@mui/material'
 import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
 import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { Facebook, GitHub, Google } from '@mui/icons-material'
+import {
+  Facebook,
+  GitHub,
+  Google,
+  Visibility,
+  VisibilityOff
+} from '@mui/icons-material'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 import { styled } from '@mui/system'
 import { useDispatch } from 'react-redux'
-import { Navigate, useNavigate } from 'react-router-dom'
-import { useSelector } from 'react-redux'
+import { useNavigate } from 'react-router-dom'
 
-import authorizedAxiosInstance from '~/utils/authorizedAxios'
-import { API_ROOT } from '~/utils/constants'
 import { loginUserAPI } from '~/redux/user/userSlice'
-import { registerUserAPI } from '~/apis/index.js'
-import { selectCurrentUser } from '~/redux/user/userSlice'
 
 function Login() {
   const dispatch = useDispatch()
@@ -29,11 +37,8 @@ function Login() {
     formState: { errors }
   } = useForm()
 
-  // const currentUser = useSelector(selectCurrentUser)
-  //
-  // if (currentUser) {
-  //   return <Navigate to='/' replace={true} />
-  // }
+  const [showPassword, setShowPassword] = useState(false)
+  const toggleShowPassword = () => setShowPassword((prev) => !prev)
 
   const submitLogIn = async (data) => {
     toast
@@ -41,36 +46,12 @@ function Login() {
         pending: 'Đang đăng nhập...'
       })
       .then((res) => {
-        // Đoạn này phải kiểm tra không có lỗi thì mới redirect về route /
-        console.log(res)
         if (!res.error) {
           navigate('/')
         }
       })
-
-    // const res = await authorizedAxiosInstance.post(
-    //   `${API_ROOT}/v1/auth/login`,
-    //   data
-    // )
-    // console.log('Data from API: ', res.data)
-    //
-    // const userInfoFromLocalstorage = localStorage.getItem('userInfo')
-    // console.log(
-    //   'Data from Localstorage: ',
-    //   JSON.parse(userInfoFromLocalstorage)
-    // )
-    //
-    // const userInfo = {
-    //   id: res.data.id,
-    //   email: res.data.email
-    // }
-    //
-    // localStorage.setItem('accessToken', res.data.accessToken)
-    // localStorage.setItem('refreshToken', res.data.refreshToken)
-    // localStorage.setItem('userInfo', JSON.stringify(userInfo))
-    //
-    // navigate('/')
   }
+
   const SocialButton = styled(Button)({
     padding: '8px',
     borderRadius: '50%',
@@ -82,20 +63,7 @@ function Login() {
       backgroundColor: '#f5f5f5'
     }
   })
-  const StyledButton = styled(Button)({
-    backgroundColor: '#1976d2',
-    color: '#fff',
-    padding: '12px',
-    fontSize: '16px',
-    fontWeight: 600,
-    borderRadius: '8px',
-    textTransform: 'none',
-    '&:hover': {
-      backgroundColor: '#1565c0',
-      transform: 'translateY(-1px)',
-      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)'
-    }
-  })
+
   return (
     <Box
       sx={{
@@ -113,7 +81,6 @@ function Login() {
         p: 2
       }}
     >
-      {/* Nút quay về trang chủ */}
       <Button
         variant='contained'
         color='secondary'
@@ -132,6 +99,7 @@ function Login() {
       >
         Trang chủ
       </Button>
+
       <form onSubmit={handleSubmit(submitLogIn)}>
         <Zoom in={true} style={{ transitionDelay: '200ms' }}>
           <MuiCard
@@ -159,11 +127,15 @@ function Login() {
                 autoFocus
                 fullWidth
                 label='Email'
-                type='email'
+                type='text'
                 variant='outlined'
                 error={!!errors.email}
                 {...register('email', {
-                  required: 'Email không được để trống.'
+                  required: 'Email không được để trống.',
+                  pattern: {
+                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: 'Email không hợp lệ.'
+                  }
                 })}
               />
               {errors.email && (
@@ -177,12 +149,21 @@ function Login() {
               <TextField
                 fullWidth
                 label='Mật khẩu'
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 variant='outlined'
                 error={!!errors.password}
                 {...register('password', {
                   required: 'Mật khẩu không được để trống.'
                 })}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={toggleShowPassword} edge='end'>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
               {errors.password && (
                 <Alert severity='error' sx={{ mt: 1 }}>
@@ -204,6 +185,7 @@ function Login() {
                 Đăng nhập
               </Button>
             </CardActions>
+
             <Grid item xs={12}>
               <Typography
                 align='center'
@@ -221,6 +203,7 @@ function Login() {
                 </a>
               </Typography>
             </Grid>
+
             <Grid item xs={12}>
               <Typography
                 align='center'
@@ -239,6 +222,7 @@ function Login() {
                 </a>
               </Typography>
             </Grid>
+
             <Grid item xs={12}>
               <Box
                 sx={{

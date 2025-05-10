@@ -34,6 +34,7 @@ export default function AdminLayout() {
         open={open}
         onDrawerOpen={handleDrawerOpen}
         onProfileMenuOpen={handleProfileMenuOpen}
+        onMenuClose={handleDrawerClose}
       />
       <AdminDrawer open={open} onClose={handleDrawerClose} />
       <AdminMenu

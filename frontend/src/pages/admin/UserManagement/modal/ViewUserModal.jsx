@@ -1,8 +1,14 @@
 import React from 'react'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import Typography from '@mui/material/Typography'
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  Typography,
+  Stack,
+  IconButton
+} from '@mui/material'
+import CloseIcon from '@mui/icons-material/Close'
+import { modalPaperProps, dialogTitleStyle } from './StyleModal.js'
 
 export default function ViewUserModal({ open, onClose, user }) {
   return (
@@ -10,36 +16,48 @@ export default function ViewUserModal({ open, onClose, user }) {
       open={open}
       onClose={onClose}
       fullWidth
-      PaperProps={{
-        sx: {
-          borderRadius: '14px'
-        }
-      }}
+      maxWidth='sm'
+      PaperProps={modalPaperProps}
     >
-      <div style={{ padding: '24px' }}>
-        <DialogTitle>Thông tin người dùng</DialogTitle>
-        <DialogContent>
-          <Typography>
+      <DialogTitle sx={{ ...dialogTitleStyle, pr: 5 }}>
+        Thông tin người dùng
+        <IconButton
+          aria-label='close'
+          onClick={onClose}
+          sx={{
+            position: 'absolute',
+            right: 16,
+            top: 16,
+            color: (theme) => theme.palette.grey[500]
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+      </DialogTitle>
+      <DialogContent dividers>
+        <Stack spacing={2}>
+          <Typography fontSize={18}>
             <strong>Tên:</strong> {user?.name}
           </Typography>
-          <Typography>
+          <Typography fontSize={18}>
             <strong>Email:</strong> {user?.email}
           </Typography>
-          <Typography>
-            <strong>Quyền:</strong> {user?.role}
+          <Typography fontSize={18}>
+            <strong>Quyền:</strong>{' '}
+            {user?.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}
           </Typography>
-          <Typography>
+          <Typography fontSize={18}>
             <strong>Ngày tạo:</strong>{' '}
             {user?.createdAt &&
               new Date(user.createdAt).toLocaleString('vi-VN')}
           </Typography>
-          <Typography>
+          <Typography fontSize={18}>
             <strong>Ngày cập nhật:</strong>{' '}
             {user?.updatedAt &&
               new Date(user.updatedAt).toLocaleString('vi-VN')}
           </Typography>
-        </DialogContent>
-      </div>
+        </Stack>
+      </DialogContent>
     </Dialog>
   )
 }

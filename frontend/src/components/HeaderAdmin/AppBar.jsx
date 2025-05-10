@@ -4,7 +4,12 @@ import MenuIcon from '@mui/icons-material/Menu'
 import AccountCircle from '@mui/icons-material/AccountCircle'
 import MoreIcon from '@mui/icons-material/MoreVert'
 
-export default function AdminAppBar({ open, onDrawerOpen, onProfileMenuOpen }) {
+export default function AdminAppBar({
+  open,
+  onDrawerOpen,
+  onProfileMenuOpen,
+  onMenuClose
+}) {
   const menuId = 'primary-search-account-menu'
   const mobileMenuId = 'primary-search-account-menu-mobile'
 
@@ -16,7 +21,7 @@ export default function AdminAppBar({ open, onDrawerOpen, onProfileMenuOpen }) {
           edge='start'
           color='inherit'
           aria-label='open drawer'
-          onClick={onDrawerOpen}
+          onClick={open ? onMenuClose : onDrawerOpen}
           sx={{ mr: 2 }}
         >
           <MenuIcon />

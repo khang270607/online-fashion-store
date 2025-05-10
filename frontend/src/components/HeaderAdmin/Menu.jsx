@@ -1,33 +1,51 @@
 import React from 'react'
-import { Menu, MenuItem } from '@mui/material'
+import { MenuItem, Paper, List, Box, Grow } from '@mui/material'
 
 const MenuItems = ['Đăng xuất']
 
 export default function AdminMenu({ anchorEl, isOpen, onClose }) {
-  const menuId = 'primary-search-account-menu'
+  if (!isOpen || !anchorEl) return null
+
+  const rect = anchorEl.getBoundingClientRect()
+  const styles = {
+    box: {
+      position: 'fixed',
+      top: 0,
+      right: '10px',
+      height: '100vh',
+      width: '10px',
+      zIndex: 1200
+    }
+  }
 
   return (
-    <Menu
-      sx={{ marginTop: '30px', zIndex: '99999' }}
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      open={isOpen}
-      onClose={onClose}
-    >
-      {MenuItems.map((item) => (
-        <MenuItem
-          key={item}
-          onClick={() => {
-            onClose()
-            console.log('Đăng xuất') // Xử lý đăng xuất tại đây
+    <Box sx={styles.box}>
+      <Grow in={isOpen} style={{ transformOrigin: 'top right' }}>
+        <Paper
+          sx={{
+            position: 'absolute',
+            top: rect.bottom + 8,
+            right: 0,
+            zIndex: 1300,
+            boxShadow: 3,
+            minWidth: 150
           }}
         >
-          {item}
-        </MenuItem>
-      ))}
-    </Menu>
+          <List>
+            {MenuItems.map((item) => (
+              <MenuItem
+                key={item}
+                onClick={() => {
+                  onClose()
+                  console.log('Đăng xuất')
+                }}
+              >
+                {item}
+              </MenuItem>
+            ))}
+          </List>
+        </Paper>
+      </Grow>
+    </Box>
   )
 }

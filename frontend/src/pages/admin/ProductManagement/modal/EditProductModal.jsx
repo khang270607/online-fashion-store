@@ -12,8 +12,7 @@ import {
   FormControl,
   Select,
   InputLabel,
-  MenuItem,
-  DialogContentText
+  MenuItem
 } from '@mui/material'
 import useCategories from '~/hook/useCategories'
 
@@ -23,11 +22,10 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm()
 
   const [images, setImages] = useState([{ file: null, preview: '' }])
-  const [confirmDeleteIndex, setConfirmDeleteIndex] = useState(null)
   const { categories, loading } = useCategories()
 
   useEffect(() => {
@@ -51,22 +49,17 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
     const newImages = [...images]
     newImages[index] = { file, preview: URL.createObjectURL(file) }
 
-    if (index === images.length - 1 && file) {
+    if (index === images.length - 1 && file && newImages.length < 9) {
       newImages.push({ file: null, preview: '' })
     }
 
     setImages(newImages)
   }
 
-  const handleRemoveImage = (index) => {
-    setConfirmDeleteIndex(index)
-  }
-
-  const confirmRemoveImage = () => {
+  const handleImageDelete = (index) => {
     const newImages = [...images]
-    newImages.splice(confirmDeleteIndex, 1)
+    newImages.splice(index, 1)
     setImages(newImages)
-    setConfirmDeleteIndex(null)
   }
 
   const onSubmit = (data) => {
@@ -89,100 +82,125 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
   }
 
   return (
-    <>
-      <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-        <DialogTitle>Sửa Sản Phẩm</DialogTitle>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogContent sx={{ display: 'flex', gap: 2 }}>
-            <Box sx={{ flex: 2 }}>
-              <TextField
-                label='Tên sản phẩm'
-                fullWidth
-                margin='normal'
-                {...register('name', { required: 'Tên không được bỏ trống' })}
-                error={!!errors.name}
-                helperText={errors.name?.message}
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='lg' // Tăng kích thước modal
+      PaperProps={{
+        sx: {
+          mt: 8,
+          maxHeight: '90vh'
+        }
+      }}
+    >
+      <DialogTitle>Sửa Sản Phẩm</DialogTitle>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <DialogContent
+          sx={{ display: 'flex', gap: 2, overflowY: 'auto', flexGrow: 1 }}
+        >
+          {/* Form nhập liệu bên trái */}
+          <Box sx={{ flex: 2 }}>
+            <TextField
+              label='Tên sản phẩm'
+              fullWidth
+              margin='normal'
+              {...register('name', {
+                required: 'Tên sản phẩm không được bỏ trống'
+              })}
+              error={!!errors.name}
+              helperText={errors.name?.message}
+            />
+
+            <TextField
+              label='Mô tả'
+              fullWidth
+              multiline
+              rows={3}
+              margin='normal'
+              {...register('description', {
+                required: 'Mô tả không được bỏ trống'
+              })}
+              error={!!errors.description}
+              helperText={errors.description?.message}
+            />
+
+            <TextField
+              label='Giá (VNĐ)'
+              type='number'
+              fullWidth
+              margin='normal'
+              {...register('price', { required: 'Giá không được bỏ trống' })}
+              error={!!errors.price}
+              helperText={errors.price?.message}
+            />
+
+            <TextField
+              label='Số lượng'
+              type='number'
+              fullWidth
+              margin='normal'
+              {...register('quantity', {
+                required: 'Số lượng không được bỏ trống'
+              })}
+              error={!!errors.quantity}
+              helperText={errors.quantity?.message}
+            />
+
+            <FormControl fullWidth margin='normal' error={!!errors.category}>
+              <InputLabel>Danh mục</InputLabel>
+              <Controller
+                name='category'
+                control={control}
+                rules={{ required: 'Danh mục không được bỏ trống' }}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    label='Danh mục'
+                    defaultValue={product?.category || ''}
+                    disabled={loading}
+                  >
+                    {categories?.map((cat) => (
+                      <MenuItem key={cat._id} value={cat.name}>
+                        {cat.name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
               />
-
-              <TextField
-                label='Mô tả'
-                fullWidth
-                multiline
-                rows={3}
-                margin='normal'
-                {...register('description', {
-                  required: 'Mô tả không được bỏ trống'
-                })}
-                error={!!errors.description}
-                helperText={errors.description?.message}
-              />
-
-              <TextField
-                label='Giá (VNĐ)'
-                type='number'
-                fullWidth
-                margin='normal'
-                {...register('price', { required: 'Giá không được bỏ trống' })}
-                error={!!errors.price}
-                helperText={errors.price?.message}
-              />
-
-              <TextField
-                label='Số lượng'
-                type='number'
-                fullWidth
-                margin='normal'
-                {...register('quantity', {
-                  required: 'Số lượng không được bỏ trống'
-                })}
-                error={!!errors.quantity}
-                helperText={errors.quantity?.message}
-              />
-
-              <FormControl fullWidth margin='normal' error={!!errors.category}>
-                <InputLabel>Danh mục</InputLabel>
-                <Controller
-                  name='category'
-                  control={control}
-                  rules={{ required: 'Danh mục không được bỏ trống' }}
-                  render={({ field }) => (
-                    <Select
-                      {...field}
-                      label='Danh mục'
-                      defaultValue={product?.category || ''}
-                      disabled={loading}
-                    >
-                      {categories?.map((cat) => (
-                        <MenuItem key={cat._id} value={cat.name}>
-                          {cat.name}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  )}
-                />
-                <Typography variant='caption' color='error'>
-                  {errors.category?.message}
-                </Typography>
-              </FormControl>
-            </Box>
-
-            <Box sx={{ flex: 1 }}>
-              <Typography variant='subtitle1' sx={{ mb: 1 }}>
-                Hình ảnh sản phẩm
+              <Typography variant='caption' color='error'>
+                {errors.category?.message}
               </Typography>
+            </FormControl>
+          </Box>
 
+          {/* Hình ảnh bên phải */}
+          <Box sx={{ flex: 1 }}>
+            <Typography variant='subtitle1' sx={{ mb: 1 }}>
+              Hình ảnh sản phẩm (Tối đa 9 ảnh)
+            </Typography>
+
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+                gap: 2
+              }}
+            >
               {images.map((img, index) => (
-                <Box key={index} sx={{ mb: 2 }}>
+                <Box key={index} sx={{ position: 'relative' }}>
                   <Button
                     variant='outlined'
                     component='label'
-                    style={{
+                    sx={{
+                      width: '100%',
                       borderColor: '#001f5d',
                       color: '#001f5d',
-                      marginRight: '8px'
+                      fontSize: '12px',
+                      minHeight: '36px'
                     }}
                   >
-                    {img.file ? 'Sửa ảnh' : 'Thêm ảnh'}
+                    {img.preview ? 'Sửa' : 'Thêm'}
                     <input
                       type='file'
                       accept='image/*'
@@ -194,78 +212,78 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
                   </Button>
 
                   {img.preview && (
-                    <>
+                    <Box
+                      sx={{
+                        position: 'relative',
+                        mt: 1,
+                        '&:hover .overlay': {
+                          opacity: 1
+                        },
+                        '&:hover img': {
+                          filter: 'brightness(40%)'
+                        }
+                      }}
+                    >
                       <Box
                         component='img'
                         src={img.preview}
                         alt={`preview-${index}`}
                         sx={{
                           width: '100%',
-                          height: 100,
-                          mt: 1,
+                          height: 80,
                           objectFit: 'cover',
                           borderRadius: 1,
-                          border: '1px solid #ccc'
+                          border: '1px solid #ccc',
+                          transition: '0.3s'
                         }}
                       />
-                      <Button
-                        onClick={() => handleRemoveImage(index)}
-                        color='error'
-                        size='small'
-                        sx={{ mt: 1 }}
+                      <Box
+                        className='overlay'
+                        sx={{
+                          position: 'absolute',
+                          top: 0,
+                          left: 0,
+                          width: '100%',
+                          height: '90%',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          color: '#f00',
+                          fontWeight: 'bold',
+                          fontSize: 14,
+                          opacity: 0,
+                          transition: 'opacity 0.3s',
+                          backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                          borderRadius: 1,
+                          cursor: 'pointer'
+                        }}
+                        onClick={() => handleImageDelete(index)}
                       >
-                        Xoá ảnh
-                      </Button>
-                    </>
+                        Xóa
+                      </Box>
+                    </Box>
                   )}
                 </Box>
               ))}
             </Box>
-          </DialogContent>
-
-          <DialogActions>
-            <Button onClick={onClose} color='primary'>
-              Hủy
-            </Button>
-            <Button
-              type='submit'
-              variant='contained'
-              sx={{ backgroundColor: '#001f5d', color: '#fff' }}
-            >
-              Lưu
-            </Button>
-          </DialogActions>
-        </form>
-      </Dialog>
-
-      {/* Dialog xác nhận xoá ảnh */}
-      <Dialog
-        open={confirmDeleteIndex !== null}
-        onClose={() => setConfirmDeleteIndex(null)}
-      >
-        <DialogTitle>Xác nhận xoá ảnh</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Bạn có chắc muốn xoá ảnh này không?
-          </DialogContentText>
+          </Box>
         </DialogContent>
+
         <DialogActions>
-          <Button
-            sx={{ color: '#001f5d' }}
-            onClick={() => setConfirmDeleteIndex(null)}
-          >
+          <Button onClick={onClose} color='#001f5d'>
             Hủy
           </Button>
           <Button
-            color='error'
+            type='submit'
             variant='contained'
-            onClick={confirmRemoveImage}
+            sx={{ backgroundColor: '#001f5d' }}
+            disabled={isSubmitting}
           >
-            Xoá
+            {isSubmitting ? 'Đang lưu...' : 'Lưu'}
           </Button>
         </DialogActions>
-      </Dialog>
-    </>
+      </form>
+    </Dialog>
   )
 }
 

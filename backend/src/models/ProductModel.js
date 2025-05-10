@@ -33,11 +33,10 @@ const productSchema = new Schema(
         trim: true // Mỗi phần tử là URL chuỗi, trim khoảng trắng
       }
     ],
-    category: {
-      type: String,
-      required: true,
-      trim: true,
-      index: true // Index thường cho lookup nhanh theo category
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Category',
+      required: true
     },
     slug: {
       type: String,

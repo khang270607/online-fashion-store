@@ -13,7 +13,7 @@ const createProduct = async (reqBody) => {
       description: reqBody.description,
       price: reqBody.price,
       image: reqBody.image,
-      category: reqBody.category,
+      categoryId: reqBody.categoryId,
       quantity: reqBody.quantity,
       slug: slugify(reqBody.name),
       destroy: false
@@ -30,7 +30,12 @@ const createProduct = async (reqBody) => {
 const getProductList = async () => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await ProductModel.find({}).lean()
+    const result = await ProductModel.find({})
+      .populate({
+        path: 'categoryId',
+        select: 'name description slug _id'
+      })
+      .lean()
 
     return result
   } catch (err) {
@@ -41,7 +46,12 @@ const getProductList = async () => {
 const getProduct = async (productId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await ProductModel.findById(productId).lean()
+    const result = await ProductModel.findById(productId)
+      .populate({
+        path: 'categoryId',
+        select: 'name description slug _id'
+      })
+      .lean()
 
     if (!result) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Không tồn tại ID này.')
@@ -56,16 +66,14 @@ const getProduct = async (productId) => {
 const updateProduct = async (productId, reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const product = await ProductModel.findById(productId)
-
-    if (!product) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'ID không tồn tại.')
-    }
-
-    // Cập nhật dữ liệu
-    Object.assign(product, reqBody)
-
-    const updatedProduct = await product.save()
+    const updatedProduct = await ProductModel.findOneAndUpdate(
+      { _id: productId },
+      reqBody,
+      {
+        new: true,
+        runValidators: true
+      }
+    )
 
     return updatedProduct
   } catch (err) {
@@ -76,15 +84,17 @@ const updateProduct = async (productId, reqBody) => {
 const deleteProduct = async (productId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const product = await ProductModel.findById(productId)
-
-    if (!product) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Không tồn tại ID.')
-    }
-
-    // Cập nhật dữ liệu
-    product.destroy = true
-    const productUpdated = await product.save()
+    const productUpdated = await ProductModel.findOneAndUpdate(
+      {
+        _id: productId
+      },
+      {
+        $set: { destroy: true }
+      },
+      {
+        new: true
+      }
+    )
 
     return productUpdated
   } catch (err) {

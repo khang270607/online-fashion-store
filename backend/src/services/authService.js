@@ -47,7 +47,7 @@ const register = async (reqBody) => {
   const verificationLink = `${WEBSITE_DOMAIN}/account/verification?email=${normalizedEmail}&token=${newUser.verifyToken}`
   const subject = 'Online Shop Store: Vui lòng xác thực tài khoản của bạn.'
   const htmlContent = `
-  <h3>Đây là liên kết xác thực tài khoản của bạn:</h3>
+  <h3>Đây là liên kết xác thực tài khoản của bạn. Vui lòng click vào liên kiết bên dưới:</h3>
   <a href="${verificationLink}">${verificationLink}</a>
   <p>Trân trọng,<br/>- Online Shop Store -</p>
 `

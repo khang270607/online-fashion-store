@@ -2,8 +2,8 @@ import { StatusCodes } from 'http-status-codes'
 
 import { CategoryModel } from '~/models/CategoryModel'
 import ApiError from '~/utils/ApiError'
-import { pickUser, slugify } from '~/utils/formatters'
-import { ROLE } from '~/utils/constants'
+import { slugify } from '~/utils/formatters'
+import { ProductModel } from '~/models/ProductModel'
 
 const createCategory = async (reqBody) => {
   try {
@@ -49,16 +49,11 @@ const getCategory = async (categoryId) => {
 const updateCategory = async (categoryId, reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const category = await CategoryModel.findById(categoryId)
-
-    if (!category) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'ID không tồn tại.')
-    }
-
-    // Cập nhật dữ liệu
-    Object.assign(category, reqBody)
-
-    const updatedCategory = await category.save()
+    const updatedCategory = await CategoryModel.findOneAndUpdate(
+      { _id: categoryId },
+      reqBody,
+      { new: true }
+    )
 
     return updatedCategory
   } catch (err) {
@@ -69,15 +64,24 @@ const updateCategory = async (categoryId, reqBody) => {
 const deleteCategory = async (categoryId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const category = await CategoryModel.findById(categoryId)
+    const isProductExist = await ProductModel.exists({
+      categoryId: categoryId,
+      destroy: false
+    })
 
-    if (!category) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Không tồn tại ID.')
+    if (isProductExist) {
+      throw new ApiError(StatusCodes.CONFLICT, 'Danh mục có chứa sản phẩm.')
     }
 
-    // Cập nhật dữ liệu
-    category.destroy = true
-    const categoryUpdated = await category.save()
+    const categoryUpdated = await CategoryModel.findOneAndUpdate(
+      { _id: categoryId },
+      {
+        $set: { destroy: true }
+      },
+      {
+        new: true
+      }
+    )
 
     return categoryUpdated
   } catch (err) {

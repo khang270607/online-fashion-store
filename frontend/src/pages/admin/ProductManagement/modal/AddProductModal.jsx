@@ -82,10 +82,10 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
         description: data.description,
         price: Number(data.price),
         image: imageUrls,
-        category: data.category || '',
+        categoryId: data.category,
         quantity: Number(data.quantity)
       })
-
+      console.log('result', result)
       if (result) {
         onSuccess()
         onClose()
@@ -187,20 +187,20 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
             <FormControl fullWidth margin='normal' error={!!errors.category}>
               <InputLabel>Danh mục</InputLabel>
               <Controller
-                name='category'
+                name='categoryId'
                 control={control}
                 rules={{ required: 'Danh mục không được bỏ trống' }}
                 render={({ field }) => (
                   <Select
                     {...field}
                     label='Danh mục'
-                    value={field.value || ''}
+                    value={field.value}
                     disabled={loading}
                   >
                     {categories
                       ?.filter((cat) => !cat.destroy)
                       .map((cat) => (
-                        <MenuItem key={cat._id} value={cat.name}>
+                        <MenuItem key={cat._id} value={cat._id}>
                           {cat.name}
                         </MenuItem>
                       ))}

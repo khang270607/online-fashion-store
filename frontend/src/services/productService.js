@@ -74,6 +74,9 @@ export const addProduct = async (data) => {
       `${API_ROOT}/v1/products`,
       data
     )
+
+    console.log('data', data)
+
     return response.data
   } catch (error) {
     console.error('Lỗi khi thêm sản phẩm:', error)

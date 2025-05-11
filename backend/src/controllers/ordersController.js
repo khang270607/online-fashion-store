@@ -1,11 +1,11 @@
 import { StatusCodes } from 'http-status-codes'
 
-import { productsService } from '~/services/productsService'
+import { ordersService } from '~/services/ordersService'
 
-const createProduct = async (req, res, next) => {
+const createOrder = async (req, res, next) => {
   try {
     // Lấy Danh mục sản phẩm mới tạo từ tầng Service chuyển qua
-    const result = await productsService.createProduct(req.body)
+    const result = await ordersService.createOrder(req.body)
 
     // Có kết quả thì trả về Client
     res.status(StatusCodes.CREATED).json(result)
@@ -14,10 +14,10 @@ const createProduct = async (req, res, next) => {
   }
 }
 
-const getProductList = async (req, res, next) => {
+const getOrderList = async (req, res, next) => {
   try {
     // Lấy danh sách Danh mục sản phẩm từ tầng Service chuyển qua
-    const result = await productsService.getProductList()
+    const result = await ordersService.getOrderList()
 
     // Có kết quả thì trả về Client
     res.status(StatusCodes.OK).json(result)
@@ -26,11 +26,11 @@ const getProductList = async (req, res, next) => {
   }
 }
 
-const getProduct = async (req, res, next) => {
+const getOrder = async (req, res, next) => {
   try {
     const productId = req.params.productId
 
-    const result = await productsService.getProduct(productId)
+    const result = await ordersService.getOrder(productId)
 
     res.status(StatusCodes.OK).json(result)
   } catch (err) {
@@ -38,11 +38,11 @@ const getProduct = async (req, res, next) => {
   }
 }
 
-const updateProduct = async (req, res, next) => {
+const updateOrder = async (req, res, next) => {
   try {
     const productId = req.params.productId
 
-    const result = await productsService.updateProduct(productId, req.body)
+    const result = await ordersService.updateOrder(productId, req.body)
 
     res.status(StatusCodes.OK).json(result)
   } catch (err) {
@@ -50,11 +50,11 @@ const updateProduct = async (req, res, next) => {
   }
 }
 
-const deleteProduct = async (req, res, next) => {
+const deleteOrder = async (req, res, next) => {
   try {
     const productId = req.params.productId
 
-    const result = await productsService.deleteProduct(productId)
+    const result = await ordersService.deleteOrder(productId)
 
     res.status(StatusCodes.OK).json(result)
   } catch (err) {
@@ -62,11 +62,11 @@ const deleteProduct = async (req, res, next) => {
   }
 }
 
-const getListProductOfCategory = async (req, res, next) => {
+const getListOrderOfCategory = async (req, res, next) => {
   try {
     const categoryId = req.params.categoryId
 
-    const result = await productsService.getListProductOfCategory(categoryId)
+    const result = await ordersService.getListOrderOfCategory(categoryId)
 
     res.status(StatusCodes.OK).json(result)
   } catch (err) {
@@ -74,11 +74,11 @@ const getListProductOfCategory = async (req, res, next) => {
   }
 }
 
-export const productsController = {
-  createProduct,
-  getProductList,
-  getProduct,
-  updateProduct,
-  deleteProduct,
-  getListProductOfCategory
+export const ordersController = {
+  createOrder,
+  getOrderList,
+  getOrder,
+  updateOrder,
+  deleteOrder,
+  getListOrderOfCategory
 }

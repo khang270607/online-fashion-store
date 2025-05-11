@@ -1,13 +1,13 @@
 import { StatusCodes } from 'http-status-codes'
 
-import { ProductModel } from '~/models/ProductModel'
+import { OrderModel } from '~/models/OrderModel'
 import ApiError from '~/utils/ApiError'
 import { slugify } from '~/utils/formatters'
 
-const createProduct = async (reqBody) => {
+const createOrder = async (reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const newProduct = {
+    const newOrder = {
       name: reqBody.name,
       description: reqBody.description,
       price: reqBody.price,
@@ -18,18 +18,18 @@ const createProduct = async (reqBody) => {
       destroy: false
     }
 
-    const Product = await ProductModel.create(newProduct)
+    const Order = await OrderModel.create(newOrder)
 
-    return Product
+    return Order
   } catch (err) {
     throw err
   }
 }
 
-const getProductList = async () => {
+const getOrderList = async () => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await ProductModel.find({ destroy: false })
+    const result = await OrderModel.find({ destroy: false })
       .populate({
         path: 'categoryId',
         select: 'name description slug _id'
@@ -42,10 +42,10 @@ const getProductList = async () => {
   }
 }
 
-const getProduct = async (productId) => {
+const getOrder = async (productId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await ProductModel.findById({ productId, destroy: false })
+    const result = await OrderModel.findById({ productId, destroy: false })
       .populate({
         path: 'categoryId',
         select: 'name description slug _id'
@@ -62,10 +62,10 @@ const getProduct = async (productId) => {
   }
 }
 
-const updateProduct = async (productId, reqBody) => {
+const updateOrder = async (productId, reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const updatedProduct = await ProductModel.findOneAndUpdate(
+    const updatedOrder = await OrderModel.findOneAndUpdate(
       { _id: productId, destroy: false },
       reqBody,
       {
@@ -74,16 +74,16 @@ const updateProduct = async (productId, reqBody) => {
       }
     )
 
-    return updatedProduct
+    return updatedOrder
   } catch (err) {
     throw err
   }
 }
 
-const deleteProduct = async (productId) => {
+const deleteOrder = async (productId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const productUpdated = await ProductModel.findOneAndUpdate(
+    const productUpdated = await OrderModel.findOneAndUpdate(
       {
         _id: productId
       },
@@ -101,25 +101,25 @@ const deleteProduct = async (productId) => {
   }
 }
 
-const getListProductOfCategory = async (categoryId) => {
+const getListOrderOfCategory = async (categoryId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const ListProduct = await ProductModel.find({
+    const ListOrder = await OrderModel.find({
       categoryId: categoryId,
       destroy: false
     }).lean()
 
-    return ListProduct
+    return ListOrder
   } catch (err) {
     throw err
   }
 }
 
-export const productsService = {
-  createProduct,
-  getProductList,
-  getProduct,
-  updateProduct,
-  deleteProduct,
-  getListProductOfCategory
+export const ordersService = {
+  createOrder,
+  getOrderList,
+  getOrder,
+  updateOrder,
+  deleteOrder,
+  getListOrderOfCategory
 }

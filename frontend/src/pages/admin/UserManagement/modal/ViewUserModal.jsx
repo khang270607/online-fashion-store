@@ -18,8 +18,14 @@ export default function ViewUserModal({ open, onClose, user }) {
       fullWidth
       maxWidth='sm'
       PaperProps={modalPaperProps}
+      BackdropProps={{
+        sx: {
+          backgroundColor: '#000',
+          opacity: '0.2 !important'
+        }
+      }}
     >
-      <DialogTitle sx={{ ...dialogTitleStyle, pr: 5 }}>
+      <DialogTitle sx={{ ...dialogTitleStyle, pr: 5, pt: '35px' }}>
         Thông tin người dùng
         <IconButton
           aria-label='close'
@@ -34,7 +40,7 @@ export default function ViewUserModal({ open, onClose, user }) {
           <CloseIcon />
         </IconButton>
       </DialogTitle>
-      <DialogContent dividers>
+      <DialogContent dividers sx={{ p: '35px' }}>
         <Stack spacing={2}>
           <Typography fontSize={18}>
             <strong>Tên:</strong> {user?.name}
@@ -44,7 +50,7 @@ export default function ViewUserModal({ open, onClose, user }) {
           </Typography>
           <Typography fontSize={18}>
             <strong>Quyền:</strong>{' '}
-            {user?.role === 'admin' ? 'Quản trị viên' : 'Người dùng'}
+            {user?.role === 'admin' ? 'Quản trị viên' : 'Khách hàng'}
           </Typography>
           <Typography fontSize={18}>
             <strong>Ngày tạo:</strong>{' '}

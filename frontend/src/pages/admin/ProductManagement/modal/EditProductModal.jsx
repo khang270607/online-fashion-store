@@ -34,7 +34,7 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
         name: product.name || '',
         description: product.description || '',
         price: product.price || '',
-        category: product.category || '',
+        categoryId: product.categoryId?._id || '',
         quantity: product.quantity || ''
       })
 
@@ -44,7 +44,7 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       setImages([...imagePreviews, { file: null, preview: '' }])
     }
   }, [product, reset])
-
+  console.log('product', product)
   const handleImageChange = (index, file) => {
     const newImages = [...images]
     newImages[index] = { file, preview: URL.createObjectURL(file) }
@@ -72,7 +72,7 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       description: data.description,
       price: Number(data.price),
       image: imageUrls,
-      category: data.category || '',
+      categoryId: data.categoryId,
       quantity: Number(data.quantity)
     }
 
@@ -147,29 +147,26 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
               helperText={errors.quantity?.message}
             />
 
-            <FormControl fullWidth margin='normal' error={!!errors.category}>
+            <FormControl fullWidth margin='normal' error={!!errors.categoryId}>
               <InputLabel>Danh mục</InputLabel>
               <Controller
-                name='category'
+                name='categoryId'
                 control={control}
                 rules={{ required: 'Danh mục không được bỏ trống' }}
                 render={({ field }) => (
-                  <Select
-                    {...field}
-                    label='Danh mục'
-                    defaultValue={product?.category || ''}
-                    disabled={loading}
-                  >
-                    {categories?.map((cat) => (
-                      <MenuItem key={cat._id} value={cat.name}>
-                        {cat.name}
-                      </MenuItem>
-                    ))}
+                  <Select {...field} label='Danh mục' disabled={loading}>
+                    {categories
+                      ?.filter((cat) => !cat.destroy)
+                      .map((cat) => (
+                        <MenuItem key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </MenuItem>
+                      ))}
                   </Select>
                 )}
               />
               <Typography variant='caption' color='error'>
-                {errors.category?.message}
+                {errors.categoryId?.message}
               </Typography>
             </FormControl>
           </Box>

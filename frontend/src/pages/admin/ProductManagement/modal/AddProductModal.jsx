@@ -82,10 +82,10 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
         description: data.description,
         price: Number(data.price),
         image: imageUrls,
-        categoryId: data.category,
+        categoryId: data.categoryId,
         quantity: Number(data.quantity)
       })
-      console.log('result', result)
+      console.log('categoryId', data.categoryId)
       if (result) {
         onSuccess()
         onClose()
@@ -184,7 +184,7 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
               helperText={errors.quantity?.message}
             />
 
-            <FormControl fullWidth margin='normal' error={!!errors.category}>
+            <FormControl fullWidth margin='normal' error={!!errors.categoryId}>
               <InputLabel>Danh mục</InputLabel>
               <Controller
                 name='categoryId'
@@ -211,7 +211,7 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
                 )}
               />
               <Typography variant='caption' color='error'>
-                {errors.category?.message}
+                {errors.categoryId?.message}
               </Typography>
             </FormControl>
           </Box>

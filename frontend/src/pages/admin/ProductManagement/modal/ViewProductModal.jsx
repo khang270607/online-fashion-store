@@ -85,70 +85,101 @@ const ViewProductModal = ({ open, onClose, product }) => {
           </Grid>
 
           {/* Cột thông tin */}
-          <Grid item xs={12} md={7}>
-            <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-              Tên sản phẩm
-            </Typography>
-            <Typography variant='body1' gutterBottom>
-              {product.name}
-            </Typography>
-            <Divider sx={{ my: 1 }} />
+          <Grid item xs={12} md={7} width='calc(98% - 500px)'>
+            <Box sx={{ width: '100%' }}>
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                gutterBottom
+                sx={{ width: '100%' }}
+              >
+                Tên sản phẩm
+              </Typography>
+              <Typography variant='body1' gutterBottom sx={{ width: '100%' }}>
+                {product.name}
+              </Typography>
+              <Divider sx={{ my: 1, width: '100%' }} />
 
-            <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-              Mô tả
-            </Typography>
-            <Typography variant='body1' gutterBottom>
-              {product.description}
-            </Typography>
-            <Divider sx={{ my: 1 }} />
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                gutterBottom
+                sx={{ width: '100%' }}
+              >
+                Mô tả
+              </Typography>
+              <Typography
+                variant='body1'
+                gutterBottom
+                sx={{
+                  width: '100%',
+                  display: 'block',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap'
+                }}
+              >
+                {product.description}
+              </Typography>
+              <Divider sx={{ my: 1, width: '100%' }} />
 
-            <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-              Giá
-            </Typography>
-            <Typography variant='body1' gutterBottom>
-              {product.price?.toLocaleString()} VNĐ
-            </Typography>
-            <Divider sx={{ my: 1 }} />
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                gutterBottom
+                sx={{ width: '100%' }}
+              >
+                Giá
+              </Typography>
+              <Typography variant='body1' gutterBottom sx={{ width: '100%' }}>
+                {product.price?.toLocaleString()} VNĐ
+              </Typography>
+              <Divider sx={{ my: 1, width: '100%' }} />
 
-            <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-              Danh mục
-            </Typography>
-            <Typography variant='body1' gutterBottom>
-              {product.category}
-            </Typography>
-            <Divider sx={{ my: 1 }} />
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                gutterBottom
+                sx={{ width: '100%' }}
+              >
+                Danh mục
+              </Typography>
+              <Typography variant='body1' gutterBottom sx={{ width: '100%' }}>
+                {product.categoryId.name}
+              </Typography>
+              <Divider sx={{ my: 1, width: '100%' }} />
 
-            <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-              Số lượng
-            </Typography>
-            <Typography variant='body1' gutterBottom>
-              {product.quantity}
-            </Typography>
-            <Divider sx={{ my: 1 }} />
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                gutterBottom
+                sx={{ width: '100%' }}
+              >
+                Số lượng
+              </Typography>
+              <Typography variant='body1' gutterBottom sx={{ width: '100%' }}>
+                {product.quantity}
+              </Typography>
+              <Divider sx={{ my: 1, width: '100%' }} />
 
-            <Typography variant='subtitle2' color='text.secondary' gutterBottom>
-              Trạng thái
-            </Typography>
-            <Typography variant='body1'>
-              {product.destroy ? 'Ngừng bán' : 'đang bán'}
-            </Typography>
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                gutterBottom
+                sx={{ width: '100%' }}
+              >
+                Trạng thái
+              </Typography>
+              <Typography variant='body1' sx={{ width: '100%' }}>
+                {product.destroy ? 'Ngừng bán' : 'Đang bán'}
+              </Typography>
+            </Box>
           </Grid>
         </Grid>
       </DialogContent>
 
       <DialogActions>
-        <Button
-          variant='outlined'
-          onClick={onClose}
-          sx={{
-            borderColor: '#001f5d',
-            color: '#001f5d',
-            '&:hover': {
-              backgroundColor: '#001f5d',
-              color: '#fff'
-            }
-          }}
-        >
+        <Button color='error' variant='contained' onClick={onClose}>
           Đóng
         </Button>
       </DialogActions>

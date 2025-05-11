@@ -4,6 +4,7 @@ import { UserModel } from '~/models/UserModel'
 import ApiError from '~/utils/ApiError'
 import { pickUser } from '~/utils/formatters'
 import { ROLE } from '~/utils/constants'
+import { us } from 'yarn/lib/cli'
 
 const getUserList = async () => {
   // eslint-disable-next-line no-useless-catch
@@ -84,9 +85,37 @@ const deleteUser = async (userId) => {
   }
 }
 
+const getProfile = async (userId) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const result = await UserModel.findById(userId).select(
+      '_id name email avatarUrl createdAt updatedAt'
+    )
+
+    return result
+  } catch (err) {
+    throw err
+  }
+}
+
+const updateProfile = async (userId, reqBody) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const result = await UserModel.findOneAndUpdate({ _id: userId }, reqBody, {
+      new: true
+    }).select('_id name email avatarUrl createdAt updatedAt')
+
+    return result
+  } catch (err) {
+    throw err
+  }
+}
+
 export const usersService = {
   getUserList,
   getUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getProfile,
+  updateProfile
 }

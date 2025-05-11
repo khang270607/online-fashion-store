@@ -34,4 +34,9 @@ Router.route('/:productId').delete(
   productsController.deleteProduct
 )
 
+// Lấy danh sách sản phẩm theo Danh mục
+Router.route('/category/:categoryId').get(
+  productsController.getListProductOfCategory
+)
+
 export const productsRoute = Router

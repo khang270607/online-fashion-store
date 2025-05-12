@@ -6,8 +6,21 @@ import { authMiddleware } from '~/middlewares/authMiddleware'
 
 const Router = express.Router()
 
+// Lấy Profile user
+Router.route('/profile').get(
+  authMiddleware.isAuthorized,
+  usersController.getProfile
+)
+
+// Cập nhật thông tin Profile user
+Router.route('/profile').patch(
+  authMiddleware.isAuthorized,
+  usersValidation.updateProfile,
+  usersController.updateProfile
+)
+
 // Tài khoản người dùng
-Router.route('/').get(usersController.getUserList)
+Router.route('/').get(authMiddleware.isAuthorized, usersController.getUserList)
 
 // Lấy thông tin một người dùng người dùng.
 Router.route('/:userId').get(usersValidation.verifyId, usersController.getUser)

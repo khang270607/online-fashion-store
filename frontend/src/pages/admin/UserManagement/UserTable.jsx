@@ -34,7 +34,9 @@ const UserTable = React.memo(function UserTable({
             <StyledTableCell className='hide-on-mobile'>
               Cập nhật
             </StyledTableCell>
-            <StyledTableCell>Hành động</StyledTableCell>
+            <StyledTableCell sx={{ maxWidth: '130px', width: '130px' }}>
+              Hành động
+            </StyledTableCell>
           </TableRow>
         </TableHead>
 

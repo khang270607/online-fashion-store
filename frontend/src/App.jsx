@@ -22,6 +22,7 @@ import UserManagement from '~/pages/admin/UserManagement/index'
 import ProductManagement from '~/pages/admin/ProductManagement/index.jsx'
 import CategorieManagement from '~/pages/admin/CategorieManagement/index.jsx'
 import OrderManagement from '~/pages/admin/OrderManagement/index'
+import Profile from '~/pages/admin/Profile/index.jsx'
 
 // Trang 404
 import NotFound from '~/pages/404/NotFound'
@@ -60,12 +61,19 @@ function App() {
       </Route>
 
       {/*Admin*/}
-      <Route path='/admin' element={<AdminLayout />}>
-        <Route index element={<AdminHome />} />
-        <Route path='user-management' element={<UserManagement />} />
-        <Route path='product-management' element={<ProductManagement />} />
-        <Route path='categorie-management' element={<CategorieManagement />} />
-        <Route path='order-management' element={<OrderManagement />} />
+
+      <Route element={<ProtectedRoute user={currentUser} />}>
+        <Route path='/admin' element={<AdminLayout />}>
+          <Route index element={<AdminHome />} />
+          <Route path='user-management' element={<UserManagement />} />
+          <Route path='product-management' element={<ProductManagement />} />
+          <Route
+            path='categorie-management'
+            element={<CategorieManagement />}
+          />
+          <Route path='order-management' element={<OrderManagement />} />
+          <Route path='profile' element={<Profile />} />
+        </Route>
       </Route>
 
       {/*Not found 404*/}

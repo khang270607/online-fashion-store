@@ -38,14 +38,14 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
       <DialogTitle>Sửa danh mục</DialogTitle>
       <DialogContent>
         <form id='edit-category-form' onSubmit={handleSubmit(onSubmit)}>
           <TextField
             label='Tên danh mục'
             fullWidth
-            margin='dense'
+            margin='normal'
             {...register('name', { required: 'Tên danh mục là bắt buộc' })}
             error={!!errors.name}
             helperText={errors.name?.message}
@@ -53,7 +53,9 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
           <TextField
             label='Mô tả'
             fullWidth
-            margin='dense'
+            margin='normal'
+            multiline
+            minRows={3}
             {...register('description', { required: 'Mô tả là bắt buộc' })}
             error={!!errors.description}
             helperText={errors.description?.message}
@@ -61,7 +63,7 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={isSubmitting} color='#001f5d'>
+        <Button onClick={onClose} disabled={isSubmitting} color='error'>
           Hủy
         </Button>
         <Button

@@ -19,11 +19,6 @@ export const getProducts = async (page = 1, limit = 10) => {
   }
 }
 
-// Ví dụ gọi API và lấy sản phẩm
-getProducts(1, 2).then((data) => {
-  console.log('Dữ liệu sản phẩm:', data.products)
-})
-
 // Lấy chi tiết sản phẩm theo ID
 export const getProductById = async (productId) => {
   try {

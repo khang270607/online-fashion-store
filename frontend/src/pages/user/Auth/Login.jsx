@@ -1,13 +1,26 @@
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import { Card as MuiCard, Grid, Typography } from '@mui/material'
+import {
+  Card as MuiCard,
+  Grid,
+  Typography,
+  IconButton,
+  InputAdornment
+} from '@mui/material'
 import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
 import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import { Facebook, GitHub, Google } from '@mui/icons-material'
+import {
+  Facebook,
+  GitHub,
+  Google,
+  Visibility,
+  VisibilityOff
+} from '@mui/icons-material'
 import ArrowBack from '@mui/icons-material/ArrowBack'
 import { styled } from '@mui/system'
 import { useDispatch } from 'react-redux'
@@ -23,6 +36,8 @@ function Login() {
     formState: { errors }
   } = useForm()
 
+  const [showPassword, setShowPassword] = useState(false)
+  const toggleShowPassword = () => setShowPassword((prev) => !prev)
   const [searchParams] = useSearchParams()
   const registeredEmail = searchParams.get('rigisteredEmail')
   const verifiedEmail = searchParams.get('verifiedEmail')
@@ -39,6 +54,7 @@ function Login() {
         }
       })
   }
+
   const SocialButton = styled(Button)({
     padding: '8px',
     borderRadius: '50%',
@@ -50,20 +66,7 @@ function Login() {
       backgroundColor: '#f5f5f5'
     }
   })
-  const StyledButton = styled(Button)({
-    backgroundColor: '#1976d2',
-    color: '#fff',
-    padding: '12px',
-    fontSize: '16px',
-    fontWeight: 600,
-    borderRadius: '8px',
-    textTransform: 'none',
-    '&:hover': {
-      backgroundColor: '#1565c0',
-      transform: 'translateY(-1px)',
-      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)'
-    }
-  })
+
   return (
     <Box
       sx={{
@@ -81,7 +84,6 @@ function Login() {
         p: 2
       }}
     >
-      {/* Nút quay về trang chủ */}
       <Button
         variant='contained'
         color='secondary'
@@ -100,6 +102,7 @@ function Login() {
       >
         Trang chủ
       </Button>
+
       <form onSubmit={handleSubmit(submitLogIn)}>
         <Zoom in={true} style={{ transitionDelay: '200ms' }}>
           <MuiCard
@@ -149,11 +152,15 @@ function Login() {
                 autoFocus
                 fullWidth
                 label='Email'
-                type='email'
+                type='text'
                 variant='outlined'
                 error={!!errors.email}
                 {...register('email', {
-                  required: 'Email không được để trống.'
+                  required: 'Email không được để trống.',
+                  pattern: {
+                    value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                    message: 'Email không hợp lệ.'
+                  }
                 })}
               />
               {errors.email && (
@@ -167,12 +174,21 @@ function Login() {
               <TextField
                 fullWidth
                 label='Mật khẩu'
-                type='password'
+                type={showPassword ? 'text' : 'password'}
                 variant='outlined'
                 error={!!errors.password}
                 {...register('password', {
                   required: 'Mật khẩu không được để trống.'
                 })}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position='end'>
+                      <IconButton onClick={toggleShowPassword} edge='end'>
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  )
+                }}
               />
 
               {errors.password && (
@@ -195,6 +211,7 @@ function Login() {
                 Đăng nhập
               </Button>
             </CardActions>
+
             <Grid item xs={12}>
               <Typography
                 align='center'
@@ -212,6 +229,7 @@ function Login() {
                 </a>
               </Typography>
             </Grid>
+
             <Grid item xs={12}>
               <Typography
                 align='center'
@@ -230,6 +248,7 @@ function Login() {
                 </a>
               </Typography>
             </Grid>
+
             <Grid item xs={12}>
               <Box
                 sx={{

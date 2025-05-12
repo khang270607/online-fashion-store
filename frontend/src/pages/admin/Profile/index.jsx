@@ -17,7 +17,7 @@ export default function ProfilePage() {
       <h1>Hồ sơ người dùng</h1>
       {profile && (
         <div>
-          <img src={profile.avatar} alt='avatar' width={100} />
+          <img src={profile.avatarUrl} alt='avatar' width={100} />
           <p>Tên: {profile.name}</p>
           <p>Email: {profile.email}</p>
           <button onClick={() => setOpenEdit(true)}>Chỉnh sửa hồ sơ</button>
@@ -30,6 +30,7 @@ export default function ProfilePage() {
           setOpenEdit(false)
           fetchProfile()
         }}
+        profile={profile}
       />
     </div>
   )

@@ -72,6 +72,7 @@ function App() {
             element={<CategorieManagement />}
           />
           <Route path='order-management' element={<OrderManagement />} />
+          <Route path='profile' element={<Profile />} />
         </Route>
       </Route>
 

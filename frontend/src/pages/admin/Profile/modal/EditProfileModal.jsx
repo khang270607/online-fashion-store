@@ -30,8 +30,8 @@ const uploadToCloudinary = async (file) => {
   return data.secure_url
 }
 
-const EditProfileModal = ({ open, onClose }) => {
-  const { profile, updateUserProfile } = useProfile()
+const EditProfileModal = ({ open, onClose, profile }) => {
+  const { updateUserProfile } = useProfile()
   const [name, setName] = useState('')
   const [avatarPreview, setAvatarPreview] = useState('')
   const [avatarFile, setAvatarFile] = useState(null)
@@ -40,7 +40,7 @@ const EditProfileModal = ({ open, onClose }) => {
   useEffect(() => {
     if (profile) {
       setName(profile.name || '')
-      setAvatarPreview(profile.avatar || '')
+      setAvatarPreview(profile.avatarUrl || '')
     }
   }, [profile])
 
@@ -53,14 +53,16 @@ const EditProfileModal = ({ open, onClose }) => {
   }
 
   const handleSubmit = async () => {
+    console.log('handleSubmit: test')
     setLoading(true)
-    let avatarUrl = profile.avatar
-
+    let avatarUrl = profile.avatarUrl
     if (avatarFile) {
       avatarUrl = await uploadToCloudinary(avatarFile)
     }
 
-    await updateUserProfile({ name, avatar: avatarUrl })
+    console.log('name: ', name)
+    console.log('avatarUrl: ', avatarUrl)
+    await updateUserProfile({ name, avatarUrl })
     setLoading(false)
     onClose()
   }

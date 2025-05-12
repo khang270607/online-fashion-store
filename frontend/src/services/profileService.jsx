@@ -6,7 +6,6 @@ export const getProfile = async () => {
     const response = await AuthorizedAxiosInstance.get(
       `${API_ROOT}/v1/users/profile`
     )
-    console.log('Thông tin người dùng:', response.data)
     return response.data // chỉ trả về object người dùng
   } catch (error) {
     console.error('Lỗi khi lấy thông tin người dùng:', error)

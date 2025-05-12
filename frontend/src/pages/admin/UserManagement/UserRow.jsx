@@ -1,10 +1,23 @@
 // UserRow.jsx
 import React from 'react'
+import IconButton from '@mui/material/IconButton'
 import { TableRow, Stack } from '@mui/material'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import BorderColorIcon from '@mui/icons-material/BorderColor'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { StyledTableCell, StyledTableRow } from './UserTableStyles'
+
+const styles = {
+  groupIcon: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%'
+  },
+  iconStyle: {
+    cursor: 'pointer'
+  }
+}
 
 export default React.memo(function UserRow({ user, index, handleOpenModal }) {
   return (
@@ -13,7 +26,7 @@ export default React.memo(function UserRow({ user, index, handleOpenModal }) {
       <StyledTableCell title={user.name}>{user.name}</StyledTableCell>
       <StyledTableCell title={user.email}>{user.email}</StyledTableCell>
       <StyledTableCell>
-        {user.role === 'Header' ? 'Quản trị viên' : 'Người dùng'}
+        {user.role === 'admin' ? 'Quản trị viên' : 'Khách hàng'}
       </StyledTableCell>
       <StyledTableCell className='hide-on-mobile'>
         {new Date(user.createdAt).toLocaleDateString()}
@@ -22,10 +35,25 @@ export default React.memo(function UserRow({ user, index, handleOpenModal }) {
         {new Date(user.updatedAt).toLocaleDateString()}
       </StyledTableCell>
       <StyledTableCell>
-        <Stack direction='row' spacing={1}>
-          <RemoveRedEyeIcon onClick={() => handleOpenModal('view', user)} />
-          <BorderColorIcon onClick={() => handleOpenModal('edit', user)} />
-          <DeleteForeverIcon onClick={() => handleOpenModal('delete', user)} />
+        <Stack direction='row' spacing={1} sx={styles.groupIcon}>
+          <IconButton
+            onClick={() => handleOpenModal('view', user)}
+            size='small'
+          >
+            <RemoveRedEyeIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => handleOpenModal('edit', user)}
+            size='small'
+          >
+            <BorderColorIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => handleOpenModal('delete', user)}
+            size='small'
+          >
+            <DeleteForeverIcon />
+          </IconButton>
         </Stack>
       </StyledTableCell>
     </StyledTableRow>

@@ -9,7 +9,18 @@ import {
   StyledTableRow,
   StyledTableContainer
 } from './CategoryTableStyles'
-
+import IconButton from '@mui/material/IconButton'
+const styles = {
+  groupIcon: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%'
+  },
+  iconStyle: {
+    cursor: 'pointer'
+  }
+}
 export default function CategoryRow({ category, idx, handleOpenModal }) {
   return (
     <StyledTableRow>
@@ -35,12 +46,25 @@ export default function CategoryRow({ category, idx, handleOpenModal }) {
         {category.description}
       </StyledTableCell>
       <StyledTableCell>
-        <Stack direction='row' spacing={1}>
-          <RemoveRedEyeIcon onClick={() => handleOpenModal('view', category)} />
-          <BorderColorIcon onClick={() => handleOpenModal('edit', category)} />
-          <DeleteForeverIcon
+        <Stack direction='row' spacing={1} sx={styles.groupIcon}>
+          <IconButton
+            onClick={() => handleOpenModal('view', category)}
+            size='small'
+          >
+            <RemoveRedEyeIcon />
+          </IconButton>
+          <IconButton
+            onClick={() => handleOpenModal('edit', category)}
+            size='small'
+          >
+            <BorderColorIcon />
+          </IconButton>
+          <IconButton
             onClick={() => handleOpenModal('delete', category)}
-          />
+            size='small'
+          >
+            <DeleteForeverIcon />
+          </IconButton>
         </Stack>
       </StyledTableCell>
     </StyledTableRow>

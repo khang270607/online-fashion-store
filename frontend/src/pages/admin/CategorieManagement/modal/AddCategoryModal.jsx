@@ -15,7 +15,7 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
     reset
   } = useForm()
 
@@ -63,9 +63,16 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Hủy</Button>
-          <Button type='submit' variant='contained' color='primary'>
-            Thêm
+          <Button color='#001f5d' onClick={handleClose}>
+            Hủy
+          </Button>
+          <Button
+            type='submit'
+            variant='contained'
+            sx={{ backgroundColor: '#001f5d', color: '#fff' }}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? 'Đang thêm...' : 'Thêm'}
           </Button>
         </DialogActions>
       </form>

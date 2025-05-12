@@ -1,6 +1,7 @@
 import { StatusCodes } from 'http-status-codes'
 
 import { usersService } from '~/services/usersService'
+import { validateAlgorithm } from 'yarn/lib/cli'
 
 const getUserList = async (req, res, next) => {
   try {

@@ -32,8 +32,11 @@ export default function AdminLayout() {
       <CssBaseline />
       <AdminAppBar
         open={open}
+        anchorEl={anchorEl}
         onDrawerOpen={handleDrawerOpen}
         onProfileMenuOpen={handleProfileMenuOpen}
+        onProfileMenuClose={handleMenuClose}
+        onMenuClose={handleDrawerClose}
       />
       <AdminDrawer open={open} onClose={handleDrawerClose} />
       <AdminMenu

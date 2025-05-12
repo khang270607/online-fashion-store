@@ -13,10 +13,7 @@ Router.route('/').post(
 )
 
 // Danh sách Sản phẩm
-Router.route('/').get(
-  authMiddleware.isAuthorized,
-  productsController.getProductList
-)
+Router.route('/').get(productsController.getProductList)
 
 // Lấy thông tin một Sản phẩm.
 Router.route('/:productId').get(

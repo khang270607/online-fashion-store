@@ -1,4 +1,14 @@
-import React, { useState } from 'react'
+/*
+ * Yêu cầu:
+ * 1. Đảm bảo các dịch vụ productService, categoryService, cartsService nằm trong thư mục services.
+ * 2. Cấu hình axiosInstance.js và config.js như mô tả trong cartsService.js.
+ * 3. Nếu đường dẫn dịch vụ khác, sửa lại import:
+ *    import { getProducts } from './path/to/productService'
+ *    import { getCategories } from './path/to/categoryService'
+ *    import { getCart, addToCart } from './path/to/cartsService'
+ */
+
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Card,
@@ -7,45 +17,36 @@ import {
   Typography,
   Grid,
   Pagination,
-  List,
-  ListItem,
-  ListItemText,
   Divider,
   CardActions,
   IconButton,
-  ListItemButton,
   styled,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
   Checkbox,
-  ListItemIcon,
   FormGroup,
   FormControlLabel,
-  Button
+  Button,
+  Snackbar,
+  Alert
 } from '@mui/material'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
-
-const mockProducts = Array.from({ length: 30 }).map((_, index) => ({
-  id: index + 1,
-  name: `Sản phẩm ${index + 1}`,
-  image:
-    'https://bizweb.dktcdn.net/100/415/697/products/ts170.png?v=1701401873157',
-  description: `Mô tả ngắn cho sản phẩm ${index + 1}`
-}))
+import { getProducts } from '~/services/productService'
+import { getCategories } from '~/services/categoryService'
+import { getCart, addToCart } from '~/services/cartsService'
 
 const PRODUCTS_PER_PAGE = 12
 
-// Styled component for sidebar
 const SidebarContainer = styled(Box)(({ theme }) => ({
   width: 240,
   padding: theme.spacing(2),
   borderRadius: theme.shape.borderRadius,
   boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
   flexShrink: 0,
-  height: '100%', // Match the height of the parent container
+  height: '100%',
   display: 'flex',
   flexDirection: 'column',
   '& .MuiTypography-h6': {
@@ -55,7 +56,6 @@ const SidebarContainer = styled(Box)(({ theme }) => ({
   }
 }))
 
-// Styled component for filter section title
 const FilterTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
   color: theme.palette.text.primary,
@@ -69,43 +69,91 @@ function Product() {
   const [origin, setOrigin] = useState('')
   const [size, setSize] = useState([])
   const [color, setColor] = useState([])
+  const [allProducts, setAllProducts] = useState([])
+  const [totalProducts, setTotalProducts] = useState(0)
+  const [categories, setCategories] = useState([])
+  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [snackbarSeverity, setSnackbarSeverity] = useState('success')
+  const [cart, setCart] = useState([])
 
-  const totalPages = Math.ceil(mockProducts.length / PRODUCTS_PER_PAGE)
+  const totalPages = Math.ceil(totalProducts / PRODUCTS_PER_PAGE)
+  const startIndex = (page - 1) * PRODUCTS_PER_PAGE
+  const endIndex = startIndex + PRODUCTS_PER_PAGE
+  const displayedProducts = allProducts.slice(startIndex, endIndex)
 
-  const handleChangePage = (_, value) => {
-    setPage(value)
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const filters = {
+          category: category || undefined,
+          origin: origin || undefined,
+          size: size.length ? size.join(',') : undefined,
+          color: color.length ? color.join(',') : undefined
+        }
+        console.log('Gọi API với filters:', filters)
+        const [productData, categoryData, cartData] = await Promise.all([
+          getProducts(filters, page, PRODUCTS_PER_PAGE),
+          getCategories(1, 100),
+          getCart()
+        ])
+        setAllProducts(productData.products)
+        setTotalProducts(productData.total)
+        setCategories(categoryData.categories)
+        setCart(cartData)
+      } catch (error) {
+        console.error('Lỗi khi lấy dữ liệu:', error)
+        if (error.response?.status === 401) {
+          setSnackbarMessage('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.')
+          setSnackbarSeverity('error')
+          setOpenSnackbar(true)
+          setTimeout(() => {
+            window.location.href = '/login'
+          }, 2000)
+        } else if (error.response?.status === 404) {
+          setSnackbarMessage('API không tồn tại. Vui lòng kiểm tra đường dẫn.')
+          setSnackbarSeverity('error')
+          setOpenSnackbar(true)
+        } else {
+          setSnackbarMessage('Có lỗi xảy ra. Vui lòng thử lại.')
+          setSnackbarSeverity('error')
+          setOpenSnackbar(true)
+        }
+        setAllProducts([])
+        setTotalProducts(0)
+        setCategories([])
+        setCart([])
+      }
+    }
+    fetchData()
+  }, [category, origin, size, color, page])
 
-  const handleCategoryChange = (event) => {
-    setCategory(event.target.value)
-  }
+  const handleChangePage = (_, value) => setPage(value)
 
-  const handleOriginChange = (event) => {
-    setOrigin(event.target.value)
-  }
-
-  const handleSizeChange = (event) => {
-    const value = event.target.name
-    setSize((prev) =>
-      prev.includes(value)
-        ? prev.filter((item) => item !== value)
-        : [...prev, value]
-    )
-  }
-
-  const handleColorChange = (event) => {
-    const value = event.target.name
-    setColor((prev) =>
-      prev.includes(value)
-        ? prev.filter((item) => item !== value)
-        : [...prev, value]
-    )
-  }
-
-  const handleSearch = () => {
+  const handleCategoryChange = (e) => {
+    setCategory(e.target.value)
     setPage(1)
-    // Here you can add logic to filter products based on selected filters
-    console.log('Search with filters:', { category, origin, size, color })
+  }
+
+  const handleOriginChange = (e) => {
+    setOrigin(e.target.value)
+    setPage(1)
+  }
+
+  const handleSizeChange = (e) => {
+    const value = e.target.name
+    setSize((prev) =>
+      prev.includes(value) ? prev.filter((i) => i !== value) : [...prev, value]
+    )
+    setPage(1)
+  }
+
+  const handleColorChange = (e) => {
+    const value = e.target.name
+    setColor((prev) =>
+      prev.includes(value) ? prev.filter((i) => i !== value) : [...prev, value]
+    )
+    setPage(1)
   }
 
   const handleReset = () => {
@@ -116,29 +164,68 @@ function Product() {
     setPage(1)
   }
 
-  const paginatedProducts = mockProducts.slice(
-    (page - 1) * PRODUCTS_PER_PAGE,
-    page * PRODUCTS_PER_PAGE
-  )
+  const addProductToCart = async (product) => {
+    try {
+      // Kiểm tra số lượng sản phẩm
+      if (product.quantity <= 0) {
+        setSnackbarMessage(`Sản phẩm ${product.name} đã hết hàng!`)
+        setSnackbarSeverity('error')
+        setOpenSnackbar(true)
+        return
+      }
+
+      // Kiểm tra xem sản phẩm đã có trong giỏ hàng chưa
+      const isProductInCart = cart.some((item) => item.id === product._id)
+      if (isProductInCart) {
+        setSnackbarMessage(`Sản phẩm ${product.name} đã có trong giỏ hàng!`)
+        setSnackbarSeverity('warning')
+        setOpenSnackbar(true)
+        return
+      }
+
+      const updatedCart = await addToCart(product._id, 1)
+      setCart(updatedCart)
+      setSnackbarMessage(`Đã thêm ${product.name} vào giỏ hàng!`)
+      setSnackbarSeverity('success')
+      setOpenSnackbar(true)
+    } catch (error) {
+      console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error)
+      if (error.message.includes('đã có trong giỏ hàng')) {
+        setSnackbarMessage(`Sản phẩm ${product.name} đã có trong giỏ hàng!`)
+        setSnackbarSeverity('warning')
+        setOpenSnackbar(true)
+      } else if (error.message.includes('đã hết hàng')) {
+        setSnackbarMessage(`Sản phẩm ${product.name} đã hết hàng!`)
+        setSnackbarSeverity('error')
+        setOpenSnackbar(true)
+      } else if (error.response?.status === 401) {
+        setSnackbarMessage('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.')
+        setSnackbarSeverity('error')
+        setOpenSnackbar(true)
+        setTimeout(() => {
+          window.location.href = '/login'
+        }, 2000)
+      } else if (error.response?.status === 404) {
+        setSnackbarMessage('API giỏ hàng không tồn tại. Vui lòng kiểm tra.')
+        setSnackbarSeverity('error')
+        setOpenSnackbar(true)
+      } else {
+        setSnackbarMessage(`Không thể thêm ${product.name} vào giỏ hàng!`)
+        setSnackbarSeverity('error')
+        setOpenSnackbar(true)
+      }
+    }
+  }
+
+  const handleCloseSnackbar = () => setOpenSnackbar(false)
 
   return (
     <Box
-      sx={{
-        display: 'flex',
-        minHeight: '100vh',
-        p: 2,
-        gap: 2,
-        mt: '150px'
-      }}
+      sx={{ display: 'flex', minHeight: '100vh', p: 2, gap: 2, mt: '150px' }}
     >
-      {/* Sidebar */}
       <SidebarContainer>
-        <Typography variant='h6' gutterBottom>
-          Bộ lọc tìm kiếm
-        </Typography>
+        <Typography variant='h6'>Bộ lọc tìm kiếm</Typography>
         <Divider sx={{ mb: 1 }} />
-
-        {/* Category Filter */}
         <FilterTitle variant='subtitle1'>Danh mục</FilterTitle>
         <FormControl fullWidth size='small'>
           <InputLabel>Danh mục</InputLabel>
@@ -148,13 +235,13 @@ function Product() {
             onChange={handleCategoryChange}
           >
             <MenuItem value=''>Tất cả</MenuItem>
-            <MenuItem value='category1'>Danh mục 1</MenuItem>
-            <MenuItem value='category2'>Danh mục 2</MenuItem>
-            <MenuItem value='category3'>Danh mục 3</MenuItem>
+            {categories.map((cat) => (
+              <MenuItem key={cat._id || cat.id} value={cat._id || cat.id}>
+                {cat.name}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
-
-        {/* Origin Filter */}
         <FilterTitle variant='subtitle1'>Xuất xứ</FilterTitle>
         <FormControl fullWidth size='small'>
           <InputLabel>Xuất xứ</InputLabel>
@@ -165,55 +252,41 @@ function Product() {
             <MenuItem value='japan'>Nhật Bản</MenuItem>
           </Select>
         </FormControl>
-
-        {/* Size Filter */}
         <FilterTitle variant='subtitle1'>Kích thước</FilterTitle>
         <FormGroup>
-          {['S', 'M', 'L', 'XL'].map((sizeOption) => (
+          {['S', 'M', 'L', 'XL'].map((s) => (
             <FormControlLabel
-              key={sizeOption}
+              key={s}
               control={
                 <Checkbox
-                  checked={size.includes(sizeOption)}
+                  checked={size.includes(s)}
                   onChange={handleSizeChange}
-                  name={sizeOption}
+                  name={s}
                   size='small'
                 />
               }
-              label={sizeOption}
+              label={s}
             />
           ))}
         </FormGroup>
-
-        {/* Color Filter */}
         <FilterTitle variant='subtitle1'>Màu sắc</FilterTitle>
         <FormGroup>
-          {['Đỏ', 'Xanh', 'Đen', 'Trắng'].map((colorOption) => (
+          {['Đỏ', 'Xanh', 'Đen', 'Trắng'].map((c) => (
             <FormControlLabel
-              key={colorOption}
+              key={c}
               control={
                 <Checkbox
-                  checked={color.includes(colorOption)}
+                  checked={color.includes(c)}
                   onChange={handleColorChange}
-                  name={colorOption}
+                  name={c}
                   size='small'
                 />
               }
-              label={colorOption}
+              label={c}
             />
           ))}
         </FormGroup>
-
-        {/* Search and Reset Buttons */}
-        <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
-          <Button
-            variant='contained'
-            color='primary'
-            onClick={handleSearch}
-            fullWidth
-          >
-            Tìm
-          </Button>
+        <Box sx={{ mt: 2 }}>
           <Button
             variant='outlined'
             color='secondary'
@@ -224,71 +297,100 @@ function Product() {
           </Button>
         </Box>
       </SidebarContainer>
-
-      {/* Main product content */}
       <Box sx={{ flexGrow: 1 }}>
-        <Grid container spacing={2}>
-          {paginatedProducts.map((product) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-              <Card
-                sx={{
-                  width: '100%',
-                  height: 450,
-                  display: 'flex',
-                  flexDirection: 'column'
-                }}
-              >
-                <a
-                  href={`/productdetail/${product.id}`}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <CardMedia
-                    component='img'
-                    height='330'
-                    image={product.image}
-                    alt={product.name}
-                  />
-                </a>
-                <CardContent sx={{ flex: 1 }}>
-                  <a
-                    href={`/productdetail/${product.id}`}
-                    style={{
-                      textDecoration: 'none',
-                      color: 'black',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    {product.description}
-                  </a>
-                </CardContent>
-                <CardActions disableSpacing>
-                  <IconButton aria-label='add to favorites'>
-                    <FavoriteIcon />
-                  </IconButton>
-                  <IconButton aria-label='cart'>
-                    <AddShoppingCartIcon />
-                  </IconButton>
-                  <Box sx={{ marginLeft: 'auto', paddingRight: '10px' }}>
-                    <Typography variant='subtitle1' fontWeight='bold'>
-                      50$
-                    </Typography>
-                  </Box>
-                </CardActions>
-              </Card>
+        {displayedProducts.length === 0 ? (
+          <Typography
+            variant='h6'
+            align='center'
+            sx={{ mt: 4 }}
+            color='text.secondary'
+          >
+            Không có sản phẩm nào phù hợp
+          </Typography>
+        ) : (
+          <>
+            <Grid container spacing={2}>
+              {displayedProducts.map((product) => {
+                const isProductInCart = cart.some(
+                  (item) => item.id === product._id
+                )
+                const isOutOfStock = product.quantity <= 0
+                return (
+                  <Grid item xs={12} sm={6} md={3} key={product._id}>
+                    <Card
+                      sx={{
+                        width: 250,
+                        height: 350,
+                        display: 'flex',
+                        flexDirection: 'column'
+                      }}
+                    >
+                      <a
+                        href={`/productdetail/${product._id}`}
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <CardMedia
+                          component='img'
+                          height='250'
+                          width='250'
+                          image={product.image}
+                          alt={product.name}
+                        />
+                      </a>
+                      <CardContent sx={{ flex: 1 }}>
+                        <a
+                          href={`/productdetail/${product._id}`}
+                          style={{
+                            textDecoration: 'none',
+                            color: 'black',
+                            fontWeight: 'bold'
+                          }}
+                        >
+                          {product.name}
+                        </a>
+                      </CardContent>
+                      <CardActions disableSpacing>
+                        <IconButton>
+                          <FavoriteIcon />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => addProductToCart(product)}
+                          disabled={isProductInCart || isOutOfStock}
+                        >
+                          <AddShoppingCartIcon />
+                        </IconButton>
+                        <Box sx={{ marginLeft: 'auto', pr: 1 }}>
+                          <Typography variant='subtitle1' fontWeight='bold'>
+                            {product.price ? `${product.price}$` : 'N/A'}
+                          </Typography>
+                        </Box>
+                      </CardActions>
+                    </Card>
+                  </Grid>
+                )
+              })}
             </Grid>
-          ))}
-        </Grid>
-
-        {/* Pagination */}
-        <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
-          <Pagination
-            count={totalPages}
-            page={page}
-            onChange={handleChangePage}
-            color='primary'
-          />
-        </Box>
+            <Box sx={{ mt: 4, display: 'flex', justifyContent: 'center' }}>
+              <Pagination
+                count={totalPages}
+                page={page}
+                onChange={handleChangePage}
+                color='primary'
+              />
+            </Box>
+          </>
+        )}
       </Box>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={2000}
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={handleCloseSnackbar} severity={snackbarSeverity}>
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   )
 }

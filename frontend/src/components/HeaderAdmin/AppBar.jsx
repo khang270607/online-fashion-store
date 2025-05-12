@@ -6,8 +6,10 @@ import MoreIcon from '@mui/icons-material/MoreVert'
 
 export default function AdminAppBar({
   open,
+  anchorEl,
   onDrawerOpen,
   onProfileMenuOpen,
+  onProfileMenuClose,
   onMenuClose
 }) {
   const menuId = 'primary-search-account-menu'
@@ -37,7 +39,7 @@ export default function AdminAppBar({
             aria-label='account of current user'
             aria-controls={menuId}
             aria-haspopup='true'
-            onClick={onProfileMenuOpen}
+            onClick={anchorEl ? onProfileMenuClose : onProfileMenuOpen}
             color='inherit'
           >
             <AccountCircle />

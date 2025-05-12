@@ -1,51 +1,54 @@
 import React from 'react'
-import { MenuItem, Paper, List, Box, Grow } from '@mui/material'
-
-const MenuItems = ['Đăng xuất']
+import {
+  MenuItem,
+  Paper,
+  List,
+  Grow,
+  ClickAwayListener,
+  Popper
+} from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 export default function AdminMenu({ anchorEl, isOpen, onClose }) {
-  if (!isOpen || !anchorEl) return null
-
-  const rect = anchorEl.getBoundingClientRect()
-  const styles = {
-    box: {
-      position: 'fixed',
-      top: 0,
-      right: '10px',
-      height: '100vh',
-      width: '10px',
-      zIndex: 1200
-    }
-  }
+  const navigate = useNavigate()
 
   return (
-    <Box sx={styles.box}>
-      <Grow in={isOpen} style={{ transformOrigin: 'top right' }}>
-        <Paper
-          sx={{
-            position: 'absolute',
-            top: rect.bottom + 8,
-            right: 0,
-            zIndex: 1300,
-            boxShadow: 3,
-            minWidth: 150
-          }}
-        >
-          <List>
-            {MenuItems.map((item) => (
-              <MenuItem
-                key={item}
-                onClick={() => {
-                  onClose()
-                  console.log('Đăng xuất')
-                }}
-              >
-                {item}
-              </MenuItem>
-            ))}
-          </List>
-        </Paper>
-      </Grow>
-    </Box>
+    <Popper
+      open={isOpen}
+      anchorEl={anchorEl}
+      role={undefined}
+      placement='bottom-end'
+      transition
+      disablePortal
+      style={{ zIndex: 1300 }}
+    >
+      {({ TransitionProps }) => (
+        <Grow {...TransitionProps} style={{ transformOrigin: 'top right' }}>
+          <Paper>
+            <ClickAwayListener onClickAway={onClose}>
+              <List>
+                <MenuItem
+                  onClick={() => {
+                    onClose()
+                    navigate('/admin/profile') // Chuyển hướng tới trang profile
+                  }}
+                  sx={{ borderBottom: '1px solid #ccc' }}
+                >
+                  Thông tin cá nhân
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    onClose()
+                    console.log('Đăng xuất') // Giữ logic đăng xuất
+                  }}
+                >
+                  Đăng xuất
+                </MenuItem>
+              </List>
+            </ClickAwayListener>
+          </Paper>
+        </Grow>
+      )}
+    </Popper>
   )
 }

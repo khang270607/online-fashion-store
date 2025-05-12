@@ -1,32 +1,46 @@
 import { StatusCodes } from 'http-status-codes'
 
 import { OrderModel } from '~/models/OrderModel'
+import { ShippingAddressModel } from '~/models/ShippingAddressModel'
 import ApiError from '~/utils/ApiError'
-import { slugify } from '~/utils/formatters'
 
-const createOrder = async (reqBody) => {
+const createOrder = async (userId, reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const newOrder = {
-      name: reqBody.name,
-      description: reqBody.description,
-      price: reqBody.price,
-      image: reqBody.image,
-      categoryId: reqBody.categoryId,
-      quantity: reqBody.quantity,
-      slug: slugify(reqBody.name),
-      destroy: false
+    const isShippingAddressId = await ShippingAddressModel.exists({
+      userId
+    })
+
+    if (!isShippingAddressId) {
+      throw new ApiError(
+        StatusCodes.NOT_FOUND,
+        'Không tồn tại địa chỉ giao hàng.'
+      )
     }
 
-    const Order = await OrderModel.create(newOrder)
-
-    return Order
+    // const newOrder = {
+    //   userId: userId,
+    //   shippingAddressId: reqBody.shippingAddressId,
+    //   total: reqBody.total,
+    //   couponId: reqBody.couponId,
+    //   paymentMethod: reqBody.paymentMethod,
+    //
+    //   discountAmount: 0,
+    //   status: 'Pending',
+    //   isPaid: false,
+    //   paymentStatus: 'Pending',
+    //   isDelivered: false
+    // }
+    //
+    // const Order = await OrderModel.create(newOrder)
+    //
+    // return Order
   } catch (err) {
     throw err
   }
 }
 
-const getOrderList = async () => {
+const getOrderList = async (userId) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const result = await OrderModel.find({ destroy: false })
@@ -42,10 +56,10 @@ const getOrderList = async () => {
   }
 }
 
-const getOrder = async (productId) => {
+const getOrder = async (userId, orderId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await OrderModel.findById({ productId, destroy: false })
+    const result = await OrderModel.findById({ orderId, destroy: false })
       .populate({
         path: 'categoryId',
         select: 'name description slug _id'
@@ -62,11 +76,11 @@ const getOrder = async (productId) => {
   }
 }
 
-const updateOrder = async (productId, reqBody) => {
+const updateOrder = async (userId, orderId, reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
     const updatedOrder = await OrderModel.findOneAndUpdate(
-      { _id: productId, destroy: false },
+      { _id: orderId, destroy: false },
       reqBody,
       {
         new: true,
@@ -80,12 +94,12 @@ const updateOrder = async (productId, reqBody) => {
   }
 }
 
-const deleteOrder = async (productId) => {
+const deleteOrder = async (userId, orderId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const productUpdated = await OrderModel.findOneAndUpdate(
+    const orderUpdated = await OrderModel.findOneAndUpdate(
       {
-        _id: productId
+        _id: orderId
       },
       {
         $set: { destroy: true }
@@ -95,21 +109,7 @@ const deleteOrder = async (productId) => {
       }
     )
 
-    return productUpdated
-  } catch (err) {
-    throw err
-  }
-}
-
-const getListOrderOfCategory = async (categoryId) => {
-  // eslint-disable-next-line no-useless-catch
-  try {
-    const ListOrder = await OrderModel.find({
-      categoryId: categoryId,
-      destroy: false
-    }).lean()
-
-    return ListOrder
+    return orderUpdated
   } catch (err) {
     throw err
   }
@@ -120,6 +120,5 @@ export const ordersService = {
   getOrderList,
   getOrder,
   updateOrder,
-  deleteOrder,
-  getListOrderOfCategory
+  deleteOrder
 }

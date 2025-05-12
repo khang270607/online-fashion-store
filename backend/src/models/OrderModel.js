@@ -6,49 +6,50 @@ const OrderSchema = new Schema(
   {
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'User', // Tham chiếu đến người dùng đặt đơn
+      ref: 'User',
       required: true
     },
     couponId: {
       type: Schema.Types.ObjectId,
-      ref: 'Coupon', // Tham chiếu đến mã giảm giá (nếu có)
+      ref: 'Coupon',
       default: null
     },
     discountAmount: {
-      type: Number, // Số tiền đã giảm (VNĐ)
-      default: 0
+      type: Number,
+      default: 0,
+      min: 0
     },
     shippingAddressId: {
       type: Schema.Types.ObjectId,
-      ref: 'ShippingAddress', // Tham chiếu đến địa chỉ giao hàng
+      ref: 'Address',
       required: true
     },
     total: {
-      type: Number, // Tổng tiền phải trả (sau giảm giá)
+      type: Number,
       required: true,
       min: 0
     },
     status: {
-      type: String, // Trạng thái đơn hàng
+      type: String,
       enum: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'],
       default: 'Pending'
     },
     isPaid: {
-      type: Boolean, // Đã thanh toán hay chưa
+      type: Boolean,
       default: false
     },
     paymentMethod: {
-      type: String, // Phương thức thanh toán
+      type: String,
       enum: ['COD', 'vnpay', 'momo', 'paypal', 'credit_card'],
       default: null
     },
     paymentStatus: {
-      type: String, // Trạng thái thanh toán
+      type: String,
       enum: ['Pending', 'Completed', 'Failed'],
-      default: 'Pending'
+      default: null
     },
     isDelivered: {
-      type: Boolean, // Đã giao hàng hay chưa
+      type: Boolean,
       default: false
     }
   },

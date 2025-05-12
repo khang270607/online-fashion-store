@@ -4,7 +4,6 @@ import { UserModel } from '~/models/UserModel'
 import ApiError from '~/utils/ApiError'
 import { pickUser } from '~/utils/formatters'
 import { ROLE } from '~/utils/constants'
-import { us } from 'yarn/lib/cli'
 
 const getUserList = async () => {
   // eslint-disable-next-line no-useless-catch

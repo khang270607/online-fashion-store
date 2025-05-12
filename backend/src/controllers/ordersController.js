@@ -5,7 +5,7 @@ import { ordersService } from '~/services/ordersService'
 const createOrder = async (req, res, next) => {
   try {
     // Lấy Danh mục sản phẩm mới tạo từ tầng Service chuyển qua
-    const result = await ordersService.createOrder(req.body)
+    const result = await ordersService.createOrder(req.jwtDecoded._id, req.body)
 
     // Có kết quả thì trả về Client
     res.status(StatusCodes.CREATED).json(result)
@@ -62,23 +62,10 @@ const deleteOrder = async (req, res, next) => {
   }
 }
 
-const getListOrderOfCategory = async (req, res, next) => {
-  try {
-    const categoryId = req.params.categoryId
-
-    const result = await ordersService.getListOrderOfCategory(categoryId)
-
-    res.status(StatusCodes.OK).json(result)
-  } catch (err) {
-    next(err)
-  }
-}
-
 export const ordersController = {
   createOrder,
   getOrderList,
   getOrder,
   updateOrder,
-  deleteOrder,
-  getListOrderOfCategory
+  deleteOrder
 }

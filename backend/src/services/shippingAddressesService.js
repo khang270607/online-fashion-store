@@ -1,7 +1,5 @@
 import { ShippingAddressModel } from '~/models/ShippingAddressModel'
 
-import { slugify } from '~/utils/formatters'
-
 const createShippingAddress = async (userId, reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {

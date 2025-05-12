@@ -1,8 +1,4 @@
-import { StatusCodes } from 'http-status-codes'
-
 import { OrderItemModel } from '~/models/OrderItemModel'
-import ApiError from '~/utils/ApiError'
-import { slugify } from '~/utils/formatters'
 
 const createOrderItem = async (reqBody) => {
   // eslint-disable-next-line no-useless-catch

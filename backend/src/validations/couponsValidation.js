@@ -73,7 +73,40 @@ const coupon = async (req, res, next) => {
   }
 }
 
+const validate = async (req, res, next) => {
+  // Xác thực dữ liệu đầu vào correctCondition: điều kiện đúng
+  const correctCondition = Joi.object({
+    couponCode: Joi.string()
+      .alphanum() // Chỉ cho phép chữ và số:contentReference[oaicite:0]{index=0}
+      .uppercase() // Ép về chữ in hoa (nếu muốn tự động convert):contentReference[oaicite:1]{index=1}
+      .min(5) // Độ dài tối thiểu 5 ký tự (ví dụ):contentReference[oaicite:2]{index=2}
+      .max(20) // Độ dài tối đa 20 ký tự (ví dụ):contentReference[oaicite:3]{index=3}
+      .required(),
+
+    cartTotal: Joi.number()
+      .integer() // Bắt buộc là số nguyên:contentReference[oaicite:4]{index=4}
+      .min(0) // Giá trị tối thiểu là 0 (không âm):contentReference[oaicite:5]{index=5}
+      .required()
+  })
+
+  try {
+    await correctCondition.validateAsync(req.body, {
+      abortEarly: false // Không dừng lại khi gặp lỗi đầu tiên
+    })
+
+    next() // Nếu không có lỗi, tiếp tục xử lý request sang controller
+  } catch (err) {
+    const errorMessage = new Error(err).message
+    const customError = new ApiError(
+      StatusCodes.UNPROCESSABLE_ENTITY,
+      errorMessage
+    )
+    next(customError) // Gọi middleware xử lý lỗi tập trung
+  }
+}
+
 export const couponsValidation = {
   verifyId,
-  coupon
+  coupon,
+  validate
 }

@@ -50,9 +50,34 @@ const deleteUser = async (req, res, next) => {
   }
 }
 
+const getProfile = async (req, res, next) => {
+  try {
+    const result = await usersService.getProfile(req.jwtDecoded._id)
+
+    res.status(StatusCodes.OK).json(result)
+  } catch (err) {
+    next(err)
+  }
+}
+
+const updateProfile = async (req, res, next) => {
+  try {
+    const result = await usersService.updateProfile(
+      req.jwtDecoded._id,
+      req.body
+    )
+
+    res.status(StatusCodes.OK).json(result)
+  } catch (err) {
+    next(err)
+  }
+}
+
 export const usersController = {
   getUserList,
   getUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getProfile,
+  updateProfile
 }

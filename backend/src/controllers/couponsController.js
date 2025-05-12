@@ -12,6 +12,19 @@ const createCoupon = async (req, res, next) => {
   }
 }
 
+const validateCoupon = async (req, res, next) => {
+  try {
+    const result = await couponsService.validateCoupon(
+      req.jwtDecoded._id,
+      req.body
+    )
+
+    res.status(StatusCodes.CREATED).json(result)
+  } catch (err) {
+    next(err)
+  }
+}
+
 const getCouponList = async (req, res, next) => {
   try {
     const result = await couponsService.getCouponList()
@@ -60,6 +73,7 @@ const deleteCoupon = async (req, res, next) => {
 
 export const couponsController = {
   createCoupon,
+  validateCoupon,
   getCouponList,
   getCoupon,
   updateCoupon,

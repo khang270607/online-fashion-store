@@ -1,6 +1,5 @@
 import validObjectId from '~/utils/validObjectId'
 import Joi from 'joi'
-import passwordComplexity from 'joi-password-complexity'
 import ApiError from '~/utils/ApiError'
 import { StatusCodes } from 'http-status-codes'
 

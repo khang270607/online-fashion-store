@@ -61,13 +61,18 @@ function App() {
       </Route>
 
       {/*Admin*/}
-      <Route path='/admin' element={<AdminLayout />}>
-        <Route index element={<AdminHome />} />
-        <Route path='user-management' element={<UserManagement />} />
-        <Route path='product-management' element={<ProductManagement />} />
-        <Route path='categorie-management' element={<CategorieManagement />} />
-        <Route path='order-management' element={<OrderManagement />} />
-        <Route path='profile' element={<Profile />} />
+
+      <Route element={<ProtectedRoute user={currentUser} />}>
+        <Route path='/admin' element={<AdminLayout />}>
+          <Route index element={<AdminHome />} />
+          <Route path='user-management' element={<UserManagement />} />
+          <Route path='product-management' element={<ProductManagement />} />
+          <Route
+            path='categorie-management'
+            element={<CategorieManagement />}
+          />
+          <Route path='order-management' element={<OrderManagement />} />
+        </Route>
       </Route>
 
       {/*Not found 404*/}

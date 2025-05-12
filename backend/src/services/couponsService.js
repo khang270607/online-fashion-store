@@ -1,8 +1,4 @@
-import { StatusCodes } from 'http-status-codes'
-
 import { CouponModel } from '~/models/CouponModel'
-import ApiError from '~/utils/ApiError'
-import { slugify } from '~/utils/formatters'
 
 const createCoupon = async (reqBody) => {
   // eslint-disable-next-line no-useless-catch
@@ -22,6 +18,49 @@ const createCoupon = async (reqBody) => {
     const Coupon = await CouponModel.create(newCoupon)
 
     return Coupon
+  } catch (err) {
+    throw err
+  }
+}
+
+const validateCoupon = async (userId, reqBody) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const now = new Date()
+
+    const coupon = await CouponModel.findOne({
+      code: reqBody.couponCode,
+      isActive: true,
+      validFrom: { $lte: now },
+      validUntil: { $gte: now },
+      $expr: { $lte: ['$usedCount', '$usageLimit'] }
+    })
+
+    if (!coupon) {
+      return {
+        valid: false, // Mã sai hoặc hết hạn
+        message: 'Mã không hợp lệ hoặc đã hết hạn'
+      }
+    }
+
+    if (reqBody.cartTotal >= coupon.minOrderValue) {
+      let discountAmount
+      if (coupon.type === 'fixed') {
+        discountAmount = coupon.amount
+      } else if (coupon.type === 'percent') {
+        discountAmount = reqBody.cartTotal * (coupon.amount / 100)
+      }
+
+      const newTotal = reqBody.cartTotal - discountAmount
+      const message = `Áp dụng thành công mã ${coupon.code}`
+
+      return {
+        valid: true, // Mã hợp lệ
+        discountAmount,
+        newTotal,
+        message
+      }
+    }
   } catch (err) {
     throw err
   }
@@ -80,6 +119,7 @@ const deleteCoupon = async (couponId) => {
 
 export const couponsService = {
   createCoupon,
+  validateCoupon,
   getCouponList,
   getCoupon,
   updateCoupon,

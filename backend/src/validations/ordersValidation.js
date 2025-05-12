@@ -16,36 +16,29 @@ const verifyId = (req, res, next) => {
 const order = async (req, res, next) => {
   // Xác thực dữ liệu đầu vào correctCondition: điều kiện đúng
   const correctCondition = Joi.object({
-    name: Joi.string() // name bắt buộc, chuỗi
-      .min(3) // tối thiểu 3 ký tự
-      .max(100) // tối đa 100 ký tự
-      .trim() // loại bỏ khoảng trắng đầu/cuối
-      .required(), // bắt buộc :contentReference[oaicite:0]{index=0}
+    couponId: Joi.string().hex().length(24).allow(null),
 
-    description: Joi.string() // description không bắt buộc
-      .max(1000) // giới hạn độ dài nếu cần
-      .trim()
-      .allow('', null), // cho phép bỏ trống hoặc null :contentReference[oaicite:1]{index=1}
+    discountAmount: Joi.number().min(0).default(0),
 
-    price: Joi.number() // price bắt buộc, số
-      .min(0) // không âm :contentReference[oaicite:2]{index=2}
-      .required(),
+    shippingAddressId: Joi.string().hex().length(24).required(),
 
-    quantity: Joi.number() // thêm validate cho quantity
-      .integer() // phải là số nguyên
-      .min(0) // không âm
-      .required(),
+    total: Joi.number().min(0).required(),
 
-    image: Joi.array() // image là mảng
-      .items(
-        Joi.string()
-          .uri() // mỗi phần tử phải là URI hợp lệ :contentReference[oaicite:3]{index=3}
-          .trim()
-      )
-      .min(1) // ít nhất 1 ảnh
-      .required(), // bắt buộc
+    status: Joi.string()
+      .valid('Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled')
+      .default('Pending'),
 
-    categoryId: Joi.string().length(24).hex().required()
+    isPaid: Joi.boolean().default(false),
+
+    paymentMethod: Joi.string()
+      .valid('COD', 'vnpay', 'momo', 'paypal', 'credit_card')
+      .allow(null),
+
+    paymentStatus: Joi.string()
+      .valid('Pending', 'Completed', 'Failed')
+      .allow(null),
+
+    isDelivered: Joi.boolean().default(false)
   })
 
   try {

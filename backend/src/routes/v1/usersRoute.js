@@ -20,7 +20,7 @@ Router.route('/profile').patch(
 )
 
 // Tài khoản người dùng
-Router.route('/').get(usersController.getUserList)
+Router.route('/').get(authMiddleware.isAuthorized, usersController.getUserList)
 
 // Lấy thông tin một người dùng người dùng.
 Router.route('/:userId').get(usersValidation.verifyId, usersController.getUser)

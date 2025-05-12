@@ -9,6 +9,13 @@ const Router = express.Router()
 // Tạo Mã giảm giá mới
 Router.route('/').post(couponsValidation.coupon, couponsController.createCoupon)
 
+// Kiểm tra Mã giảm giá trước khi thanh toán
+Router.route('/validate').post(
+  authMiddleware.isAuthorized,
+  couponsValidation.validate,
+  couponsController.validateCoupon
+)
+
 // Danh sách Mã giảm giá
 Router.route('/').get(couponsController.getCouponList)
 

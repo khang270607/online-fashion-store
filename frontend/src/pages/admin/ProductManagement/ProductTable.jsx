@@ -38,22 +38,35 @@ const ProductTable = ({ products, loading, handleOpenModal }) => {
             <StyledTableCell>Số lượng</StyledTableCell>
             <StyledTableCell>Mô tả</StyledTableCell>
             <StyledTableCell>Danh mục</StyledTableCell>
-            <StyledTableCell>Thao tác</StyledTableCell>
+            <StyledTableCell>Trạng thái</StyledTableCell>
+            <StyledTableCell>Hành động</StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>
-          {products
-            .filter((product) => !product.destroy) // Lọc những sản phẩm không có `destroy` là true
-            .map((product, index) => {
-              return (
+          {loading ? (
+            <TableRow>
+              <TableCell colSpan={8} align='center'>
+                Đang tải sản phẩm...
+              </TableCell>
+            </TableRow>
+          ) : products.filter((product) => !product.destroy).length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={8} align='center'>
+                Không có sản phẩm nào.
+              </TableCell>
+            </TableRow>
+          ) : (
+            products
+              .filter((product) => !product.destroy)
+              .map((product, index) => (
                 <ProductRow
-                  key={product.id ? product.id : index}
+                  key={product.id || index}
                   index={index + 1}
                   product={product}
                   handleOpenModal={handleOpenModal}
                 />
-              )
-            })}
+              ))
+          )}
         </TableBody>
       </Table>
     </>

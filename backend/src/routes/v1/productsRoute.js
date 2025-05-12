@@ -13,7 +13,10 @@ Router.route('/').post(
 )
 
 // Danh sách Sản phẩm
-Router.route('/').get(productsController.getProductList)
+Router.route('/').get(
+  authMiddleware.isAuthorized,
+  productsController.getProductList
+)
 
 // Lấy thông tin một Sản phẩm.
 Router.route('/:productId').get(
@@ -32,6 +35,11 @@ Router.route('/:productId').patch(
 Router.route('/:productId').delete(
   productsValidation.verifyId,
   productsController.deleteProduct
+)
+
+// Lấy danh sách sản phẩm theo Danh mục
+Router.route('/category/:categoryId').get(
+  productsController.getListProductOfCategory
 )
 
 export const productsRoute = Router

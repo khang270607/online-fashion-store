@@ -1,17 +1,24 @@
 import React from 'react'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import Button from '@mui/material/Button'
-import CircularProgress from '@mui/material/CircularProgress'
-import AuthorizedAxiosInstance from '~/utils/authorizedAxios.js'
-import { API_ROOT } from '~/utils/constants.js'
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  CircularProgress,
+  Typography
+} from '@mui/material'
+import {
+  modalPaperProps,
+  dialogTitleStyle,
+  cancelButtonStyle
+} from './StyleModal.js'
+
 const DeleteUserModal = React.memo(({ open, onClose, user, onDelete }) => {
   const [isDeleting, setIsDeleting] = React.useState(false)
 
   const handleDelete = async () => {
-    if (!user?._id) return // Kiểm tra ID trước khi xóa
+    if (!user?._id) return
     setIsDeleting(true)
     try {
       await onDelete(user._id)
@@ -24,14 +31,21 @@ const DeleteUserModal = React.memo(({ open, onClose, user, onDelete }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Xác nhận xóa người dùng</DialogTitle>
-      <DialogContent>
-        Bạn có chắc chắn muốn xóa người dùng <strong>{user?.name}</strong>{' '}
-        không?
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      PaperProps={modalPaperProps}
+    >
+      <DialogTitle sx={dialogTitleStyle}>Xác nhận xóa người dùng</DialogTitle>
+      <DialogContent dividers>
+        <Typography>
+          Bạn có chắc chắn muốn xóa người dùng <strong>{user?.name}</strong>{' '}
+          không?
+        </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={isDeleting} color='#001f5d'>
+        <Button onClick={onClose} disabled={isDeleting} sx={cancelButtonStyle}>
           Hủy
         </Button>
         <Button

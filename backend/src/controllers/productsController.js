@@ -62,10 +62,23 @@ const deleteProduct = async (req, res, next) => {
   }
 }
 
+const getListProductOfCategory = async (req, res, next) => {
+  try {
+    const categoryId = req.params.categoryId
+
+    const result = await productsService.getListProductOfCategory(categoryId)
+
+    res.status(StatusCodes.OK).json(result)
+  } catch (err) {
+    next(err)
+  }
+}
+
 export const productsController = {
   createProduct,
   getProductList,
   getProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getListProductOfCategory
 }

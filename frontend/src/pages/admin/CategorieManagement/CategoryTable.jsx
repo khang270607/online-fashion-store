@@ -7,6 +7,7 @@ import {
   StyledTableContainer
 } from './CategoryTableStyles'
 import CategoryRow from './CategoryRow'
+
 const CategoryTable = ({ categories, loading, handleOpenModal }) => {
   const FilteredCategories = categories.filter((c) => c.destroy !== true)
   return (
@@ -18,20 +19,30 @@ const CategoryTable = ({ categories, loading, handleOpenModal }) => {
           </StyledTableCell>
           <StyledTableCell>Tên danh mục</StyledTableCell>
           <StyledTableCell>Mô tả</StyledTableCell>
-          <StyledTableCell sx={{ width: '15%' }}>Hành động</StyledTableCell>
+          <StyledTableCell sx={{ width: '130px', maxWidth: '130px' }}>
+            Hành động
+          </StyledTableCell>
         </StyledTableRow>
       </TableHead>
       <TableBody>
         {loading ? (
           <StyledTableRow>
-            <StyledTableCell colSpan={4}>Loading...</StyledTableCell>
+            <StyledTableCell colSpan={4} align='center'>
+              Đang tải danh mục...
+            </StyledTableCell>
+          </StyledTableRow>
+        ) : FilteredCategories.length === 0 ? (
+          <StyledTableRow>
+            <StyledTableCell colSpan={4} align='center'>
+              Không có danh mục nào.
+            </StyledTableCell>
           </StyledTableRow>
         ) : (
           FilteredCategories.map((category, idx) => (
             <CategoryRow
               key={category._id}
               category={category}
-              idx={idx} // STT liên tục
+              idx={idx}
               handleOpenModal={handleOpenModal}
             />
           ))

@@ -1,27 +1,36 @@
-// components/modal/ViewCategoryModal.jsx
 import React from 'react'
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Button
+  Button,
+  Typography
 } from '@mui/material'
 
 const ViewCategoryModal = ({ open, onClose, category }) => {
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Xem thông tin danh mục</DialogTitle>
+    <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
+      <DialogTitle>
+        <Typography variant='h5'>Xem thông tin danh mục</Typography>
+      </DialogTitle>
       <DialogContent>
-        <div>
+        <Typography
+          variant='h6'
+          gutterBottom
+          sx={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}
+        >
           <strong>Tên danh mục:</strong> {category.name}
-        </div>
-        <div>
+        </Typography>
+        <Typography
+          variant='h6'
+          sx={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}
+        >
           <strong>Mô tả:</strong> {category.description}
-        </div>
+        </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} color='primary'>
+        <Button color='error' variant='contained' onClick={onClose}>
           Đóng
         </Button>
       </DialogActions>

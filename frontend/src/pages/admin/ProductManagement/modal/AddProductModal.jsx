@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import {
   MenuItem,
@@ -15,6 +15,7 @@ import {
   InputLabel
 } from '@mui/material'
 import { addProduct } from '~/services/productService'
+import { addCategory } from '~/services/categoryService'
 import useCategories from '~/hook/useCategories'
 
 const URI = 'https://api.cloudinary.com/v1_1/dkwsy9sph/image/upload'
@@ -32,8 +33,7 @@ const uploadToCloudinary = async (file) => {
   })
 
   const data = await res.json()
-  console.log('Cloudinary response:', data)
-  return data.secure_url // Trả về URL ảnh
+  return data.secure_url
 }
 
 const AddProductModal = ({ open, onClose, onSuccess }) => {
@@ -42,24 +42,31 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
     register,
     handleSubmit,
     reset,
-    formState: { errors }
+    formState: { errors, isSubmitting }
   } = useForm()
   const [images, setImages] = useState([{ file: null, preview: '' }])
-  const { categories, loading } = useCategories()
+  const { categories, loading, fetchCategories } = useCategories()
+  const [categoryOpen, setCategoryOpen] = useState(false)
+  const [categoryName, setCategoryName] = useState('')
+  const [categoryDescription, setCategoryDescription] = useState('')
+  const categoryNameRef = useRef()
+  const categoryDescriptionRef = useRef()
 
-  // Handle change of images
   const handleImageChange = (index, file) => {
     const newImages = [...images]
     newImages[index] = { file, preview: URL.createObjectURL(file) }
 
-    if (index === images.length - 1 && file) {
+    if (
+      index === images.length - 1 &&
+      file &&
+      newImages.length < 9 // giới hạn tối đa 10 ảnh
+    ) {
       newImages.push({ file: null, preview: '' })
     }
 
     setImages(newImages)
   }
 
-  // Submit form to add product
   const onSubmit = async (data) => {
     try {
       const imageUrls = []
@@ -69,15 +76,16 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
           imageUrls.push(url)
         }
       }
+
       const result = await addProduct({
         name: data.name,
         description: data.description,
         price: Number(data.price),
-        image: imageUrls, // Đổi từ imageProduct -> image
-        category: data.category || '', // Nếu không có giá trị category thì để là ''
+        image: imageUrls,
+        categoryId: data.categoryId,
         quantity: Number(data.quantity)
       })
-
+      console.log('categoryId', data.categoryId)
       if (result) {
         onSuccess()
         onClose()
@@ -91,17 +99,35 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
       alert('Có lỗi xảy ra, vui lòng thử lại')
     }
   }
-  console.log('categories:', categories)
+
+  const handleAddCategory = async () => {
+    const newCategory = {
+      name: categoryName,
+      description: categoryDescription
+    }
+
+    const addedCategory = await addCategory(newCategory)
+    if (addedCategory) {
+      setCategoryOpen(false)
+      setCategoryName('')
+      setCategoryDescription('')
+      // Cập nhật lại danh sách danh mục
+      fetchCategories() // Gọi lại API để lấy danh sách danh mục mới
+    } else {
+      alert('Lỗi khi thêm danh mục')
+    }
+  }
+
   return (
     <Dialog
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth='sm'
+      maxWidth='lg' // tăng kích thước modal
       PaperProps={{
         sx: {
-          mt: 8, // cách top khoảng 64px, tránh bị che
-          maxHeight: '85vh' // chiều cao tối đa
+          mt: 8,
+          maxHeight: '90vh'
         }
       }}
     >
@@ -110,7 +136,7 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
         <DialogContent
           sx={{ display: 'flex', gap: 2, overflowY: 'auto', flexGrow: 1 }}
         >
-          {/* Cột bên trái: Form nhập liệu */}
+          {/* Form nhập liệu bên trái */}
           <Box sx={{ flex: 2 }}>
             <TextField
               label='Tên sản phẩm'
@@ -158,76 +184,93 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
               helperText={errors.quantity?.message}
             />
 
-            {/* FormControl cho danh mục */}
-            <FormControl fullWidth margin='normal' error={!!errors.category}>
+            <FormControl fullWidth margin='normal' error={!!errors.categoryId}>
               <InputLabel>Danh mục</InputLabel>
               <Controller
-                name='category'
+                name='categoryId'
                 control={control}
                 rules={{ required: 'Danh mục không được bỏ trống' }}
                 render={({ field }) => (
                   <Select
                     {...field}
                     label='Danh mục'
-                    value={field.value || ''} // Đảm bảo có giá trị mặc định là ''
+                    value={field.value}
                     disabled={loading}
                   >
-                    {categories?.map((cat) => (
-                      <MenuItem key={cat._id} value={cat.name}>
-                        {cat.name}
-                      </MenuItem>
-                    ))}
+                    {categories
+                      ?.filter((cat) => !cat.destroy)
+                      .map((cat) => (
+                        <MenuItem key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </MenuItem>
+                      ))}
+                    <MenuItem onClick={() => setCategoryOpen(true)}>
+                      Thêm danh mục mới
+                    </MenuItem>
                   </Select>
                 )}
               />
-
               <Typography variant='caption' color='error'>
-                {errors.category?.message}
+                {errors.categoryId?.message}
               </Typography>
             </FormControl>
           </Box>
 
-          {/* Cột bên phải: Hình ảnh */}
+          {/* Hình ảnh bên phải */}
           <Box sx={{ flex: 1 }}>
             <Typography variant='subtitle1' sx={{ mb: 1 }}>
-              Hình ảnh sản phẩm
+              Hình ảnh sản phẩm (tối đa 9 ảnh)
             </Typography>
 
-            {images.map((img, index) => (
-              <Box key={index} sx={{ mb: 2 }}>
-                <Button
-                  variant='outlined'
-                  component='label'
-                  sx={{ borderColor: '#001f5d', color: '#001f5d' }}
-                >
-                  {img.file ? 'Sửa ảnh' : 'Thêm ảnh'}
-                  <input
-                    type='file'
-                    accept='image/*'
-                    hidden
-                    onChange={(e) =>
-                      handleImageChange(index, e.target.files[0])
-                    }
-                  />
-                </Button>
-
-                {img.preview && (
-                  <Box
-                    component='img'
-                    src={img.preview}
-                    alt={`preview-${index}`}
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+                gap: 2
+              }}
+            >
+              {images.map((img, index) => (
+                <Box key={index}>
+                  <Button
+                    variant='outlined'
+                    component='label'
                     sx={{
                       width: '100%',
-                      height: 100,
-                      mt: 1,
-                      objectFit: 'cover',
-                      borderRadius: 1,
-                      border: '1px solid #ccc'
+                      borderColor: '#001f5d',
+                      color: '#001f5d',
+                      fontSize: '12px',
+                      minHeight: '36px'
                     }}
-                  />
-                )}
-              </Box>
-            ))}
+                  >
+                    {img.file ? 'Sửa' : 'Thêm'}
+                    <input
+                      type='file'
+                      accept='image/*'
+                      hidden
+                      onChange={(e) =>
+                        handleImageChange(index, e.target.files[0])
+                      }
+                    />
+                  </Button>
+
+                  {img.preview && (
+                    <Box
+                      component='img'
+                      src={img.preview}
+                      alt={`preview-${index}`}
+                      sx={{
+                        width: '100%',
+                        height: 80,
+                        mt: 1,
+                        objectFit: 'cover',
+                        borderRadius: 1,
+                        border: '1px solid #ccc'
+                      }}
+                    />
+                  )}
+                </Box>
+              ))}
+            </Box>
           </Box>
         </DialogContent>
 
@@ -239,11 +282,47 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
             type='submit'
             variant='contained'
             sx={{ backgroundColor: '#001f5d' }}
+            disabled={isSubmitting}
           >
-            Thêm
+            {isSubmitting ? 'Đang thêm...' : 'Thêm'}
           </Button>
         </DialogActions>
       </form>
+
+      {/* Thêm danh mục mới */}
+      <Dialog open={categoryOpen} onClose={() => setCategoryOpen(false)}>
+        <DialogTitle>Thêm Danh Mục Mới</DialogTitle>
+        <DialogContent>
+          <TextField
+            label='Tên danh mục'
+            fullWidth
+            margin='normal'
+            value={categoryName}
+            onChange={(e) => setCategoryName(e.target.value)}
+            inputRef={categoryNameRef}
+          />
+          <TextField
+            label='Mô tả'
+            fullWidth
+            margin='normal'
+            value={categoryDescription}
+            onChange={(e) => setCategoryDescription(e.target.value)}
+            inputRef={categoryDescriptionRef}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setCategoryOpen(false)} color='#001f5d'>
+            Hủy
+          </Button>
+          <Button
+            onClick={handleAddCategory}
+            variant='contained'
+            sx={{ backgroundColor: '#001f5d' }}
+          >
+            Lưu
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Dialog>
   )
 }

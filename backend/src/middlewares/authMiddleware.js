@@ -9,6 +9,8 @@ const isAuthorized = async (req, res, next) => {
   //   Lấy accessToken nằm trong request cookies phía client - withCredentials trong file authorizeAxios
   const clientAccessToken = req.cookies?.accessToken
 
+  console.log('clientAccessToken: ', clientAccessToken)
+
   //   Nếu như cái clientAccessToken không tồn tại thì trả về lỗi luôn
   if (!clientAccessToken) {
     next(

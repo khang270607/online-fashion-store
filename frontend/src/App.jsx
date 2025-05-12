@@ -22,7 +22,7 @@ import UserManagement from '~/pages/admin/UserManagement/index'
 import ProductManagement from '~/pages/admin/ProductManagement/index.jsx'
 import CategorieManagement from '~/pages/admin/CategorieManagement/index.jsx'
 import OrderManagement from '~/pages/admin/OrderManagement/index'
-import Profile from '~/pages/admin/Profile/index.jsx'
+import ProfileAdmin from '~/pages/admin/Profile/index.jsx'
 
 // Trang 404
 import NotFound from '~/pages/404/NotFound'
@@ -72,7 +72,7 @@ function App() {
             element={<CategorieManagement />}
           />
           <Route path='order-management' element={<OrderManagement />} />
-          <Route path='profile' element={<Profile />} />
+          <Route path='profile' element={<ProfileAdmin />} />
         </Route>
       </Route>
 

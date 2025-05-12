@@ -1,18 +1,26 @@
 import React, { useEffect } from 'react'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import DialogActions from '@mui/material/DialogActions'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import MenuItem from '@mui/material/MenuItem'
-import Select from '@mui/material/Select'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-import CircularProgress from '@mui/material/CircularProgress'
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  MenuItem,
+  Select,
+  InputLabel,
+  FormControl,
+  CircularProgress
+} from '@mui/material'
 import { useForm } from 'react-hook-form'
 import AuthorizedAxiosInstance from '~/utils/authorizedAxios.js'
 import { API_ROOT } from '~/utils/constants.js'
+import {
+  modalPaperProps,
+  dialogTitleStyle,
+  dialogButtonStyle,
+  cancelButtonStyle
+} from './StyleModal.js'
 
 const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
   const {
@@ -28,7 +36,6 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
     }
   })
 
-  // Cập nhật form khi user thay đổi
   useEffect(() => {
     if (open && user) {
       reset({
@@ -41,7 +48,6 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
 
   const onSubmit = async (data) => {
     try {
-      // Chỉ gửi trường role để cập nhật
       await AuthorizedAxiosInstance.patch(`${API_ROOT}/v1/users/${user._id}`, {
         role: data.role
       })
@@ -53,11 +59,15 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Chỉnh sửa người dùng</DialogTitle>
-      <DialogContent>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      PaperProps={modalPaperProps}
+    >
+      <DialogTitle sx={dialogTitleStyle}>Chỉnh sửa người dùng</DialogTitle>
+      <DialogContent dividers>
         <form id='edit-user-form' onSubmit={handleSubmit(onSubmit)}>
-          {/* Trường Tên - Chỉ hiển thị */}
           <TextField
             label='Tên người dùng'
             fullWidth
@@ -66,8 +76,6 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             InputProps={{ readOnly: true }}
             disabled
           />
-
-          {/* Trường Email - Chỉ hiển thị */}
           <TextField
             label='Email'
             fullWidth
@@ -76,8 +84,6 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             InputProps={{ readOnly: true }}
             disabled
           />
-
-          {/* Trường Quyền - Cho phép chỉnh sửa */}
           <FormControl fullWidth margin='normal' error={!!errors.role}>
             <InputLabel id='role-label'>Quyền</InputLabel>
             <Select
@@ -99,7 +105,11 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
         </form>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={isSubmitting} color='#001f5d'>
+        <Button
+          onClick={onClose}
+          disabled={isSubmitting}
+          sx={cancelButtonStyle}
+        >
           Hủy
         </Button>
         <Button
@@ -108,7 +118,7 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
           variant='contained'
           disabled={isSubmitting}
           startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-          sx={{ backgroundColor: '#001f5d', color: 'white' }}
+          sx={dialogButtonStyle}
         >
           {isSubmitting ? 'Đang lưu' : 'Lưu'}
         </Button>

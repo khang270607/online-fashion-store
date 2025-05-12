@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -9,11 +9,20 @@ import {
 } from '@mui/material'
 
 const DeleteProductModal = ({ open, onClose, product, onDelete }) => {
+  const [isDeleting, setIsDeleting] = useState(false)
+
   if (!product) return null
 
-  const handleConfirmDelete = () => {
-    onDelete(product._id)
-    onClose()
+  const handleConfirmDelete = async () => {
+    setIsDeleting(true) // Bắt đầu trạng thái đang xoá
+    try {
+      await onDelete(product._id) // Giả sử onDelete là một async function
+    } catch (error) {
+      console.error('Xoá sản phẩm thất bại:', error)
+    } finally {
+      setIsDeleting(false) // Kết thúc trạng thái xoá
+      onClose() // Đóng modal sau khi xoá thành công hoặc thất bại
+    }
   }
 
   return (
@@ -28,8 +37,13 @@ const DeleteProductModal = ({ open, onClose, product, onDelete }) => {
         <Button onClick={onClose} color='#001f5d'>
           Hủy
         </Button>
-        <Button onClick={handleConfirmDelete} color='error' variant='contained'>
-          Xoá
+        <Button
+          onClick={handleConfirmDelete}
+          color='error'
+          variant='contained'
+          disabled={isDeleting} // Vô hiệu hóa nút nếu đang xoá
+        >
+          {isDeleting ? 'Đang xoá...' : 'Xoá'}
         </Button>
       </DialogActions>
     </Dialog>

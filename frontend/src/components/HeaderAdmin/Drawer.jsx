@@ -32,6 +32,7 @@ export default function AdminDrawer({ open, onClose }) {
         keepMounted: true,
         BackdropProps: { sx: { backgroundColor: 'transparent' } }
       }}
+      hideBackdrop={true}
     >
       <div className='drawer-header Drawer-header'></div>
       <Divider />

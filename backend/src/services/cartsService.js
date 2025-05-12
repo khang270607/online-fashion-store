@@ -1,4 +1,3 @@
-import mongoose from 'mongoose'
 import { StatusCodes } from 'http-status-codes'
 
 import { CartModel } from '~/models/CartModel'

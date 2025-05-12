@@ -1,33 +1,54 @@
 import React from 'react'
-import { Menu, MenuItem } from '@mui/material'
-
-const MenuItems = ['Đăng xuất']
+import {
+  MenuItem,
+  Paper,
+  List,
+  Grow,
+  ClickAwayListener,
+  Popper
+} from '@mui/material'
+import { useNavigate } from 'react-router-dom'
 
 export default function AdminMenu({ anchorEl, isOpen, onClose }) {
-  const menuId = 'primary-search-account-menu'
+  const navigate = useNavigate()
 
   return (
-    <Menu
-      sx={{ marginTop: '30px', zIndex: '99999' }}
-      anchorEl={anchorEl}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-      id={menuId}
-      keepMounted
-      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+    <Popper
       open={isOpen}
-      onClose={onClose}
+      anchorEl={anchorEl}
+      role={undefined}
+      placement='bottom-end'
+      transition
+      disablePortal
+      style={{ zIndex: 1300 }}
     >
-      {MenuItems.map((item) => (
-        <MenuItem
-          key={item}
-          onClick={() => {
-            onClose()
-            console.log('Đăng xuất') // Xử lý đăng xuất tại đây
-          }}
-        >
-          {item}
-        </MenuItem>
-      ))}
-    </Menu>
+      {({ TransitionProps }) => (
+        <Grow {...TransitionProps} style={{ transformOrigin: 'top right' }}>
+          <Paper>
+            <ClickAwayListener onClickAway={onClose}>
+              <List>
+                <MenuItem
+                  onClick={() => {
+                    onClose()
+                    navigate('/admin/profile') // Chuyển hướng tới trang profile
+                  }}
+                  sx={{ borderBottom: '1px solid #ccc' }}
+                >
+                  Thông tin cá nhân
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    onClose()
+                    console.log('Đăng xuất') // Giữ logic đăng xuất
+                  }}
+                >
+                  Đăng xuất
+                </MenuItem>
+              </List>
+            </ClickAwayListener>
+          </Paper>
+        </Grow>
+      )}
+    </Popper>
   )
 }

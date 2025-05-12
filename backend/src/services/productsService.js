@@ -2,8 +2,7 @@ import { StatusCodes } from 'http-status-codes'
 
 import { ProductModel } from '~/models/ProductModel'
 import ApiError from '~/utils/ApiError'
-import { pickUser, slugify } from '~/utils/formatters'
-import { ROLE } from '~/utils/constants'
+import { slugify } from '~/utils/formatters'
 
 const createProduct = async (reqBody) => {
   // eslint-disable-next-line no-useless-catch
@@ -13,7 +12,7 @@ const createProduct = async (reqBody) => {
       description: reqBody.description,
       price: reqBody.price,
       image: reqBody.image,
-      category: reqBody.category,
+      categoryId: reqBody.categoryId,
       quantity: reqBody.quantity,
       slug: slugify(reqBody.name),
       destroy: false
@@ -30,7 +29,12 @@ const createProduct = async (reqBody) => {
 const getProductList = async () => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await ProductModel.find({}).lean()
+    const result = await ProductModel.find({ destroy: false })
+      .populate({
+        path: 'categoryId',
+        select: 'name description slug _id'
+      })
+      .lean()
 
     return result
   } catch (err) {
@@ -41,7 +45,12 @@ const getProductList = async () => {
 const getProduct = async (productId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await ProductModel.findById(productId).lean()
+    const result = await ProductModel.findById({ productId, destroy: false })
+      .populate({
+        path: 'categoryId',
+        select: 'name description slug _id'
+      })
+      .lean()
 
     if (!result) {
       throw new ApiError(StatusCodes.NOT_FOUND, 'Không tồn tại ID này.')
@@ -56,16 +65,14 @@ const getProduct = async (productId) => {
 const updateProduct = async (productId, reqBody) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const product = await ProductModel.findById(productId)
-
-    if (!product) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'ID không tồn tại.')
-    }
-
-    // Cập nhật dữ liệu
-    Object.assign(product, reqBody)
-
-    const updatedProduct = await product.save()
+    const updatedProduct = await ProductModel.findOneAndUpdate(
+      { _id: productId, destroy: false },
+      reqBody,
+      {
+        new: true,
+        runValidators: true
+      }
+    )
 
     return updatedProduct
   } catch (err) {
@@ -76,17 +83,33 @@ const updateProduct = async (productId, reqBody) => {
 const deleteProduct = async (productId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const product = await ProductModel.findById(productId)
-
-    if (!product) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Không tồn tại ID.')
-    }
-
-    // Cập nhật dữ liệu
-    product.destroy = true
-    const productUpdated = await product.save()
+    const productUpdated = await ProductModel.findOneAndUpdate(
+      {
+        _id: productId
+      },
+      {
+        $set: { destroy: true }
+      },
+      {
+        new: true
+      }
+    )
 
     return productUpdated
+  } catch (err) {
+    throw err
+  }
+}
+
+const getListProductOfCategory = async (categoryId) => {
+  // eslint-disable-next-line no-useless-catch
+  try {
+    const ListProduct = await ProductModel.find({
+      categoryId: categoryId,
+      destroy: false
+    }).lean()
+
+    return ListProduct
   } catch (err) {
     throw err
   }
@@ -97,5 +120,6 @@ export const productsService = {
   getProductList,
   getProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  getListProductOfCategory
 }

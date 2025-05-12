@@ -19,11 +19,6 @@ export const getProducts = async (page = 1, limit = 10) => {
   }
 }
 
-// Ví dụ gọi API và lấy sản phẩm
-getProducts(1, 2).then((data) => {
-  console.log('Dữ liệu sản phẩm:', data.products)
-})
-
 // Lấy chi tiết sản phẩm theo ID
 export const getProductById = async (productId) => {
   try {
@@ -70,14 +65,14 @@ export const deleteProduct = async (productId) => {
 // Thêm sản phẩm mới
 export const addProduct = async (data) => {
   try {
+    console.log('data', data)
     const response = await AuthorizedAxiosInstance.post(
       `${API_ROOT}/v1/products`,
       data
     )
+
     return response.data
   } catch (error) {
-    console.error('Lỗi khi thêm sản phẩm:', error)
-    console.log('Chi tiết lỗi:', error.response?.data)
-    return null
+    return error
   }
 }

@@ -17,7 +17,10 @@ export default function useUsers() {
 
   const removeUser = async (id, page) => {
     const success = await deleteUser(id)
-    if (success) fetchUsers(page)
+    if (success) {
+      const newPage = page > 1 && users.length === 1 ? page - 1 : page
+      fetchUsers(newPage)
+    }
   }
 
   return { users, totalPages, fetchUsers, removeUser, Loading }

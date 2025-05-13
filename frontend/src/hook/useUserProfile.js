@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getProfile, updateProfile } from '~/services/profileService.jsx'
+import { getProfile, updateProfile } from '~/services/profileService.js'
 
 export default function useProfile() {
   const [profile, setProfile] = useState(null)

@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import CategoryTable from './CategoryTable'
 import CategoryPagination from './CategoryPagination'
-import useCategories from '~/hook/useCategories'
+import useCategories from '~/hook/useCategories.js'
 import { updateCategory, deleteCategory } from '~/services/categoryService'
 import AddIcon from '@mui/icons-material/Add'
 // Lazy load các modal

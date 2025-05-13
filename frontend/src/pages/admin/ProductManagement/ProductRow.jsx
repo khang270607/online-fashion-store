@@ -43,7 +43,7 @@ const ProductRow = ({ index, product, handleOpenModal }) => {
   return (
     <>
       <StyledTableRow>
-        <StyledTableCell>{index}</StyledTableCell>
+        <StyledTableCell sx={{ textAlign: 'center' }}>{index}</StyledTableCell>
         <StyledTableCell>
           <img
             src={product.image?.[0]}

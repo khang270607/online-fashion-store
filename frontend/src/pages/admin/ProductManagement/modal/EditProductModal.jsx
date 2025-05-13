@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react'
-import { useForm, Controller } from 'react-hook-form'
 import {
   Dialog,
   DialogTitle,
@@ -12,9 +11,15 @@ import {
   FormControl,
   Select,
   InputLabel,
-  MenuItem
+  MenuItem,
+  Divider
 } from '@mui/material'
-import useCategories from '~/hook/useCategories'
+import { IconButton } from '@mui/material'
+import DeleteIcon from '@mui/icons-material/Delete'
+import EditIcon from '@mui/icons-material/Edit'
+import { useRef } from 'react'
+import { useForm, Controller } from 'react-hook-form'
+import useCategories from '~/hook/useCategories.js'
 
 const EditProductModal = ({ open, onClose, product, onSave }) => {
   const {
@@ -27,15 +32,15 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
 
   const [images, setImages] = useState([{ file: null, preview: '' }])
   const { categories, loading } = useCategories()
-
+  const fileInputRefs = useRef([])
   useEffect(() => {
     if (product) {
       reset({
         name: product.name || '',
         description: product.description || '',
         price: product.price || '',
-        categoryId: product.categoryId?._id || '',
-        quantity: product.quantity || ''
+        quantity: product.quantity || '',
+        categoryId: product.categoryId?._id || ''
       })
 
       const imagePreviews =
@@ -44,7 +49,7 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       setImages([...imagePreviews, { file: null, preview: '' }])
     }
   }, [product, reset])
-  console.log('product', product)
+
   const handleImageChange = (index, file) => {
     const newImages = [...images]
     newImages[index] = { file, preview: URL.createObjectURL(file) }
@@ -71,12 +76,11 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       name: data.name,
       description: data.description,
       price: Number(data.price),
-      image: imageUrls,
+      quantity: Number(data.quantity),
       categoryId: data.categoryId,
-      quantity: Number(data.quantity)
+      image: imageUrls
     }
 
-    console.log('Dữ liệu submit:', updatedData)
     onSave(product._id, updatedData)
     onClose()
   }
@@ -86,20 +90,17 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth='lg' // Tăng kích thước modal
-      PaperProps={{
-        sx: {
-          mt: 8,
-          maxHeight: '90vh'
-        }
-      }}
+      maxWidth='lg'
+      PaperProps={{ sx: { mt: 8, maxHeight: '90vh' } }}
     >
-      <DialogTitle>Sửa Sản Phẩm</DialogTitle>
+      <DialogTitle sx={{ fontWeight: 600, fontSize: 20 }}>
+        Sửa Sản Phẩm
+      </DialogTitle>
+      <Divider />
+
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent
-          sx={{ display: 'flex', gap: 2, overflowY: 'auto', flexGrow: 1 }}
-        >
-          {/* Form nhập liệu bên trái */}
+        <DialogContent sx={{ display: 'flex', gap: 2, overflowY: 'auto' }}>
+          {/* Form bên trái */}
           <Box sx={{ flex: 2 }}>
             <TextField
               label='Tên sản phẩm'
@@ -174,9 +175,8 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
           {/* Hình ảnh bên phải */}
           <Box sx={{ flex: 1 }}>
             <Typography variant='subtitle1' sx={{ mb: 1 }}>
-              Hình ảnh sản phẩm (Tối đa 9 ảnh)
+              Hình ảnh sản phẩm (tối đa 9 ảnh)
             </Typography>
-
             <Box
               sx={{
                 display: 'grid',
@@ -186,88 +186,102 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
             >
               {images.map((img, index) => (
                 <Box key={index} sx={{ position: 'relative' }}>
-                  <Button
-                    variant='outlined'
-                    component='label'
+                  {/* input file riêng biệt để trigger bằng ref */}
+                  <input
+                    type='file'
+                    accept='image/*'
+                    hidden
+                    ref={(el) => (fileInputRefs.current[index] = el)}
+                    onChange={(e) =>
+                      handleImageChange(index, e.target.files[0])
+                    }
+                  />
+
+                  <Box
                     sx={{
                       width: '100%',
-                      borderColor: '#001f5d',
-                      color: '#001f5d',
-                      fontSize: '12px',
-                      minHeight: '36px'
+                      height: 80,
+                      borderRadius: 1,
+                      border: '1px solid #ccc',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      '&:hover .overlay': {
+                        opacity: 1
+                      }
                     }}
                   >
-                    {img.preview ? 'Sửa' : 'Thêm'}
-                    <input
-                      type='file'
-                      accept='image/*'
-                      hidden
-                      onChange={(e) =>
-                        handleImageChange(index, e.target.files[0])
-                      }
-                    />
-                  </Button>
-
-                  {img.preview && (
-                    <Box
-                      sx={{
-                        position: 'relative',
-                        mt: 1,
-                        '&:hover .overlay': {
-                          opacity: 1
-                        },
-                        '&:hover img': {
-                          filter: 'brightness(40%)'
-                        }
-                      }}
-                    >
+                    {img.preview ? (
                       <Box
                         component='img'
                         src={img.preview}
                         alt={`preview-${index}`}
                         sx={{
                           width: '100%',
-                          height: 80,
-                          objectFit: 'cover',
-                          borderRadius: 1,
-                          border: '1px solid #ccc',
-                          transition: '0.3s'
+                          height: '100%',
+                          objectFit: 'cover'
                         }}
                       />
+                    ) : (
+                      <Button
+                        variant='outlined'
+                        component='label'
+                        sx={{
+                          width: '100%',
+                          height: '100%',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          borderColor: '#001f5d',
+                          color: '#001f5d',
+                          fontSize: '12px'
+                        }}
+                      >
+                        Thêm ảnh
+                        <input
+                          type='file'
+                          accept='image/*'
+                          hidden
+                          onChange={(e) =>
+                            handleImageChange(index, e.target.files[0])
+                          }
+                        />
+                      </Button>
+                    )}
+
+                    {/* Overlay khi hover */}
+                    {img.preview && (
                       <Box
                         className='overlay'
                         sx={{
                           position: 'absolute',
-                          top: 0,
-                          left: 0,
-                          width: '100%',
-                          height: '90%',
+                          top: 5,
+                          right: 5,
                           display: 'flex',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          color: '#f00',
-                          fontWeight: 'bold',
-                          fontSize: 14,
+                          gap: 1,
                           opacity: 0,
-                          transition: 'opacity 0.3s',
-                          backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                          borderRadius: 1,
-                          cursor: 'pointer'
+                          transition: 'opacity 0.3s'
                         }}
-                        onClick={() => handleImageDelete(index)}
                       >
-                        Xóa
+                        <IconButton onClick={() => handleImageDelete(index)}>
+                          <DeleteIcon sx={{ color: '#f44336' }} />
+                        </IconButton>
+                        <IconButton
+                          onClick={() => fileInputRefs.current[index]?.click()}
+                        >
+                          <EditIcon sx={{ color: '#2196f3' }} />
+                        </IconButton>
                       </Box>
-                    </Box>
-                  )}
+                    )}
+                  </Box>
                 </Box>
               ))}
             </Box>
           </Box>
         </DialogContent>
 
+        <Divider />
         <DialogActions>
-          <Button onClick={onClose} color='#001f5d'>
+          <Button onClick={onClose} variant='outlined'>
             Hủy
           </Button>
           <Button

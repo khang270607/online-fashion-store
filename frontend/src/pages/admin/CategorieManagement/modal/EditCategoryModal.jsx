@@ -6,7 +6,8 @@ import {
   DialogTitle,
   TextField,
   Button,
-  CircularProgress
+  CircularProgress,
+  Divider
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 
@@ -38,8 +39,9 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
       <DialogTitle>Sửa danh mục</DialogTitle>
+      <Divider sx={{ my: 0 }} />
       <DialogContent>
         <form id='edit-category-form' onSubmit={handleSubmit(onSubmit)}>
           <TextField
@@ -62,8 +64,9 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
           />
         </form>
       </DialogContent>
+      <Divider sx={{ my: 0 }} />
       <DialogActions>
-        <Button onClick={onClose} disabled={isSubmitting} color='error'>
+        <Button onClick={onClose} disabled={isSubmitting} color='inherit'>
           Hủy
         </Button>
         <Button

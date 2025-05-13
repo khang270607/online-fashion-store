@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { getProducts } from '~/services/productService'
 
 const useProducts = (initialPage = 1, limit = 10) => {
@@ -14,10 +14,10 @@ const useProducts = (initialPage = 1, limit = 10) => {
     setLoading(false)
   }
 
-  useEffect(() => {
-    fetchProducts(initialPage) // gọi khi hook được render lần đầu
-    console.log('số trang', initialPage)
-  }, [initialPage])
+  // useEffect(() => {
+  //   fetchProducts(initialPage) // gọi khi hook được render lần đầu
+  //   console.log('số trang', initialPage)
+  // }, [initialPage])
 
   return { products, totalPages, fetchProducts, loading }
 }

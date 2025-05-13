@@ -10,17 +10,12 @@ import {
   Select,
   InputLabel,
   FormControl,
-  CircularProgress
+  CircularProgress,
+  Divider
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import AuthorizedAxiosInstance from '~/utils/authorizedAxios.js'
 import { API_ROOT } from '~/utils/constants.js'
-import {
-  modalPaperProps,
-  dialogTitleStyle,
-  dialogButtonStyle,
-  cancelButtonStyle
-} from './StyleModal.js'
 
 const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
   const {
@@ -32,7 +27,9 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
     defaultValues: {
       name: '',
       email: '',
-      role: 'customer'
+      role: 'customer',
+      createdAt: '',
+      updatedAt: ''
     }
   })
 
@@ -41,7 +38,9 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
       reset({
         name: user.name || '',
         email: user.email || '',
-        role: user.role || 'customer'
+        role: user.role || 'customer',
+        createdAt: user.createdAt || '',
+        updatedAt: user.updatedAt || ''
       })
     }
   }, [open, user, reset])
@@ -59,14 +58,10 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      PaperProps={modalPaperProps}
-    >
-      <DialogTitle sx={dialogTitleStyle}>Chỉnh sửa người dùng</DialogTitle>
-      <DialogContent dividers>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+      <DialogTitle sx={{ paddingBottom: 0 }}>Chỉnh sửa người dùng</DialogTitle>
+      <Divider sx={{ my: 1 }} />
+      <DialogContent>
         <form id='edit-user-form' onSubmit={handleSubmit(onSubmit)}>
           <TextField
             label='Tên người dùng'
@@ -74,7 +69,7 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             margin='normal'
             value={user?.name || ''}
             InputProps={{ readOnly: true }}
-            disabled
+            helperText='Không thể chỉnh sửa'
           />
           <TextField
             label='Email'
@@ -82,7 +77,7 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             margin='normal'
             value={user?.email || ''}
             InputProps={{ readOnly: true }}
-            disabled
+            helperText='Không thể chỉnh sửa'
           />
           <FormControl fullWidth margin='normal' error={!!errors.role}>
             <InputLabel id='role-label'>Quyền</InputLabel>
@@ -93,7 +88,7 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
               defaultValue={user?.role || 'customer'}
               disabled={isSubmitting}
             >
-              <MenuItem value='customer'>Người dùng</MenuItem>
+              <MenuItem value='customer'>Khách hàng</MenuItem>
               <MenuItem value='admin'>Quản trị viên</MenuItem>
             </Select>
             {errors.role && (
@@ -102,14 +97,32 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
               </p>
             )}
           </FormControl>
+
+          <TextField
+            label='Ngày tạo'
+            fullWidth
+            margin='normal'
+            value={
+              user?.createdAt ? new Date(user.createdAt).toLocaleString() : ''
+            }
+            InputProps={{ readOnly: true }}
+            helperText='Không thể chỉnh sửa'
+          />
+          <TextField
+            label='Ngày cập nhật'
+            fullWidth
+            margin='normal'
+            value={
+              user?.updatedAt ? new Date(user.updatedAt).toLocaleString() : ''
+            }
+            InputProps={{ readOnly: true }}
+            helperText='Không thể chỉnh sửa'
+          />
         </form>
       </DialogContent>
+      <Divider />
       <DialogActions>
-        <Button
-          onClick={onClose}
-          disabled={isSubmitting}
-          sx={cancelButtonStyle}
-        >
+        <Button onClick={onClose} disabled={isSubmitting} color='inherit'>
           Hủy
         </Button>
         <Button
@@ -118,7 +131,7 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
           variant='contained'
           disabled={isSubmitting}
           startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
-          sx={dialogButtonStyle}
+          sx={{ backgroundColor: '#001f5d', color: '#fff' }}
         >
           {isSubmitting ? 'Đang lưu' : 'Lưu'}
         </Button>

@@ -1,4 +1,3 @@
-// components/modal/AddCategoryModal.jsx
 import React from 'react'
 import {
   Dialog,
@@ -6,7 +5,8 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Button
+  Button,
+  Divider
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { addCategory } from '~/services/categoryService'
@@ -20,7 +20,6 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
   } = useForm()
 
   const onSubmit = async (data) => {
-    console.log('Dữ liệu gửi lên:', data)
     const payload = {
       name: data.name,
       description: data.description || ''
@@ -43,6 +42,7 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth='sm'>
       <DialogTitle>Thêm danh mục mới</DialogTitle>
+      <Divider sx={{ my: 0 }} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <TextField
@@ -62,8 +62,9 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
             {...register('description', { required: 'Mô tả là bắt buộc' })}
           />
         </DialogContent>
+        <Divider sx={{ my: 0 }} />
         <DialogActions>
-          <Button color='#001f5d' onClick={handleClose}>
+          <Button color='inherit' onClick={handleClose}>
             Hủy
           </Button>
           <Button

@@ -26,7 +26,7 @@ const DeleteProductModal = ({ open, onClose, product, onDelete }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth='xs' fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
       <DialogTitle>Xoá sản phẩm</DialogTitle>
       <DialogContent dividers>
         <Typography>

@@ -1,11 +1,11 @@
-// components/modal/DeleteCategoryModal.jsx
 import React from 'react'
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Button
+  Button,
+  Divider
 } from '@mui/material'
 
 const DeleteCategoryModal = ({ open, onClose, category, onDelete }) => {
@@ -15,8 +15,9 @@ const DeleteCategoryModal = ({ open, onClose, category, onDelete }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
       <DialogTitle>Xoá danh mục</DialogTitle>
+      <Divider sx={{ my: 0 }} />
       <DialogContent>
         Bạn có chắc chắn muốn xoá danh mục <strong>{category.name}</strong>?
       </DialogContent>

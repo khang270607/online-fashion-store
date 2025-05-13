@@ -31,7 +31,7 @@ const ProductTable = ({ products, loading, handleOpenModal }) => {
       <Table>
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell>STT</StyledTableCell>
+            <StyledTableCell sx={{ textAlign: 'center' }}>STT</StyledTableCell>
             <StyledTableCell>Ảnh</StyledTableCell>
             <StyledTableCell>Tên</StyledTableCell>
             <StyledTableCell>Giá</StyledTableCell>

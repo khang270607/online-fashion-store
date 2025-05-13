@@ -31,12 +31,7 @@ const DeleteUserModal = React.memo(({ open, onClose, user, onDelete }) => {
   }
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      PaperProps={modalPaperProps}
-    >
+    <Dialog open={open} onClose={onClose} fullWidth>
       <DialogTitle sx={dialogTitleStyle}>Xác nhận xóa người dùng</DialogTitle>
       <DialogContent dividers>
         <Typography>

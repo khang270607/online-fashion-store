@@ -62,29 +62,29 @@ const ProductDetail = () => {
   const [error, setError] = useState(null)
   const [openSnackbar, setOpenSnackbar] = useState(false)
 
-  // Hardcoded colors and sizes
   const colors = ['Đen', 'Trắng', 'Xanh', 'Đỏ']
   const sizes = ['S', 'M', 'L', 'XL']
 
-  // Fetch product details
   useEffect(() => {
     const fetchProduct = async () => {
       setIsLoading(true)
       try {
-        // Validate productId
-        let id = productId
-        if (typeof productId === 'object' && productId?.productId) {
-          id = productId.productId
-        }
-        if (typeof id !== 'string' || !/^[0-9a-fA-F]{24}$/.test(id)) {
+        console.log('Current URL:', window.location.href)
+        console.log('useParams productId:', productId)
+        if (
+          !productId ||
+          typeof productId !== 'string' ||
+          !/^[0-9a-fA-F]{24}$/.test(productId)
+        ) {
           throw new Error('ID sản phẩm không hợp lệ.')
         }
-        console.log('Fetching product with ID:', id)
-        const data = await getProductById(id)
-        if (data) {
+        const data = await getProductById(productId)
+        console.log('Product data from API:', data) // Debug
+        if (data && Object.keys(data).length > 0) {
           setProduct({
             ...data,
-            images: data.images || data.image || []
+            images: data.images || data.image || ['/default.jpg'],
+            name: data.name || 'Sản phẩm không tên'
           })
         } else {
           setError('Sản phẩm không tồn tại.')
@@ -104,7 +104,6 @@ const ProductDetail = () => {
     fetchProduct()
   }, [productId])
 
-  // Handle image switching
   const handleImageClick = (index) => {
     if (index !== selectedImageIndex) {
       setFadeIn(false)
@@ -115,15 +114,16 @@ const ProductDetail = () => {
     }
   }
 
-  // Handle color and size selection
   const handleColorChange = (value) => setColor(value)
   const handleSizeChange = (value) => setSize(value)
   const handleQuantityChange = (delta) =>
     setQuantity((prev) => Math.max(1, prev + delta))
 
-  // Handle add to cart
   const handleAddToCart = async () => {
     try {
+      if (!product?._id || !/^[0-9a-fA-F]{24}$/.test(product._id)) {
+        throw new Error('ID sản phẩm không hợp lệ để thêm vào giỏ hàng.')
+      }
       await AuthorizedAxiosInstance.post('/v1/cart', {
         productId: product._id,
         quantity,
@@ -140,7 +140,6 @@ const ProductDetail = () => {
     }
   }
 
-  // Close Snackbar
   const handleCloseSnackbar = () => {
     setOpenSnackbar(false)
   }
@@ -153,11 +152,11 @@ const ProductDetail = () => {
     )
   }
 
-  if (error) {
+  if (error || !product || Object.keys(product).length === 0) {
     return (
       <Container maxWidth='lg' sx={{ py: 4, mt: 20, textAlign: 'center' }}>
         <Typography variant='h6' color='error'>
-          {error}
+          {error || 'Không tìm thấy sản phẩm.'}
         </Typography>
         <Button
           variant='contained'
@@ -170,25 +169,16 @@ const ProductDetail = () => {
     )
   }
 
-  if (!product) {
-    return (
-      <Container maxWidth='lg' sx={{ py: 4, mt: 20, textAlign: 'center' }}>
-        <Typography variant='h6'>Không tìm thấy sản phẩm.</Typography>
-      </Container>
-    )
-  }
-
   return (
     <Container maxWidth='lg' sx={{ py: 4, mt: 20 }}>
       <Grid container spacing={4}>
-        {/* Hình ảnh sản phẩm */}
         <Grid item xs={12} md={6}>
           <Box sx={{ width: 400, height: 450, mr: 3 }}>
             <Fade in={fadeIn} timeout={300} key={selectedImageIndex}>
               <Box>
                 <ProductImage
                   src={product.images?.[selectedImageIndex] || '/default.jpg'}
-                  alt={product.name}
+                  alt={product.name || 'Sản phẩm'}
                 />
               </Box>
             </Fade>
@@ -205,23 +195,19 @@ const ProductDetail = () => {
             ))}
           </Box>
         </Grid>
-
-        {/* Thông tin sản phẩm */}
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             <Typography variant='h5' fontWeight={700}>
-              {product.name}
+              {product.name || 'Sản phẩm không tên'}
             </Typography>
             <Typography variant='body2' color='text.secondary'>
               Mã sản phẩm: {product.productCode || product._id}
             </Typography>
-
             <PriceTypography variant='h5'>
               {product.price
                 ? `${product.price.toLocaleString('vi-VN')}đ`
                 : '---'}
             </PriceTypography>
-
             <Box sx={{ border: '1px dashed #d32f2f', p: 1.5, borderRadius: 1 }}>
               <Typography variant='body2' color='error' fontWeight={700}>
                 <LocalOfferIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
@@ -239,7 +225,6 @@ const ProductDetail = () => {
                 </Typography>
               )}
             </Box>
-
             <Box>
               <Typography variant='body2' fontWeight={700} sx={{ mb: 0.5 }}>
                 Mã giảm giá
@@ -254,7 +239,6 @@ const ProductDetail = () => {
                 </Typography>
               )}
             </Box>
-
             <Box>
               <Typography variant='body2' fontWeight={700} sx={{ mb: 0.5 }}>
                 Màu sắc: {color}
@@ -271,7 +255,6 @@ const ProductDetail = () => {
                 ))}
               </ButtonGroup>
             </Box>
-
             <Box>
               <Typography variant='body2' fontWeight={700} sx={{ mb: 0.5 }}>
                 Kích thước: {size}{' '}
@@ -291,7 +274,6 @@ const ProductDetail = () => {
                 ))}
               </ButtonGroup>
             </Box>
-
             <Box
               sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mt: 1 }}
             >
@@ -337,15 +319,12 @@ const ProductDetail = () => {
           </Box>
         </Grid>
       </Grid>
-
       <Box sx={{ mt: 5 }}>
         <Typography variant='h6'>MÔ TẢ SẢN PHẨM</Typography>
         <Typography variant='body2'>
           {product.description || 'Không có mô tả sản phẩm.'}
         </Typography>
       </Box>
-
-      {/* Snackbar thông báo */}
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
@@ -360,8 +339,6 @@ const ProductDetail = () => {
           Thêm sản phẩm vào giỏ hàng thành công!
         </Alert>
       </Snackbar>
-
-      {/* Snackbar lỗi */}
       <Snackbar
         open={!!error}
         autoHideDuration={6000}

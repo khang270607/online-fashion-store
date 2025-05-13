@@ -35,6 +35,7 @@ export const getProductsByCategory = async (
       `API getProductsByCategory response (${categoryId}):`,
       response.data
     )
+
     // Xử lý response là mảng trực tiếp hoặc object
     const products = Array.isArray(response.data)
       ? response.data
@@ -52,16 +53,19 @@ export const getProductsByCategory = async (
   }
 }
 
-// Lấy chi tiết sản phẩm theo ID
 export const getProductById = async (productId) => {
   try {
+    if (typeof productId !== 'string' || !productId) {
+      throw new Error('productId phải là chuỗi không rỗng')
+    }
     const response = await AuthorizedAxiosInstance.get(
       `${API_ROOT}/v1/products/${productId}`
     )
-    return response.data
+    console.log(`API getProductById response (${productId}):`, response.data)
+    return response.data || {}
   } catch (error) {
-    console.error('Lỗi khi lấy thông tin sản phẩm:', error)
-    return null
+    console.error('Lỗi khi lấy sản phẩm:', error.response?.data || error)
+    return {}
   }
 }
 

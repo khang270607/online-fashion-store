@@ -8,9 +8,9 @@ export const getProducts = async (page = 1, limit = 10) => {
     const response = await AuthorizedAxiosInstance.get(
       `${API_ROOT}/v1/products?page=${page}&limit=${limit}`
     )
-    console.log('Danh sách sản phẩm:', response.data)
+    console.log('API getProducts response:', response.data)
     return {
-      products: response.data || [],
+      products: response.data.products || response.data || [],
       total: response.data.total || 0
     }
   } catch (error) {
@@ -19,16 +19,53 @@ export const getProducts = async (page = 1, limit = 10) => {
   }
 }
 
-// Lấy chi tiết sản phẩm theo ID
+// Lấy danh sách sản phẩm theo danh mục
+export const getProductsByCategory = async (
+  categoryId,
+  page = 1,
+  limit = 10
+) => {
+  try {
+    if (typeof categoryId !== 'string' || !categoryId) {
+      throw new Error('categoryId phải là chuỗi không rỗng')
+    }
+    const url = `${API_ROOT}/v1/products/category/${categoryId}?page=${page}&limit=${limit}`
+    const response = await AuthorizedAxiosInstance.get(url)
+    console.log(
+      `API getProductsByCategory response (${categoryId}):`,
+      response.data
+    )
+
+    // Xử lý response là mảng trực tiếp hoặc object
+    const products = Array.isArray(response.data)
+      ? response.data
+      : response.data.products || response.data || []
+    const total = Array.isArray(response.data)
+      ? response.data.length
+      : response.data.total || response.data.totalCount || 0
+    return {
+      products,
+      total
+    }
+  } catch (error) {
+    console.error(`Lỗi khi lấy sản phẩm theo danh mục ${categoryId}:`, error)
+    return { products: [], total: 0 }
+  }
+}
+
 export const getProductById = async (productId) => {
   try {
+    if (typeof productId !== 'string' || !productId) {
+      throw new Error('productId phải là chuỗi không rỗng')
+    }
     const response = await AuthorizedAxiosInstance.get(
       `${API_ROOT}/v1/products/${productId}`
     )
-    return response.data
+    console.log(`API getProductById response (${productId}):`, response.data)
+    return response.data || {}
   } catch (error) {
-    console.error('Lỗi khi lấy thông tin sản phẩm:', error)
-    return null
+    console.error('Lỗi khi lấy sản phẩm:', error.response?.data || error)
+    return {}
   }
 }
 
@@ -70,7 +107,6 @@ export const addProduct = async (data) => {
       `${API_ROOT}/v1/products`,
       data
     )
-
     return response.data
   } catch (error) {
     return error

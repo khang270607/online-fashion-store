@@ -1,7 +1,7 @@
-// components/MainMenu.jsx
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Box, Button, Popover, Typography } from '@mui/material'
 import { styled } from '@mui/system'
+import { getCategories } from '~/services/categoryService'
 
 const StyledButton = styled(Button)(({ theme }) => ({
   color: '#000',
@@ -29,7 +29,23 @@ const sectionStyle = {
 
 const Menu = () => {
   const [hoveredMenu, setHoveredMenu] = useState({ name: null, el: null })
+  const [categories, setCategories] = useState([])
   const hoverTimeout = useRef(null)
+
+  // Lấy danh mục từ API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await getCategories(1, 100)
+        const categories = response.categories || response || []
+        console.log('Danh sách danh mục trong MainMenu:', categories)
+        setCategories(categories)
+      } catch (error) {
+        console.error('Lỗi khi lấy danh mục:', error)
+      }
+    }
+    fetchCategories()
+  }, [])
 
   const handleHover = (menu, el) => {
     clearTimeout(hoverTimeout.current)
@@ -45,29 +61,26 @@ const Menu = () => {
   const renderPopoverContent = (menu) => {
     if (menu === 'Sản phẩm') {
       return (
-        <Box sx={{ display: 'flex', gap: 4, p: 2 }}>
+        <Box sx={{ display: 'flex', flexDirection: 'column', p: 2 }}>
           <Box sx={sectionStyle}>
             <Typography variant='subtitle1' fontWeight={600} align='center'>
-              ÁO
+              DANH MỤC SẢN PHẨM
             </Typography>
-            <Button size='small'>Áo Thun</Button>
-            <Button size='small'>Áo Polo</Button>
-            <Button size='small'>Áo Sơ Mi</Button>
-            <Button size='small'>Áo Gile</Button>
-          </Box>
-          <Box sx={sectionStyle}>
-            <Typography variant='subtitle1' fontWeight={600} align='center'>
-              QUẦN
-            </Typography>
-            <Button size='small'>Quần Jean</Button>
-            <Button size='small'>Quần Short</Button>
-          </Box>
-          <Box sx={sectionStyle}>
-            <Typography variant='subtitle1' fontWeight={600} align='center'>
-              PHỤ KIỆN
-            </Typography>
-            <Button size='small'>Nón</Button>
-            <Button size='small'>Vớ</Button>
+            {categories.length > 0 ? (
+              categories.map((category) => (
+                <Button
+                  key={category._id}
+                  size='small'
+                  href={`/product?category=${category._id}`}
+                >
+                  {category.name}
+                </Button>
+              ))
+            ) : (
+              <Typography variant='body2' color='text.secondary'>
+                Không có danh mục
+              </Typography>
+            )}
           </Box>
         </Box>
       )

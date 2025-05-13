@@ -45,7 +45,10 @@ const getProductList = async () => {
 const getProduct = async (productId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await ProductModel.findById({ productId, destroy: false })
+    const result = await ProductModel.findById({
+      _id: productId,
+      destroy: false
+    })
       .populate({
         path: 'categoryId',
         select: 'name description slug _id'

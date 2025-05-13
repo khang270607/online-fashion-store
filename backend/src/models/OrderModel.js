@@ -11,8 +11,12 @@ const OrderSchema = new Schema(
     },
     couponId: {
       type: Schema.Types.ObjectId,
-      ref: 'Coupon',
-      default: null
+      ref: 'Coupon'
+    },
+    couponCode: {
+      type: String,
+      trim: true,
+      uppercase: true
     },
     discountAmount: {
       type: Number,

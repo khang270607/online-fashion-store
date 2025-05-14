@@ -183,7 +183,16 @@ const ProductDetail = () => {
               </Box>
             </Fade>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1 }}>
+          <Box
+            sx={{
+              width: 400,
+              height: 450,
+              mr: 3,
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 1
+            }}
+          >
             {product.images?.map((img, index) => (
               <Thumbnail
                 key={img}
@@ -197,12 +206,11 @@ const ProductDetail = () => {
         </Grid>
         <Grid item xs={12} md={6}>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Typography variant='h5' fontWeight={700}>
-              {product.name || 'Sản phẩm không tên'}
-            </Typography>
-            <Typography variant='body2' color='text.secondary'>
-              Mã sản phẩm: {product.productCode || product._id}
-            </Typography>
+            <Box sx={{ width: '100%' }}>
+              <Typography variant='h5' fontWeight={700}>
+                {product.name || 'Sản phẩm không tên'}
+              </Typography>
+            </Box>
             <PriceTypography variant='h5'>
               {product.price
                 ? `${product.price.toLocaleString('vi-VN')}đ`
@@ -302,7 +310,7 @@ const ProductDetail = () => {
                 variant='contained'
                 color='primary'
                 size='large'
-                sx={{ flex: 1 }}
+                sx={{ flex: 1, width: '200px' }}
                 onClick={handleAddToCart}
               >
                 Thêm vào giỏ

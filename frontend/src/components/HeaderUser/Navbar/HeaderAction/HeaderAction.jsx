@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import PersonIcon from '@mui/icons-material/Person'
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUserAPI, selectCurrentUser } from '~/redux/user/userSlice'
 import { getProfile } from '~/services/userService'
@@ -20,6 +20,7 @@ const HeaderAction = () => {
   const [localUser, setLocalUser] = useState(null)
   const open = Boolean(anchorEl)
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const currentUser = useSelector(selectCurrentUser)
 
   useEffect(() => {
@@ -58,7 +59,7 @@ const HeaderAction = () => {
     dispatch(logoutUserAPI())
     setLocalUser(null)
     handleClose()
-    window.location.reload()
+    navigate('/login') // Điều hướng về trang đăng nhập sau khi đăng xuất
   }
 
   // Tự động đóng menu khi scroll
@@ -80,7 +81,7 @@ const HeaderAction = () => {
           <Avatar
             src={localUser.avatarUrl}
             alt={localUser.name || 'User'}
-            sx={{ width: 24, height: 24 }}
+            sx={{ width: 30, height: 30 }}
           />
         ) : (
           <PersonIcon />

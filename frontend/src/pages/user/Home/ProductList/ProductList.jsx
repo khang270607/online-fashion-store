@@ -126,6 +126,11 @@ const ProductList = () => {
                     height='294'
                     image={product.image?.[0] || '/default.jpg'}
                     alt={product.name}
+                    sx={{
+                      width: '100%', // Đảm bảo ảnh chiếm toàn bộ chiều rộng của card
+                      height: 294, // Hoặc bạn có thể dùng giá trị khác phù hợp
+                      objectFit: 'cover' // Đảm bảo ảnh luôn scale đúng mà không bị méo
+                    }}
                   />
                 </a>
                 <CardContent>
@@ -171,7 +176,10 @@ const ProductList = () => {
           marginTop: '30px'
         }}
       >
-        <Button href='/product' sx={{ color: 'black' }}>
+        <Button
+          href='/product'
+          sx={{ color: 'white', backgroundColor: '#03235e' }}
+        >
           Xem tất cả
         </Button>
       </Box>

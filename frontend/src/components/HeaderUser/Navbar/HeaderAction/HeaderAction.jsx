@@ -57,7 +57,6 @@ const HeaderAction = () => {
 
   const handleLogout = () => {
     dispatch(logoutUserAPI())
-    setLocalUser(null)
     handleClose()
     navigate('/login') // Điều hướng về trang đăng nhập sau khi đăng xuất
   }
@@ -100,7 +99,7 @@ const HeaderAction = () => {
           elevation: 4,
           sx: {
             mt: 1,
-            minWidth: 150,
+            minWidth: 100,
             zIndex: (theme) => theme.zIndex.tooltip + 10
           }
         }}

@@ -1,27 +1,62 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Dialog, DialogTitle, DialogContent, DialogActions,
-  Button, Typography, Box, Radio, RadioGroup, FormControlLabel, IconButton, TextField
+  Button, Typography, Box, Radio, RadioGroup, FormControlLabel,
+  IconButton, TextField, CircularProgress
 } from '@mui/material'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import { useAddress } from '~/hook/useAddress'
 
 export const AddressModal = ({ open, onClose, onConfirm }) => {
+  const {
+    addresses,
+    loading,
+    addAddress,
+    editAddress,
+    fetchAddresses
+  } = useAddress()
+
   const [selectedId, setSelectedId] = useState(null)
   const [mode, setMode] = useState('list') // 'list' | 'form'
   const [editingAddress, setEditingAddress] = useState(null)
+  const [formData, setFormData] = useState({
+    fullName: '',
+    phone: '',
+    address: '',
+    ward: '',
+    district: '',
+    city: ''
+  })
 
-  const addresses = [
-    {
-      id: 1,
-      name: 'abc 1111',
-      phone: '0984142332',
-      line1: 'abc/123',
-      line2: 'Xã Côn Đảo, Huyện Côn Đảo, Bà Rịa - Vũng Tàu'
+  useEffect(() => {
+    if (editingAddress) {
+      setFormData({
+        fullName: editingAddress.fullName || '',
+        phone: editingAddress.phone || '',
+        address: editingAddress.address || '',
+        ward: editingAddress.ward || '',
+        district: editingAddress.district || '',
+        city: editingAddress.city || ''
+      })
+    } else {
+      setFormData({
+        fullName: '',
+        phone: '',
+        address: '',
+        ward: '',
+        district: '',
+        city: ''
+      })
     }
-  ]
+  }, [editingAddress])
 
-  const handleEdit = (address) => {
-    setEditingAddress(address)
+  const handleFormChange = (e) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleEdit = (addr) => {
+    setEditingAddress(addr)
     setMode('form')
   }
 
@@ -32,11 +67,21 @@ export const AddressModal = ({ open, onClose, onConfirm }) => {
 
   const handleBack = () => {
     setMode('list')
+    setEditingAddress(null)
   }
 
-  const handleSaveAddress = () => {
-    // Gọi API hoặc cập nhật state nếu cần
-    setMode('list')
+  const handleSaveAddress = async () => {
+    try {
+      if (editingAddress?._id) {
+        await editAddress(editingAddress._id, formData)
+      } else {
+        await addAddress(formData)
+      }
+      setMode('list')
+      setEditingAddress(null)
+    } catch (err) {
+      console.error('Lỗi lưu địa chỉ:', err)
+    }
   }
 
   return (
@@ -56,44 +101,48 @@ export const AddressModal = ({ open, onClose, onConfirm }) => {
 
       <DialogContent dividers>
         {mode === 'list' ? (
-          <>
-            <RadioGroup value={selectedId} onChange={(e) => setSelectedId(e.target.value)}>
-              {addresses.map((addr) => (
-                <Box key={addr.id} sx={{ borderBottom: '1px solid #eee', mb: 2 }}>
-                  <Box display="flex" alignItems="center" justifyContent="space-between">
-                    <FormControlLabel
-                      value={addr.id.toString()}
-                      control={<Radio />}
-                      label={
-                        <Box>
-                          <Typography fontWeight={700}>{addr.name} <Typography component="span" fontWeight={400}>({addr.phone})</Typography></Typography>
-                          <Typography>{addr.line1}</Typography>
-                          <Typography>{addr.line2}</Typography>
-                        </Box>
-                      }
-                    />
-                    <Button size="small" onClick={() => handleEdit(addr)}>Cập nhật</Button>
+          loading ? (
+            <Box display="flex" justifyContent="center" py={5}>
+              <CircularProgress />
+            </Box>
+          ) : (
+            <>
+              <RadioGroup value={selectedId} onChange={(e) => setSelectedId(e.target.value)}>
+                {addresses.map((addr) => (
+                  <Box key={addr._id} sx={{ borderBottom: '1px solid #eee', mb: 2 }}>
+                    <Box display="flex" alignItems="center" justifyContent="space-between">
+                      <FormControlLabel
+                        value={addr._id}
+                        control={<Radio />}
+                        label={
+                          <Box>
+                            <Typography fontWeight={700}>
+                              {addr.fullName} <Typography component="span" fontWeight={400}>({addr.phone})</Typography>
+                            </Typography>
+                            <Typography>{addr.address}</Typography>
+                            <Typography>{addr.ward}, {addr.district}, {addr.city}</Typography>
+                          </Box>
+                        }
+                      />
+                      <Button size="small" onClick={() => handleEdit(addr)}>Cập nhật</Button>
+                    </Box>
                   </Box>
-                </Box>
-              ))}
-            </RadioGroup>
+                ))}
+              </RadioGroup>
 
-            <Button
-              variant="outlined"
-              fullWidth
-              onClick={handleAddNew}
-              sx={{ mt: 2 }}
-            >
-              + Thêm Địa Chỉ Mới
-            </Button>
-          </>
+              <Button variant="outlined" fullWidth onClick={handleAddNew} sx={{ mt: 2 }}>
+                + Thêm Địa Chỉ Mới
+              </Button>
+            </>
+          )
         ) : (
-          // FORM NHẬP / CẬP NHẬT
           <Box display="flex" flexDirection="column" gap={2}>
-            <TextField fullWidth label="Họ tên" defaultValue={editingAddress?.name || ''} />
-            <TextField fullWidth label="Số điện thoại" defaultValue={editingAddress?.phone || ''} />
-            <TextField fullWidth label="Địa chỉ " defaultValue={editingAddress?.line1 || ''} />
-            <TextField fullWidth label="Địa chỉ cụ thể" defaultValue={editingAddress?.line2 || ''} />
+            <TextField fullWidth label="Họ tên" name="fullName" value={formData.fullName} onChange={handleFormChange} />
+            <TextField fullWidth label="Số điện thoại" name="phone" value={formData.phone} onChange={handleFormChange} />
+            <TextField fullWidth label="Địa chỉ" name="address" value={formData.address} onChange={handleFormChange} />
+            <TextField fullWidth label="Phường/Xã" name="ward" value={formData.ward} onChange={handleFormChange} />
+            <TextField fullWidth label="Quận/Huyện" name="district" value={formData.district} onChange={handleFormChange} />
+            <TextField fullWidth label="Tỉnh/Thành phố" name="city" value={formData.city} onChange={handleFormChange} />
           </Box>
         )}
       </DialogContent>

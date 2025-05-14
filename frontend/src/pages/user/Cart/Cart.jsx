@@ -140,7 +140,10 @@ const Cart = () => {
                 <TableCell align='center'>{formatPrice(product.price)}</TableCell>
                 <TableCell align='center'>
                   <Box display='flex' alignItems='center' justifyContent='center'>
-                    <IconButton onClick={() => handleQuantityChange(product._id, item.quantity, -1)}>
+                    <IconButton
+                      onClick={() => handleQuantityChange(product._id, item.quantity, -1)}
+                      disabled={item.quantity <= 1}
+                    >
                       <Remove />
                     </IconButton>
                     <TextField

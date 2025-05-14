@@ -65,7 +65,7 @@ const ProductList = () => {
         {products.map((product) => (
           <Grid item xs={12} sm={6} md={4} key={product._id}>
             <Card sx={{ maxWidth: 345, mb: 2 }}>
-              <a href={`/productdetail/${product.slug}`} style={{ textDecoration: 'none' }}>
+              <a href={`/productdetail/${product._id}`} style={{ textDecoration: 'none' }}>
                 <CardMedia
                   component='img'
                   height='294'
@@ -75,7 +75,7 @@ const ProductList = () => {
               </a>
               <CardContent>
                 <a
-                  href={`/productdetail/${product.slug}`}
+                  href={`/productdetail/${product._id}`}
                   style={{ textDecoration: 'none', color: 'black', fontWeight: 'bold' }}
                 >
                   {product.name}

@@ -7,7 +7,6 @@ export const getUsers = async (page = 1, limit = 10) => {
     const response = await AuthorizedAxiosInstance.get(
       `${API_ROOT}/v1/users?page=${page}&limit=${limit}`
     )
-    console.log('Danh sách người dùng:', response.data)
     return { users: response.data, total: response.data.length }
   } catch (error) {
     console.error('Lỗi khi lấy danh sách người dùng:', error)

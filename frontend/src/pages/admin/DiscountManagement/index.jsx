@@ -29,6 +29,7 @@ function DiscountManagement() {
   }, [page])
 
   const handleOpenModal = (type, discount) => {
+    if (!discount || !discount._id) return
     setSelectedDiscount(discount)
     setModalType(type)
   }
@@ -64,53 +65,51 @@ function DiscountManagement() {
         Thêm mã giảm
       </Button>
 
-      <React.Suspense fallback={<div>Loading...</div>}>
-        <DiscountTable
-          discounts={discounts}
-          loading={loading}
-          onAction={handleOpenModal}
+      <DiscountTable
+        discounts={discounts}
+        loading={loading}
+        onAction={handleOpenModal}
+      />
+
+      {modalType === 'add' && (
+        <AddDiscountModal
+          open
+          onClose={handleCloseModal}
+          onAdded={() => fetchDiscounts(page)}
         />
+      )}
 
-        {modalType === 'add' && (
-          <AddDiscountModal
-            open
-            onClose={handleCloseModal}
-            onAdded={() => fetchDiscounts(page)}
-          />
-        )}
-
-        {modalType === 'view' && selectedDiscount && (
-          <ViewDiscountModal
-            open
-            onClose={handleCloseModal}
-            discount={selectedDiscount}
-          />
-        )}
-
-        {modalType === 'edit' && selectedDiscount && (
-          <EditDiscountModal
-            open
-            onClose={handleCloseModal}
-            discount={selectedDiscount}
-            onSave={handleSaveDiscount}
-          />
-        )}
-
-        {modalType === 'delete' && selectedDiscount && (
-          <DeleteDiscountModal
-            open
-            onClose={handleCloseModal}
-            discount={selectedDiscount}
-            onDelete={handleDeleteDiscount}
-          />
-        )}
-
-        <DiscountPagination
-          page={page}
-          totalPages={totalPages}
-          onPageChange={handleChangePage}
+      {modalType === 'view' && selectedDiscount && (
+        <ViewDiscountModal
+          open
+          onClose={handleCloseModal}
+          discount={selectedDiscount}
         />
-      </React.Suspense>
+      )}
+
+      {modalType === 'edit' && selectedDiscount && (
+        <EditDiscountModal
+          open
+          onClose={handleCloseModal}
+          discount={selectedDiscount}
+          onSave={handleSaveDiscount}
+        />
+      )}
+
+      {modalType === 'delete' && selectedDiscount && (
+        <DeleteDiscountModal
+          open
+          onClose={handleCloseModal}
+          discount={selectedDiscount}
+          onDelete={handleDeleteDiscount}
+        />
+      )}
+
+      <DiscountPagination
+        page={page}
+        totalPages={totalPages}
+        onPageChange={handleChangePage}
+      />
     </>
   )
 }

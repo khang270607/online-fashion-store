@@ -18,5 +18,6 @@ export default function useProfile() {
     if (updated) setProfile(updated)
     setLoading(false)
   }
+
   return { profile, loading, fetchProfile, updateUserProfile }
 }

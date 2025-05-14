@@ -1,14 +1,6 @@
 import React, { useState } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
-import {
-  TableCell,
-  Stack,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Box
-} from '@mui/material'
+import { TableCell, Stack, IconButton, Box } from '@mui/material'
 import {
   StyledTableCell,
   StyledTableRow
@@ -16,6 +8,7 @@ import {
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import BorderColorIcon from '@mui/icons-material/BorderColor'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import ProductImageModal from './modal/ProductImageModal.jsx'
 
 const styles = {
   groupIcon: {
@@ -58,7 +51,7 @@ const ProductRow = ({ index, product, handleOpenModal }) => {
           />
         </StyledTableCell>
         <StyledTableCell>{product.name}</StyledTableCell>
-        <StyledTableCell>{product.price.toLocaleString()} VNĐ</StyledTableCell>
+        <StyledTableCell>{product.price.toLocaleString()}</StyledTableCell>
         <StyledTableCell>{product.quantity}</StyledTableCell>
         <StyledTableCell
           sx={{
@@ -98,31 +91,13 @@ const ProductRow = ({ index, product, handleOpenModal }) => {
         </StyledTableCell>
       </StyledTableRow>
 
-      {/* Dialog hiển thị ảnh lớn */}
-      <Dialog open={openImage} onClose={handleClose} maxWidth='md'>
-        <DialogTitle sx={{ position: 'relative', pr: 6 }}>
-          Ảnh sản phẩm
-          <IconButton
-            onClick={handleClose}
-            sx={{
-              position: 'absolute',
-              top: 8,
-              right: 8,
-              width: '48px',
-              height: '48px'
-            }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          <img
-            src={product.image?.[0]}
-            alt={product.name}
-            style={{ width: '100%', maxHeight: '80vh', objectFit: 'contain' }}
-          />
-        </DialogContent>
-      </Dialog>
+      {/* ✅ Modal hiển thị ảnh đã tách riêng */}
+      <ProductImageModal
+        open={openImage}
+        onClose={handleClose}
+        imageSrc={product.image?.[0]}
+        productName={product.name}
+      />
     </>
   )
 }

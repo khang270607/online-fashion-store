@@ -10,7 +10,7 @@ import {
   Divider
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 const EditCategoryModal = ({ open, onClose, category, onSave }) => {
   const {
     register,
@@ -51,6 +51,7 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
             {...register('name', { required: 'Tên danh mục là bắt buộc' })}
             error={!!errors.name}
             helperText={errors.name?.message}
+            sx={StyleAdmin.InputCustom}
           />
           <TextField
             label='Mô tả'
@@ -61,6 +62,7 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
             {...register('description', { required: 'Mô tả là bắt buộc' })}
             error={!!errors.description}
             helperText={errors.description?.message}
+            sx={StyleAdmin.InputCustom}
           />
         </form>
       </DialogContent>

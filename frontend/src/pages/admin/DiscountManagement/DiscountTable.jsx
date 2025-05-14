@@ -18,12 +18,15 @@ const DiscountTable = ({ discounts, loading, onAction }) => {
     <Table>
       <TableHead>
         <StyledTableRow>
-          <StyledTableCell sx={{ textAlign: 'center' }}>STT</StyledTableCell>
-          <StyledTableCell>Mã giảm</StyledTableCell>
+          <StyledTableCell sx={{ textAlign: 'center', width: '50px' }}>
+            STT
+          </StyledTableCell>
+          <StyledTableCell sx={{ minWidth: '170px' }}>Mã giảm</StyledTableCell>
           <StyledTableCell>Loại</StyledTableCell>
           <StyledTableCell>Giá trị giảm (VNĐ)</StyledTableCell>
           <StyledTableCell>Số lượt sử dụng tối đa</StyledTableCell>
           <StyledTableCell>Số lượng còn lại</StyledTableCell>
+          <StyledTableCell>Trạng thái</StyledTableCell>
           <StyledTableCell>Ngày bắt đầu</StyledTableCell>
           <StyledTableCell>Ngày kết thúc</StyledTableCell>
           <StyledTableCell sx={{ maxWidth: '130px', width: '130px' }}>
@@ -34,8 +37,8 @@ const DiscountTable = ({ discounts, loading, onAction }) => {
       <TableBody>
         {loading ? (
           <StyledTableRow>
-            <StyledTableCell colSpan={9} align='center'>
-              <CircularProgress />
+            <StyledTableCell colSpan={10} align='center'>
+              Đang tải...
             </StyledTableCell>
           </StyledTableRow>
         ) : discounts.length > 0 ? (
@@ -49,7 +52,7 @@ const DiscountTable = ({ discounts, loading, onAction }) => {
           ))
         ) : (
           <StyledTableRow>
-            <StyledTableCell colSpan={9} align='center'>
+            <StyledTableCell colSpan={10} align='center'>
               Không có mã giảm giá nào
             </StyledTableCell>
           </StyledTableRow>

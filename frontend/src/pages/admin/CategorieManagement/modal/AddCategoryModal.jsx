@@ -10,7 +10,7 @@ import {
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { addCategory } from '~/services/categoryService'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 const AddCategoryModal = ({ open, onClose, onAdded }) => {
   const {
     register,
@@ -52,6 +52,7 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
             {...register('name', { required: 'Tên danh mục là bắt buộc' })}
             error={!!errors.name}
             helperText={errors.name?.message}
+            sx={StyleAdmin.InputCustom}
           />
           <TextField
             label='Mô tả'
@@ -60,6 +61,7 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
             multiline
             rows={3}
             {...register('description', { required: 'Mô tả là bắt buộc' })}
+            sx={StyleAdmin.InputCustom}
           />
         </DialogContent>
         <Divider sx={{ my: 0 }} />

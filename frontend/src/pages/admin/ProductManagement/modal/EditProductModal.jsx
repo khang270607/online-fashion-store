@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -12,14 +12,14 @@ import {
   Select,
   InputLabel,
   MenuItem,
-  Divider
+  Divider,
+  IconButton
 } from '@mui/material'
-import { IconButton } from '@mui/material'
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
-import { useRef } from 'react'
 import { useForm, Controller } from 'react-hook-form'
 import useCategories from '~/hook/useCategories.js'
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 
 const EditProductModal = ({ open, onClose, product, onSave }) => {
   const {
@@ -31,8 +31,9 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
   } = useForm()
 
   const [images, setImages] = useState([{ file: null, preview: '' }])
-  const { categories, loading } = useCategories()
   const fileInputRefs = useRef([])
+  const { categories, loading, fetchCategories } = useCategories()
+
   useEffect(() => {
     if (product) {
       reset({
@@ -43,28 +44,31 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
         categoryId: product.categoryId?._id || ''
       })
 
-      const imagePreviews =
+      const previews =
         product.image?.map((url) => ({ file: null, preview: url })) || []
-
-      setImages([...imagePreviews, { file: null, preview: '' }])
+      setImages([...previews, { file: null, preview: '' }])
     }
   }, [product, reset])
 
-  const handleImageChange = (index, file) => {
-    const newImages = [...images]
-    newImages[index] = { file, preview: URL.createObjectURL(file) }
+  useEffect(() => {
+    if (open) fetchCategories()
+  }, [open])
 
-    if (index === images.length - 1 && file && newImages.length < 9) {
-      newImages.push({ file: null, preview: '' })
+  const handleImageChange = (index, file) => {
+    const updated = [...images]
+    updated[index] = { file, preview: URL.createObjectURL(file) }
+
+    if (index === images.length - 1 && file && images.length < 9) {
+      updated.push({ file: null, preview: '' })
     }
 
-    setImages(newImages)
+    setImages(updated)
   }
 
   const handleImageDelete = (index) => {
-    const newImages = [...images]
-    newImages.splice(index, 1)
-    setImages(newImages)
+    const updated = [...images]
+    updated.splice(index, 1)
+    setImages(updated)
   }
 
   const onSubmit = (data) => {
@@ -72,7 +76,7 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       .filter((img) => img.preview)
       .map((img) => img.preview)
 
-    const updatedData = {
+    const updatedProduct = {
       name: data.name,
       description: data.description,
       price: Number(data.price),
@@ -81,7 +85,7 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       image: imageUrls
     }
 
-    onSave(product._id, updatedData)
+    onSave(product._id, updatedProduct)
     onClose()
   }
 
@@ -90,8 +94,8 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       open={open}
       onClose={onClose}
       fullWidth
-      maxWidth='lg'
-      PaperProps={{ sx: { mt: 8, maxHeight: '90vh' } }}
+      maxWidth='xl'
+      PaperProps={{ sx: { mt: 8, maxHeight: '90vh', width: '90vw' } }}
     >
       <DialogTitle sx={{ fontWeight: 600, fontSize: 20 }}>
         Sửa Sản Phẩm
@@ -99,8 +103,8 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       <Divider />
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent sx={{ display: 'flex', gap: 2, overflowY: 'auto' }}>
-          {/* Form bên trái */}
+        <DialogContent sx={{ display: 'flex', gap: 3, py: 3 }}>
+          {/* Bên trái: thông tin sản phẩm */}
           <Box sx={{ flex: 2 }}>
             <TextField
               label='Tên sản phẩm'
@@ -111,8 +115,8 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
               })}
               error={!!errors.name}
               helperText={errors.name?.message}
+              sx={StyleAdmin.InputCustom}
             />
-
             <TextField
               label='Mô tả'
               fullWidth
@@ -124,18 +128,20 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
               })}
               error={!!errors.description}
               helperText={errors.description?.message}
+              sx={StyleAdmin.InputCustom}
             />
-
             <TextField
               label='Giá (VNĐ)'
               type='number'
               fullWidth
               margin='normal'
-              {...register('price', { required: 'Giá không được bỏ trống' })}
+              {...register('price', {
+                required: 'Giá không được bỏ trống'
+              })}
               error={!!errors.price}
               helperText={errors.price?.message}
+              sx={StyleAdmin.InputCustom}
             />
-
             <TextField
               label='Số lượng'
               type='number'
@@ -146,16 +152,31 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
               })}
               error={!!errors.quantity}
               helperText={errors.quantity?.message}
+              sx={StyleAdmin.InputCustom}
             />
 
-            <FormControl fullWidth margin='normal' error={!!errors.categoryId}>
+            <FormControl
+              fullWidth
+              margin='normal'
+              error={!!errors.categoryId}
+              sx={StyleAdmin.FormSelect}
+            >
               <InputLabel>Danh mục</InputLabel>
               <Controller
                 name='categoryId'
                 control={control}
                 rules={{ required: 'Danh mục không được bỏ trống' }}
                 render={({ field }) => (
-                  <Select {...field} label='Danh mục' disabled={loading}>
+                  <Select
+                    {...field}
+                    label='Danh mục'
+                    MenuProps={{
+                      PaperProps: {
+                        sx: StyleAdmin.FormSelect.SelectMenu
+                      }
+                    }}
+                    disabled={loading}
+                  >
                     {categories
                       ?.filter((cat) => !cat.destroy)
                       .map((cat) => (
@@ -172,7 +193,7 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
             </FormControl>
           </Box>
 
-          {/* Hình ảnh bên phải */}
+          {/* Bên phải: hình ảnh */}
           <Box sx={{ flex: 1 }}>
             <Typography variant='subtitle1' sx={{ mb: 1 }}>
               Hình ảnh sản phẩm (tối đa 9 ảnh)
@@ -180,13 +201,12 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
             <Box
               sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
                 gap: 2
               }}
             >
               {images.map((img, index) => (
                 <Box key={index} sx={{ position: 'relative' }}>
-                  {/* input file riêng biệt để trigger bằng ref */}
                   <input
                     type='file'
                     accept='image/*'
@@ -196,31 +216,75 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
                       handleImageChange(index, e.target.files[0])
                     }
                   />
-
                   <Box
                     sx={{
                       width: '100%',
-                      height: 80,
+                      height: 140,
                       borderRadius: 1,
-                      border: '1px solid #ccc',
+                      border: '1px solid #000',
                       overflow: 'hidden',
                       position: 'relative',
-                      '&:hover .overlay': {
-                        opacity: 1
-                      }
+                      '&:hover .overlay, &:hover .overlay-bg': { opacity: 1 }
                     }}
                   >
                     {img.preview ? (
-                      <Box
-                        component='img'
-                        src={img.preview}
-                        alt={`preview-${index}`}
-                        sx={{
-                          width: '100%',
-                          height: '100%',
-                          objectFit: 'cover'
-                        }}
-                      />
+                      <>
+                        <Box
+                          component='img'
+                          src={img.preview}
+                          alt={`preview-${index}`}
+                          sx={{
+                            width: '100%',
+                            height: '100%',
+                            objectFit: 'cover'
+                          }}
+                        />
+                        <Box
+                          className='overlay-bg'
+                          sx={{
+                            position: 'absolute',
+                            top: 0,
+                            left: 0,
+                            width: '100%',
+                            height: '100%',
+                            backgroundColor: 'rgba(0,0,0,0.3)',
+                            opacity: 0,
+                            transition: 'opacity 0.3s',
+                            zIndex: 1
+                          }}
+                        />
+                        <Box
+                          className='overlay'
+                          sx={{
+                            position: 'absolute',
+                            top: 5,
+                            right: 5,
+                            display: 'flex',
+                            flexDirection: 'column',
+                            gap: 0.5,
+                            opacity: 0,
+                            transition: 'opacity 0.3s',
+                            zIndex: 2
+                          }}
+                        >
+                          <IconButton
+                            size='small'
+                            onClick={() =>
+                              fileInputRefs.current[index]?.click()
+                            }
+                          >
+                            <EditIcon sx={{ fontSize: 18, color: '#2196f3' }} />
+                          </IconButton>
+                          <IconButton
+                            size='small'
+                            onClick={() => handleImageDelete(index)}
+                          >
+                            <DeleteIcon
+                              sx={{ fontSize: 18, color: '#f44336' }}
+                            />
+                          </IconButton>
+                        </Box>
+                      </>
                     ) : (
                       <Button
                         variant='outlined'
@@ -231,8 +295,8 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
                           display: 'flex',
                           justifyContent: 'center',
                           alignItems: 'center',
-                          borderColor: '#001f5d',
-                          color: '#001f5d',
+                          borderColor: '#000',
+                          color: '#000',
                           fontSize: '12px'
                         }}
                       >
@@ -247,31 +311,6 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
                         />
                       </Button>
                     )}
-
-                    {/* Overlay khi hover */}
-                    {img.preview && (
-                      <Box
-                        className='overlay'
-                        sx={{
-                          position: 'absolute',
-                          top: 5,
-                          right: 5,
-                          display: 'flex',
-                          gap: 1,
-                          opacity: 0,
-                          transition: 'opacity 0.3s'
-                        }}
-                      >
-                        <IconButton onClick={() => handleImageDelete(index)}>
-                          <DeleteIcon sx={{ color: '#f44336' }} />
-                        </IconButton>
-                        <IconButton
-                          onClick={() => fileInputRefs.current[index]?.click()}
-                        >
-                          <EditIcon sx={{ color: '#2196f3' }} />
-                        </IconButton>
-                      </Box>
-                    )}
                   </Box>
                 </Box>
               ))}
@@ -280,8 +319,8 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
         </DialogContent>
 
         <Divider />
-        <DialogActions>
-          <Button onClick={onClose} variant='outlined'>
+        <DialogActions sx={{ px: 3, py: 2 }}>
+          <Button onClick={onClose} variant='inherit'>
             Hủy
           </Button>
           <Button

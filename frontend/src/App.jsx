@@ -24,7 +24,6 @@ import UserManagement from '~/pages/admin/UserManagement/index'
 import ProductManagement from '~/pages/admin/ProductManagement/index.jsx'
 import CategorieManagement from '~/pages/admin/CategorieManagement/index.jsx'
 import OrderManagement from '~/pages/admin/OrderManagement/index'
-import ProfileAdmin from '~/pages/admin/Profile/index.jsx'
 import DiscountManagement from '~/pages/admin/DiscountManagement/index.jsx'
 import DemoCart from '~/pages/admin/DemoCart/index.jsx'
 
@@ -77,7 +76,6 @@ function App() {
             element={<CategorieManagement />}
           />
           <Route path='order-management' element={<OrderManagement />} />
-          <Route path='profile' element={<ProfileAdmin />} />
           <Route path='discount-management' element={<DiscountManagement />} />
           <Route path='demo-cart' element={<DemoCart />} />
         </Route>

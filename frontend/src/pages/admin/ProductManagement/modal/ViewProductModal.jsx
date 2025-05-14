@@ -12,14 +12,14 @@ import {
 } from '@mui/material'
 
 const ViewProductModal = ({ open, onClose, product }) => {
-  if (!product) return null
-
-  const imageList = Array.isArray(product.image) ? product.image : []
+  const imageList = Array.isArray(product?.image) ? product.image : []
   const [selectedImage, setSelectedImage] = useState(imageList[0] || '')
 
   const handleImageClick = (img) => {
     setSelectedImage(img)
   }
+
+  if (!product) return null
 
   return (
     <Dialog
@@ -148,6 +148,7 @@ const ViewProductModal = ({ open, onClose, product }) => {
               <Typography variant='body1'>
                 {product.destroy ? 'Ngừng bán' : 'Đang bán'}
               </Typography>
+              <Divider sx={{ my: 1 }} />
             </Box>
           </Grid>
         </Grid>
@@ -163,10 +164,9 @@ const ViewProductModal = ({ open, onClose, product }) => {
             sx={{
               width: '100%',
               display: 'block',
-              whiteSpace: 'normal', // Đảm bảo mô tả không bị cắt
+              whiteSpace: 'normal',
               overflow: 'visible',
-              wordWrap: 'break-word',
-              maxHeight: 'auto' // Cho phép chiều cao linh hoạt với nội dung
+              wordWrap: 'break-word'
             }}
           >
             {product.description}

@@ -136,61 +136,55 @@ export default function Index() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {displayedRows.map(
-              (order, index) => (
-                console.log(order),
-                (
-                  <StyledTableRow key={order.id}>
-                    <StyledTableCell sx={{ textAlign: 'center' }}>
-                      {(page - 1) * ROWS_PER_PAGE + index + 1}
-                    </StyledTableCell>
-                    <StyledTableCell>{order.id}</StyledTableCell>
-                    <StyledTableCell>
-                      <span
-                        style={{
-                          display: 'block',
-                          overflow: 'hidden',
-                          textOverflow: 'ellipsis',
-                          whiteSpace: 'nowrap',
-                          width: '100%'
-                        }}
-                        title={(order.products
-                          ? order.products.map((p) => p.name)
-                          : [order.productName]
-                        )
-                          .filter(Boolean)
-                          .join(', ')}
-                      >
-                        {(order.products
-                          ? order.products.map((p) => p.name)
-                          : [order.productName]
-                        )
-                          .filter(Boolean)
-                          .join(', ')}
-                      </span>
-                    </StyledTableCell>
-                    <StyledTableCell>{order.totalQuantity}</StyledTableCell>
-                    <StyledTableCell>
-                      {Number(order.totalPrice).toLocaleString()} đ
-                    </StyledTableCell>
-                    <StyledTableCell>{order.status}</StyledTableCell>
-                    <StyledTableCell sx={{ display: 'flex', gap: '8px' }}>
-                      <RemoveRedEyeIcon
-                        sx={{ cursor: 'pointer', fontSize: '20px' }}
-                        onClick={() => handleOpenModal('view', order)}
-                      />
-                      {order.status !== 'Đã huỷ' &&
-                        order.status !== 'Đã giao' && (
-                          <CancelIcon
-                            sx={{ cursor: 'pointer', fontSize: '20px' }}
-                            onClick={() => handleOpenModal('cancel', order)}
-                          />
-                        )}
-                    </StyledTableCell>
-                  </StyledTableRow>
-                )
-              )
-            )}
+            {displayedRows.map((order, index) => (
+              <StyledTableRow key={order.id}>
+                <StyledTableCell sx={{ textAlign: 'center' }}>
+                  {(page - 1) * ROWS_PER_PAGE + index + 1}
+                </StyledTableCell>
+                <StyledTableCell>{order.id}</StyledTableCell>
+                <StyledTableCell>
+                  <span
+                    style={{
+                      display: 'block',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap',
+                      width: '100%'
+                    }}
+                    title={(order.products
+                      ? order.products.map((p) => p.name)
+                      : [order.productName]
+                    )
+                      .filter(Boolean)
+                      .join(', ')}
+                  >
+                    {(order.products
+                      ? order.products.map((p) => p.name)
+                      : [order.productName]
+                    )
+                      .filter(Boolean)
+                      .join(', ')}
+                  </span>
+                </StyledTableCell>
+                <StyledTableCell>{order.totalQuantity}</StyledTableCell>
+                <StyledTableCell>
+                  {Number(order.totalPrice).toLocaleString()} đ
+                </StyledTableCell>
+                <StyledTableCell>{order.status}</StyledTableCell>
+                <StyledTableCell sx={{ display: 'flex', gap: '8px' }}>
+                  <RemoveRedEyeIcon
+                    sx={{ cursor: 'pointer', fontSize: '20px' }}
+                    onClick={() => handleOpenModal('view', order)}
+                  />
+                  {order.status !== 'Đã huỷ' && order.status !== 'Đã giao' && (
+                    <CancelIcon
+                      sx={{ cursor: 'pointer', fontSize: '20px' }}
+                      onClick={() => handleOpenModal('cancel', order)}
+                    />
+                  )}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
           </TableBody>
         </Table>
 

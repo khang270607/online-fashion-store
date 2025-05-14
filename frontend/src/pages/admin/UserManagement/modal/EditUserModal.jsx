@@ -16,7 +16,7 @@ import {
 import { useForm } from 'react-hook-form'
 import AuthorizedAxiosInstance from '~/utils/authorizedAxios.js'
 import { API_ROOT } from '~/utils/constants.js'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
   const {
     register,
@@ -69,7 +69,10 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             margin='normal'
             value={user?.name || ''}
             InputProps={{ readOnly: true }}
-            helperText='Không thể chỉnh sửa'
+            sx={{
+              ...StyleAdmin.InputCustom,
+              ...StyleAdmin.InputCustom.CursorNone
+            }}
           />
           <TextField
             label='Email'
@@ -77,9 +80,17 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             margin='normal'
             value={user?.email || ''}
             InputProps={{ readOnly: true }}
-            helperText='Không thể chỉnh sửa'
+            sx={{
+              ...StyleAdmin.InputCustom,
+              ...StyleAdmin.InputCustom.CursorNone
+            }}
           />
-          <FormControl fullWidth margin='normal' error={!!errors.role}>
+          <FormControl
+            fullWidth
+            margin='normal'
+            error={!!errors.role}
+            sx={StyleAdmin.FormSelect}
+          >
             <InputLabel id='role-label'>Quyền</InputLabel>
             <Select
               labelId='role-label'
@@ -87,9 +98,15 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
               {...register('role', { required: 'Vai trò là bắt buộc' })}
               defaultValue={user?.role || 'customer'}
               disabled={isSubmitting}
+              MenuProps={{
+                PaperProps: {
+                  sx: StyleAdmin.FormSelect.SelectMenu
+                }
+              }}
             >
-              <MenuItem value='customer'>Khách hàng</MenuItem>
-              <MenuItem value='admin'>Quản trị viên</MenuItem>
+              <MenuItem value='customer'>KHÁCH HÀNG</MenuItem>
+              <Divider sx={{ margin: '0 !important' }} />
+              <MenuItem value='admin'>QUẢN TRỊ</MenuItem>
             </Select>
             {errors.role && (
               <p style={{ color: 'red', fontSize: '12px', marginTop: '4px' }}>
@@ -106,7 +123,10 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
               user?.createdAt ? new Date(user.createdAt).toLocaleString() : ''
             }
             InputProps={{ readOnly: true }}
-            helperText='Không thể chỉnh sửa'
+            sx={{
+              ...StyleAdmin.InputCustom,
+              ...StyleAdmin.InputCustom.CursorNone
+            }}
           />
           <TextField
             label='Ngày cập nhật'
@@ -116,7 +136,10 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
               user?.updatedAt ? new Date(user.updatedAt).toLocaleString() : ''
             }
             InputProps={{ readOnly: true }}
-            helperText='Không thể chỉnh sửa'
+            sx={{
+              ...StyleAdmin.InputCustom,
+              ...StyleAdmin.InputCustom.CursorNone
+            }}
           />
         </form>
       </DialogContent>

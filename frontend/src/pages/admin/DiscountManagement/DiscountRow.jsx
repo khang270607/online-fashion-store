@@ -18,12 +18,20 @@ const DiscountRow = ({ discount, index, onAction }) => {
         {index + 1}
       </StyledTableCell>
       <StyledTableCell>{discount.code}</StyledTableCell>
-      <StyledTableCell>{discount.type}</StyledTableCell>
       <StyledTableCell>
-        {discount.amount?.toLocaleString('vi-VN')} ₫
+        {discount.type === 'fixed' ? 'Cố định' : 'Phần trăm'}
       </StyledTableCell>
+      <StyledTableCell>
+        {discount.type === 'fixed'
+          ? `${discount.amount?.toLocaleString('vi-VN')} VNĐ`
+          : `${discount.amount}%`}
+      </StyledTableCell>
+
       <StyledTableCell>{discount.usageLimit}</StyledTableCell>
       <StyledTableCell>{remaining >= 0 ? remaining : 0}</StyledTableCell>
+      <StyledTableCell>
+        {discount.isActive ? 'Đang hoạt động' : 'Dừng hoạt động'}
+      </StyledTableCell>
       <StyledTableCell>
         {discount.validFrom
           ? new Date(discount.validFrom).toLocaleString()

@@ -11,9 +11,12 @@ import {
   FormControlLabel,
   Checkbox,
   Divider,
-  Box
+  Box,
+  InputLabel,
+  Select,
+  FormControl
 } from '@mui/material'
-import { updateDiscount } from '~/services/discountService'
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 
 // Hàm định dạng lại datetime cho input type="datetime-local"
 const formatDateTimeLocal = (isoString) => {
@@ -26,10 +29,12 @@ const formatDateTimeLocal = (isoString) => {
 const EditDiscountModal = ({ open, onClose, discount, onSave }) => {
   const {
     register,
+    watch,
     handleSubmit,
     reset,
     formState: { isSubmitting }
   } = useForm()
+  const type = watch('type', 'fixed')
 
   React.useEffect(() => {
     if (discount) {
@@ -84,27 +89,48 @@ const EditDiscountModal = ({ open, onClose, discount, onSave }) => {
                 fullWidth
                 margin='normal'
                 {...register('code', { required: true })}
+                sx={StyleAdmin.InputCustom}
               />
-              <TextField
-                defaultValue={discount?.type}
-                select
-                label='Loại giảm giá'
+              <FormControl
                 fullWidth
                 margin='normal'
-                {...register('type')}
+                sx={StyleAdmin.FormSelect} // style chuẩn bạn dùng cho select
               >
-                <MenuItem value='fixed'>Giảm theo số tiền</MenuItem>
-                <MenuItem value='percent'>Giảm theo phần trăm</MenuItem>
-              </TextField>
+                <InputLabel id='type-label'>Loại giảm giá</InputLabel>
+                <Select
+                  label='Loại giảm giá'
+                  defaultValue={discount?.type}
+                  {...register('type', {
+                    required: 'Vui lòng chọn loại giảm giá'
+                  })}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: StyleAdmin.FormSelect.SelectMenu
+                    }
+                  }}
+                >
+                  <MenuItem value='fixed'>Giảm theo số tiền</MenuItem>
+                  <MenuItem value='percent'>Giảm theo phần trăm</MenuItem>
+                </Select>
+              </FormControl>
               <TextField
-                label='Giá trị giảm'
+                label={
+                  type === 'fixed' ? 'Giá trị giảm (VNĐ)' : 'Giá trị giảm (%)'
+                }
                 type='number'
                 fullWidth
                 margin='normal'
                 {...register('amount', { required: true })}
+                sx={StyleAdmin.InputCustom}
               />
               <FormControlLabel
-                control={<Checkbox defaultChecked {...register('isActive')} />}
+                control={
+                  <Checkbox
+                    defaultChecked={discount.isActive}
+                    {...register('isActive')}
+                    sx={StyleAdmin.InputCustom}
+                  />
+                }
                 label='Kích hoạt'
                 sx={{ mt: 1 }}
               />
@@ -118,6 +144,7 @@ const EditDiscountModal = ({ open, onClose, discount, onSave }) => {
                 fullWidth
                 margin='normal'
                 {...register('minOrderValue')}
+                sx={StyleAdmin.InputCustom}
               />
               <TextField
                 label='Số lượt sử dụng tối đa'
@@ -125,6 +152,7 @@ const EditDiscountModal = ({ open, onClose, discount, onSave }) => {
                 fullWidth
                 margin='normal'
                 {...register('usageLimit')}
+                sx={StyleAdmin.InputCustom}
               />
               <TextField
                 label='Hiệu lực từ'
@@ -133,6 +161,7 @@ const EditDiscountModal = ({ open, onClose, discount, onSave }) => {
                 margin='normal'
                 InputLabelProps={{ shrink: true }}
                 {...register('validFrom')}
+                sx={StyleAdmin.InputCustom}
               />
               <TextField
                 label='Hiệu lực đến'
@@ -141,6 +170,7 @@ const EditDiscountModal = ({ open, onClose, discount, onSave }) => {
                 margin='normal'
                 InputLabelProps={{ shrink: true }}
                 {...register('validUntil')}
+                sx={StyleAdmin.InputCustom}
               />
             </Box>
           </Box>

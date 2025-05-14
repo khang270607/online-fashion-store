@@ -11,14 +11,18 @@ import {
   FormControlLabel,
   Checkbox,
   Divider,
-  Grid
+  Grid,
+  FormControl,
+  InputLabel,
+  Select
 } from '@mui/material'
 import { Box } from '@mui/material'
 import { addDiscount } from '~/services/discountService'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 const AddDiscountModal = ({ open, onClose, onAdded }) => {
   const {
     register,
+    watch,
     handleSubmit,
     reset,
     formState: { isSubmitting }
@@ -28,7 +32,7 @@ const AddDiscountModal = ({ open, onClose, onAdded }) => {
       isActive: true
     }
   })
-
+  const type = watch('type', 'fixed')
   const onSubmit = async (data) => {
     const payload = {
       ...data,
@@ -45,7 +49,7 @@ const AddDiscountModal = ({ open, onClose, onAdded }) => {
       reset()
       onClose()
     } else {
-      alert('Thêm mã giảm giá thất bại. Vui lòng thử lại!')
+      console.log('Thêm mã giảm giá thất bại. Vui lòng thử lại!')
     }
   }
 
@@ -72,23 +76,40 @@ const AddDiscountModal = ({ open, onClose, onAdded }) => {
                 fullWidth
                 margin='normal'
                 {...register('code', { required: true })}
+                sx={StyleAdmin.InputCustom}
               />
-              <TextField
-                select
-                label='Loại giảm giá'
+              <FormControl
                 fullWidth
                 margin='normal'
-                {...register('type')}
+                sx={StyleAdmin.FormSelect} // style chuẩn bạn dùng cho select
               >
-                <MenuItem value='fixed'>Giảm theo số tiền</MenuItem>
-                <MenuItem value='percent'>Giảm theo phần trăm</MenuItem>
-              </TextField>
+                <InputLabel id='type-label'>Loại giảm giá</InputLabel>
+                <Select
+                  labelId='type-label'
+                  label='Loại giảm giá'
+                  defaultValue='fixed'
+                  {...register('type', {
+                    required: 'Vui lòng chọn loại giảm giá'
+                  })}
+                  MenuProps={{
+                    PaperProps: {
+                      sx: StyleAdmin.FormSelect.SelectMenu
+                    }
+                  }}
+                >
+                  <MenuItem value='fixed'>Giảm theo số tiền</MenuItem>
+                  <MenuItem value='percent'>Giảm theo phần trăm</MenuItem>
+                </Select>
+              </FormControl>
               <TextField
-                label='Giá trị giảm'
+                label={
+                  type === 'fixed' ? 'Giá trị giảm (VNĐ)' : 'Giá trị giảm (%)'
+                }
                 type='number'
                 fullWidth
                 margin='normal'
                 {...register('amount', { required: true })}
+                sx={StyleAdmin.InputCustom}
               />
               <FormControlLabel
                 control={<Checkbox defaultChecked {...register('isActive')} />}
@@ -105,6 +126,7 @@ const AddDiscountModal = ({ open, onClose, onAdded }) => {
                 fullWidth
                 margin='normal'
                 {...register('minOrderValue')}
+                sx={StyleAdmin.InputCustom}
               />
               <TextField
                 label='Số lượt sử dụng tối đa'
@@ -112,6 +134,7 @@ const AddDiscountModal = ({ open, onClose, onAdded }) => {
                 fullWidth
                 margin='normal'
                 {...register('usageLimit')}
+                sx={StyleAdmin.InputCustom}
               />
               <TextField
                 label='Hiệu lực từ'
@@ -120,6 +143,7 @@ const AddDiscountModal = ({ open, onClose, onAdded }) => {
                 margin='normal'
                 InputLabelProps={{ shrink: true }}
                 {...register('validFrom')}
+                sx={StyleAdmin.InputCustom}
               />
               <TextField
                 label='Hiệu lực đến'
@@ -128,6 +152,7 @@ const AddDiscountModal = ({ open, onClose, onAdded }) => {
                 margin='normal'
                 InputLabelProps={{ shrink: true }}
                 {...register('validUntil')}
+                sx={StyleAdmin.InputCustom}
               />
             </Box>
           </Box>

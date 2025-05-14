@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Dialog,
   DialogActions,
@@ -9,9 +9,18 @@ import {
 } from '@mui/material'
 
 const DeleteCategoryModal = ({ open, onClose, category, onDelete }) => {
-  const handleDelete = () => {
-    onDelete(category._id) // Gọi hàm handleDeleteCategory từ parent component
-    onClose() // Đóng modal sau khi xoá
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      await onDelete(category._id) // Đợi quá trình xoá hoàn tất
+      onClose()
+    } catch (error) {
+      console.error('Xoá thất bại:', error)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   return (
@@ -21,12 +30,18 @@ const DeleteCategoryModal = ({ open, onClose, category, onDelete }) => {
       <DialogContent>
         Bạn có chắc chắn muốn xoá danh mục <strong>{category.name}</strong>?
       </DialogContent>
+      <Divider sx={{ my: 0 }} />
       <DialogActions>
-        <Button onClick={onClose} color='inherit'>
+        <Button onClick={onClose} color='inherit' disabled={isDeleting}>
           Hủy
         </Button>
-        <Button onClick={handleDelete} color='error' variant='contained'>
-          Xoá
+        <Button
+          onClick={handleDelete}
+          color='error'
+          variant='contained'
+          disabled={isDeleting}
+        >
+          {isDeleting ? 'Đang xoá...' : 'Xoá'}
         </Button>
       </DialogActions>
     </Dialog>

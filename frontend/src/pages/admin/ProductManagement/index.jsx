@@ -28,9 +28,6 @@ const ProductManagement = () => {
     fetchProducts(page)
   }, [page])
 
-  console.log('totalPages', totalPages)
-  console.log('page', page)
-
   const handleOpenModal = (type, product = null) => {
     setSelectedProduct(product)
     setModalType(type)

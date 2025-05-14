@@ -11,9 +11,12 @@ import {
   TextField,
   MenuItem,
   FormControlLabel,
-  Checkbox
+  Checkbox,
+  FormControl,
+  InputLabel,
+  Select
 } from '@mui/material'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 const ViewDiscountModal = ({ open, onClose, discount }) => {
   if (!discount) return null
 
@@ -31,9 +34,12 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               fullWidth
               margin='normal'
               InputProps={{ readOnly: true }}
+              sx={{
+                ...StyleAdmin.InputCustom,
+                ...StyleAdmin.InputCustom.CursorNone
+              }}
             />
             <TextField
-              select
               label='Loại giảm giá'
               value={
                 discount.type === 'fixed'
@@ -43,19 +49,26 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               fullWidth
               margin='normal'
               InputProps={{ readOnly: true }}
-            >
-              <MenuItem value='Giảm theo số tiền'>Giảm theo số tiền</MenuItem>
-              <MenuItem value='Giảm theo phần trăm'>
-                Giảm theo phần trăm
-              </MenuItem>
-            </TextField>
+              sx={{
+                ...StyleAdmin.InputCustom,
+                ...StyleAdmin.InputCustom.CursorNone
+              }}
+            />
             <TextField
-              label='Giá trị giảm'
+              label={
+                discount.type === 'fixed'
+                  ? 'Giá trị giảm (VNĐ)'
+                  : 'Giá trị giảm (%)'
+              }
               value={discount.amount}
               type='number'
               fullWidth
               margin='normal'
               InputProps={{ readOnly: true }}
+              sx={{
+                ...StyleAdmin.InputCustom,
+                ...StyleAdmin.InputCustom.CursorNone
+              }}
             />
             <FormControlLabel
               control={<Checkbox checked={discount.isActive} disabled />}
@@ -72,6 +85,10 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               fullWidth
               margin='normal'
               InputProps={{ readOnly: true }}
+              sx={{
+                ...StyleAdmin.InputCustom,
+                ...StyleAdmin.InputCustom.CursorNone
+              }}
             />
             <TextField
               label='Số lượt sử dụng tối đa'
@@ -80,6 +97,10 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               fullWidth
               margin='normal'
               InputProps={{ readOnly: true }}
+              sx={{
+                ...StyleAdmin.InputCustom,
+                ...StyleAdmin.InputCustom.CursorNone
+              }}
             />
             <TextField
               label='Số lượt còn lại'
@@ -88,6 +109,10 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               fullWidth
               margin='normal'
               InputProps={{ readOnly: true }}
+              sx={{
+                ...StyleAdmin.InputCustom,
+                ...StyleAdmin.InputCustom.CursorNone
+              }}
             />
             <TextField
               label='Hiệu lực từ'
@@ -96,6 +121,10 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               fullWidth
               margin='normal'
               InputProps={{ readOnly: true }}
+              sx={{
+                ...StyleAdmin.InputCustom,
+                ...StyleAdmin.InputCustom.CursorNone
+              }}
             />
             <TextField
               label='Hiệu lực đến'
@@ -104,6 +133,10 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               fullWidth
               margin='normal'
               InputProps={{ readOnly: true }}
+              sx={{
+                ...StyleAdmin.InputCustom,
+                ...StyleAdmin.InputCustom.CursorNone
+              }}
             />
           </Box>
         </Box>

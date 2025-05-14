@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Dialog,
   DialogTitle,
@@ -6,14 +6,20 @@ import {
   DialogActions,
   Button,
   Divider,
-  Typography
+  Typography,
+  CircularProgress
 } from '@mui/material'
 
 const DeleteDiscountModal = ({ open, onClose, discount, onDelete }) => {
+  const [loading, setLoading] = useState(false)
+
   const handleDelete = async () => {
     if (!discount || !discount._id) return
+
+    setLoading(true) // Bắt đầu quá trình xóa
     await onDelete(discount._id)
-    onClose()
+    setLoading(false) // Kết thúc quá trình xóa
+    onClose() // Đóng modal sau khi xóa thành công
   }
 
   return (
@@ -24,14 +30,27 @@ const DeleteDiscountModal = ({ open, onClose, discount, onDelete }) => {
         <Typography>
           Bạn có chắc muốn xóa mã giảm giá <strong>{discount.code}</strong>?
         </Typography>
+        {loading && (
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <CircularProgress />
+            <Typography variant='body2' sx={{ mt: 2 }}>
+              Đang xóa...
+            </Typography>
+          </div>
+        )}
       </DialogContent>
       <Divider sx={{ my: 0 }} />
       <DialogActions>
-        <Button onClick={onClose} color='inherit'>
+        <Button onClick={onClose} color='inherit' disabled={loading}>
           Hủy
         </Button>
-        <Button onClick={handleDelete} variant='contained' color='error'>
-          Xóa
+        <Button
+          onClick={handleDelete}
+          variant='contained'
+          color='error'
+          disabled={loading} // Disable nút xóa khi đang xử lý
+        >
+          {loading ? 'Đang xóa...' : 'Xóa'}
         </Button>
       </DialogActions>
     </Dialog>

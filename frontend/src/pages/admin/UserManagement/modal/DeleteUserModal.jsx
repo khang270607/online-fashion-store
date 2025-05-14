@@ -40,7 +40,12 @@ const DeleteUserModal = React.memo(({ open, onClose, user, onDelete }) => {
         </Typography>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose} disabled={isDeleting} sx={cancelButtonStyle}>
+        <Button
+          color='inherit'
+          onClick={onClose}
+          disabled={isDeleting}
+          sx={cancelButtonStyle}
+        >
           Hủy
         </Button>
         <Button

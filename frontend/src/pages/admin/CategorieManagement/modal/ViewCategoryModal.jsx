@@ -8,7 +8,7 @@ import {
   Button,
   Divider
 } from '@mui/material'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 const ViewCategoryModal = ({ open, onClose, category }) => {
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
@@ -25,6 +25,10 @@ const ViewCategoryModal = ({ open, onClose, category }) => {
             InputProps={{
               readOnly: true // Đặt trường này chỉ để đọc, không thể chỉnh sửa
             }}
+            sx={{
+              ...StyleAdmin.InputCustom,
+              ...StyleAdmin.InputCustom.CursorNone
+            }}
           />
           {/* Mô tả - chỉ đọc */}
           <TextField
@@ -36,6 +40,10 @@ const ViewCategoryModal = ({ open, onClose, category }) => {
             defaultValue={category.description}
             InputProps={{
               readOnly: true // Đặt trường này chỉ để đọc, không thể chỉnh sửa
+            }}
+            sx={{
+              ...StyleAdmin.InputCustom,
+              ...StyleAdmin.InputCustom.CursorNone
             }}
           />
         </form>

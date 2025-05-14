@@ -8,7 +8,7 @@ import {
   TextField,
   Divider
 } from '@mui/material'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 const ViewUserModal = React.memo(({ open, onClose, user }) => {
   useEffect(() => {
     if (!open) {
@@ -27,6 +27,10 @@ const ViewUserModal = React.memo(({ open, onClose, user }) => {
           margin='normal'
           value={user?.name || ''}
           InputProps={{ readOnly: true }}
+          sx={{
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
+          }}
         />
         <TextField
           label='Email'
@@ -34,6 +38,10 @@ const ViewUserModal = React.memo(({ open, onClose, user }) => {
           margin='normal'
           value={user?.email || ''}
           InputProps={{ readOnly: true }}
+          sx={{
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
+          }}
         />
         <TextField
           label='Quyền'
@@ -41,6 +49,10 @@ const ViewUserModal = React.memo(({ open, onClose, user }) => {
           margin='normal'
           value={user?.role === 'admin' ? 'QUẢN TRỊ' : 'KHÁCH HÀNG'}
           InputProps={{ readOnly: true }}
+          sx={{
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
+          }}
         />
         <TextField
           label='Ngày tạo'
@@ -50,6 +62,10 @@ const ViewUserModal = React.memo(({ open, onClose, user }) => {
             user?.createdAt ? new Date(user.createdAt).toLocaleString() : ''
           }
           InputProps={{ readOnly: true }}
+          sx={{
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
+          }}
         />
         <TextField
           label='Ngày cập nhật'
@@ -59,6 +75,10 @@ const ViewUserModal = React.memo(({ open, onClose, user }) => {
             user?.updatedAt ? new Date(user.updatedAt).toLocaleString() : ''
           }
           InputProps={{ readOnly: true }}
+          sx={{
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
+          }}
         />
       </DialogContent>
       <Divider />

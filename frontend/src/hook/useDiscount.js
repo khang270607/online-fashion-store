@@ -10,7 +10,7 @@ const useDiscounts = (initialPage = 1, limit = 10) => {
     setLoading(true)
     const { discounts, total } = await getDiscounts(page, limit)
     setDiscounts(discounts)
-    setTotalPages(Math.ceil(total / limit))
+    setTotalPages(Math.max(1, Math.ceil(total / limit)))
     setLoading(false)
   }
 

@@ -85,11 +85,9 @@ const ProductList = () => {
   return (
     <Box
       sx={{
-        backgroundColor: '#03235e',
         padding: '5px',
         borderRadius: '20px',
         margin: '10px',
-        boxShadow: 3,
         minHeight: '100vh',
         mt: '150px'
       }}
@@ -173,7 +171,7 @@ const ProductList = () => {
           marginTop: '30px'
         }}
       >
-        <Button href='/product' sx={{ color: 'white' }}>
+        <Button href='/product' sx={{ color: 'black' }}>
           Xem tất cả
         </Button>
       </Box>

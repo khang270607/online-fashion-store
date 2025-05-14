@@ -14,6 +14,19 @@ export const getUsers = async (page = 1, limit = 10) => {
     return { users: [], total: 0 }
   }
 }
+// lấy api profile
+export const getProfile = async () => {
+  try {
+    const response = await AuthorizedAxiosInstance.get(
+      `${API_ROOT}/v1/users/profile`
+    )
+    console.log('Thông tin hồ sơ người dùng:', response.data)
+    return response.data
+  } catch (error) {
+    console.error('Lỗi khi lấy thông tin hồ sơ người dùng:', error)
+    return null
+  }
+}
 
 export const deleteUser = async (id) => {
   try {
@@ -22,5 +35,24 @@ export const deleteUser = async (id) => {
   } catch (error) {
     console.error('Lỗi khi xoá người dùng:', error)
     return false
+  }
+}
+export const updateProfile = async (data) => {
+  try {
+    const response = await AuthorizedAxiosInstance.patch(
+      `${API_ROOT}/v1/users/profile`,
+      data,
+      {
+        headers: {
+          'Content-Type': 'application/json' // Luôn gửi JSON để kiểm tra
+        }
+      }
+    )
+    console.log('Phản hồi từ API:', response.data)
+    return response.data
+  } catch (error) {
+    const errorData = error?.response?.data || { message: 'Lỗi không xác định' }
+    console.error('Lỗi khi cập nhật profile:', errorData)
+    return { error: errorData }
   }
 }

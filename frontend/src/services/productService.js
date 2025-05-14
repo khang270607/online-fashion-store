@@ -8,7 +8,7 @@ export const getProducts = async (page = 1, limit = 10) => {
     const response = await AuthorizedAxiosInstance.get(
       `${API_ROOT}/v1/products?page=${page}&limit=${limit}`
     )
-    console.log('Danh sách sản phẩm:', response.data)
+    // console.log('Danh sách sản phẩm:', response.data)
     return {
       products: response.data || [],
       total: response.data.total || 0

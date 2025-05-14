@@ -13,6 +13,7 @@ import { couponsRoute } from '~/routes/v1/couponsRoute'
 import { ordersRoute } from '~/routes/v1/ordersRoute'
 import { orderItemsRoute } from '~/routes/v1/orderItemsRoute'
 import { shippingAddressesRoute } from '~/routes/v1/shippingAddressesRoute'
+import { orderStatusHistoriesRoute } from '~/routes/v1/orderStatusHistoriesRoute'
 
 const Router = express.Router()
 
@@ -39,5 +40,7 @@ Router.use('/order-items', orderItemsRoute)
 Router.use('/shipping-addresses', shippingAddressesRoute)
 
 Router.use('/orders', ordersRoute)
+
+Router.use('/order-status-histories', orderStatusHistoriesRoute)
 
 export const APIs_V1 = Router

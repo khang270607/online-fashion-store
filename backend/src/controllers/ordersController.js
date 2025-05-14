@@ -28,9 +28,9 @@ const getOrderList = async (req, res, next) => {
 
 const getOrder = async (req, res, next) => {
   try {
-    const productId = req.params.productId
+    const orderId = req.params.orderId
 
-    const result = await ordersService.getOrder(productId)
+    const result = await ordersService.getOrder(orderId)
 
     res.status(StatusCodes.OK).json(result)
   } catch (err) {
@@ -40,9 +40,13 @@ const getOrder = async (req, res, next) => {
 
 const updateOrder = async (req, res, next) => {
   try {
-    const productId = req.params.productId
+    const orderId = req.params.orderId
 
-    const result = await ordersService.updateOrder(productId, req.body)
+    const result = await ordersService.updateOrder(
+      req.jwtDecoded._id,
+      orderId,
+      req.body
+    )
 
     res.status(StatusCodes.OK).json(result)
   } catch (err) {
@@ -52,9 +56,9 @@ const updateOrder = async (req, res, next) => {
 
 const deleteOrder = async (req, res, next) => {
   try {
-    const productId = req.params.productId
+    const orderId = req.params.orderId
 
-    const result = await ordersService.deleteOrder(productId)
+    const result = await ordersService.deleteOrder(orderId)
 
     res.status(StatusCodes.OK).json(result)
   } catch (err) {

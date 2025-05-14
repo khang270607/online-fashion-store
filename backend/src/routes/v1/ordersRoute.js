@@ -16,6 +16,7 @@ Router.route('/').post(
 // Danh sách Đơn hàng
 Router.route('/').get(
   authMiddleware.isAuthorized,
+  authMiddleware.isAuthorized,
   ordersController.getOrderList
 )
 
@@ -30,7 +31,7 @@ Router.route('/:orderId').get(
 Router.route('/:orderId').patch(
   authMiddleware.isAuthorized,
   ordersValidation.verifyId,
-  ordersValidation.order,
+  ordersValidation.updateOrder,
   ordersController.updateOrder
 )
 

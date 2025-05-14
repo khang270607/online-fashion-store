@@ -11,8 +11,12 @@ const OrderSchema = new Schema(
     },
     couponId: {
       type: Schema.Types.ObjectId,
-      ref: 'Coupon',
-      default: null
+      ref: 'Coupon'
+    },
+    couponCode: {
+      type: String,
+      trim: true,
+      uppercase: true
     },
     discountAmount: {
       type: Number,
@@ -21,7 +25,7 @@ const OrderSchema = new Schema(
     },
     shippingAddressId: {
       type: Schema.Types.ObjectId,
-      ref: 'Address',
+      ref: 'ShippingAddress',
       required: true
     },
     total: {
@@ -51,6 +55,11 @@ const OrderSchema = new Schema(
     isDelivered: {
       type: Boolean,
       default: false
+    },
+    note: {
+      type: String,
+      default: null,
+      trim: true
     }
   },
   {

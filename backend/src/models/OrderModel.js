@@ -25,7 +25,7 @@ const OrderSchema = new Schema(
     },
     shippingAddressId: {
       type: Schema.Types.ObjectId,
-      ref: 'Address',
+      ref: 'ShippingAddress',
       required: true
     },
     total: {
@@ -55,6 +55,11 @@ const OrderSchema = new Schema(
     isDelivered: {
       type: Boolean,
       default: false
+    },
+    note: {
+      type: String,
+      default: null,
+      trim: true
     }
   },
   {

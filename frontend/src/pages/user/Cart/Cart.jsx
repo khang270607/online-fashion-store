@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import {
   Box, Container, Table, TableHead, TableRow, TableCell, TableBody,
-  Typography, IconButton, TextField, Avatar, Button, Checkbox
+  Typography, IconButton, TextField, Avatar, Button, Checkbox, Snackbar, Alert
 } from '@mui/material'
 import { Delete, Add, Remove } from '@mui/icons-material'
 import { useCart } from '~/hook/useCarts'
@@ -10,15 +10,18 @@ const Cart = () => {
   const { cart, loading, deleteItem, clearCart, updateItem } = useCart()
   const [selectedItems, setSelectedItems] = useState([])
   const [cartItems, setCartItems] = useState([])
-
+  const [showMaxQuantityAlert, setShowMaxQuantityAlert] = useState(false)
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' })
+  }, [])
   useEffect(() => {
     if (cart?.cartItems) setCartItems(cart.cartItems)
   }, [cart])
 
   const handleSelect = (id) => {
-    setSelectedItems(prev => prev.includes(id)
-      ? prev.filter(i => i !== id)
-      : [...prev, id])
+    setSelectedItems(prev =>
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    )
   }
 
   const formatPrice = (val) =>
@@ -27,15 +30,21 @@ const Cart = () => {
       : '0₫'
 
   const handleQuantityChange = async (id, currentQty, delta) => {
+    const item = cartItems.find(i => i.productId?._id === id)
+    const maxQty = item?.productId?.quantity || 1
     const newQty = Math.max(1, currentQty + delta)
+
+    if (newQty > maxQty) {
+      setShowMaxQuantityAlert(true)
+      return
+    }
+
     try {
       const res = await updateItem(id, { quantity: newQty })
       if (res) {
         setCartItems(prev =>
           prev.map(item =>
-            item.productId._id === id
-              ? { ...item, quantity: newQty }
-              : item
+            item.productId._id === id ? { ...item, quantity: newQty } : item
           )
         )
       }
@@ -48,7 +57,7 @@ const Cart = () => {
     try {
       const res = await deleteItem(id)
       if (res) {
-        setCartItems(prev => prev.filter(item => item.productId._id !== id))
+        setCartItems(prev => prev.filter(item => item.productId?._id !== id))
         setSelectedItems(prev => prev.filter(i => i !== id))
       }
     } catch (error) {
@@ -57,43 +66,56 @@ const Cart = () => {
   }
 
   const selectedCartItems = cartItems.filter(item =>
-    selectedItems.includes(item.productId._id)
+    selectedItems.includes(item.productId?._id)
   )
 
   const totalPrice = selectedCartItems.reduce(
-    (sum, item) => sum + (item.productId.price || 0) * item.quantity,
+    (sum, item) => sum + (item.productId?.price || 0) * item.quantity,
     0
   )
 
   if (loading) {
-    return <Typography sx={{ mt: 10, textAlign: 'center' }}>Đang tải giỏ hàng...</Typography>
+    return <Typography sx={{ height: '70vh', mt: 10, textAlign: 'center' }}>Đang tải giỏ hàng...</Typography>
   }
 
   if (cartItems.length === 0) {
     return (
-      <Box sx={{ height: '70vh' }} mt={10} textAlign='center'>
+      <Box sx={{ height: '70vh' }} mt={16} textAlign='center'>
         <Typography variant='h6'>Giỏ hàng của bạn đang trống</Typography>
       </Box>
     )
   }
 
   return (
-    <Container maxWidth='lg' sx={{ height: '70vh', mt: 10, mb: 5 }}>
+    <Container maxWidth='lg' sx={{ minHeight: '70vh', mt: 10, mb: 5, overflowX: 'auto' }}>
       <Table size='medium'>
         <TableHead>
           <TableRow>
-            <TableCell />
-            <TableCell>Sản phẩm</TableCell>
-            <TableCell align='right'>Giá</TableCell>
+            <TableCell padding="checkbox">
+              <Checkbox
+                checked={selectedItems.length === cartItems.length && cartItems.length > 0}
+                indeterminate={selectedItems.length > 0 && selectedItems.length < cartItems.length}
+                onChange={(e) => {
+                  setSelectedItems(e.target.checked
+                    ? cartItems.map(item => item.productId?._id)
+                    : []
+                  )
+                }}
+              />
+            </TableCell>
+            <TableCell align='left'>Sản phẩm</TableCell>
+            <TableCell align='center'>Giá</TableCell>
             <TableCell align='center'>Số lượng</TableCell>
-            <TableCell align='center'>Hành động</TableCell>
+            <TableCell align='center'>Thao tác</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {cartItems.map(item => {
             const product = item.productId
+            if (!product) return null
+
             return (
-              <TableRow key={product._id}>
+              <TableRow key={item._id}>
                 <TableCell padding='checkbox'>
                   <Checkbox
                     checked={selectedItems.includes(product._id)}
@@ -115,7 +137,7 @@ const Cart = () => {
                     </Box>
                   </Box>
                 </TableCell>
-                <TableCell align='right'>{formatPrice(product.price)}</TableCell>
+                <TableCell align='center'>{formatPrice(product.price)}</TableCell>
                 <TableCell align='center'>
                   <Box display='flex' alignItems='center' justifyContent='center'>
                     <IconButton onClick={() => handleQuantityChange(product._id, item.quantity, -1)}>
@@ -147,6 +169,7 @@ const Cart = () => {
         <Typography variant='h6'>Tổng tiền: {formatPrice(totalPrice)}</Typography>
         <Box display='flex' gap={2}>
           <Button
+            href='/payment'
             variant='contained'
             color='primary'
             disabled={selectedItems.length === 0}
@@ -167,6 +190,17 @@ const Cart = () => {
           </Button>
         </Box>
       </Box>
+
+      <Snackbar
+        open={showMaxQuantityAlert}
+        autoHideDuration={3000}
+        onClose={() => setShowMaxQuantityAlert(false)}
+        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+      >
+        <Alert onClose={() => setShowMaxQuantityAlert(false)} severity='warning' sx={{ width: '100%' }}>
+          Số lượng sản phẩm đã hết!
+        </Alert>
+      </Snackbar>
     </Container>
   )
 }

@@ -6,6 +6,9 @@ const cartSlice = createSlice({
     cartItems: []
   },
   reducers: {
+    setCartItems: (state, action) => {
+      state.cartItems = action.payload
+    },
     addToCart: (state, action) => {
       const { productId, quantity } = action.payload
       const existingItem = state.cartItems.find(item => item.productId === productId)
@@ -28,12 +31,16 @@ const cartSlice = createSlice({
     },
     clearCart: (state) => {
       state.cartItems = []
-    },
-    setCartItems: (state, action) => {
-      state.cartItems = action.payload // Lưu cartItems vào store
     }
   }
 })
 
-export const { addToCart, removeFromCart, updateCartItem, clearCart, setCartItems } = cartSlice.actions
+export const {
+  setCartItems, // ✅ EXPORT NÀY BỊ THIẾU TRƯỚC ĐÂY
+  addToCart,
+  removeFromCart,
+  updateCartItem,
+  clearCart
+} = cartSlice.actions
+
 export default cartSlice.reducer

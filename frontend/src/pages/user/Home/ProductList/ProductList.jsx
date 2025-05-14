@@ -14,28 +14,48 @@ import {
 } from '@mui/material'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 import FavoriteIcon from '@mui/icons-material/Favorite'
-import { addToCart } from '~/services/cartService'  
+import { addToCart, getCart } from '~/services/cartService'
 import useProducts from '~/hook/useProducts'
+import { useDispatch } from 'react-redux'
+import { setCartItems } from '~/redux/cart/cartSlice'
 
 const ProductList = () => {
-  const { products } = useProducts() // dùng hook
-  const [openSnackbar, setOpenSnackbar] = useState(false)
+  const { products } = useProducts()
+  const [snackbar, setSnackbar] = useState(null) // { type: 'success' | 'error' | 'max', message: string }
+  const [isAdding, setIsAdding] = useState({})
+  const dispatch = useDispatch()
 
   const handleAddToCart = async (product) => {
-    const payload = {
-      cartItems: [
-        {
-          productId: product._id,
-          quantity: 1
-        }
-      ]
-    }
+    if (isAdding[product._id]) return
+    setIsAdding(prev => ({ ...prev, [product._id]: true }))
 
     try {
-      await addToCart(payload)
-      setOpenSnackbar(true)
+      const currentCart = await getCart()
+      const existingItem = currentCart?.cartItems?.find(
+        item => item.productId._id === product._id
+      )
+      const currentQty = existingItem?.quantity || 0
+      const maxQty = product.quantity
+
+      if (currentQty + 1 > maxQty) {
+        setSnackbar({ type: 'warning', message: 'Bạn đã thêm tối đa số lượng tồn kho!' })
+        return
+      }
+
+      await addToCart({
+        cartItems: [{ productId: product._id, quantity: 1 }]
+      })
+
+      const updatedCart = await getCart()
+      dispatch(setCartItems(updatedCart?.cartItems || []))
+      setSnackbar({ type: 'success', message: 'Thêm sản phẩm vào giỏ hàng thành công!' })
     } catch (error) {
       console.error('Thêm vào giỏ hàng lỗi:', error)
+      setSnackbar({ type: 'error', message: 'Thêm sản phẩm thất bại!' })
+    } finally {
+      setTimeout(() => {
+        setIsAdding(prev => ({ ...prev, [product._id]: false }))
+      }, 500)
     }
   }
 
@@ -63,7 +83,10 @@ const ProductList = () => {
               </CardContent>
               <CardActions disableSpacing>
                 <IconButton><FavoriteIcon /></IconButton>
-                <IconButton onClick={() => handleAddToCart(product)}>
+                <IconButton
+                  onClick={() => handleAddToCart(product)}
+                  disabled={isAdding[product._id]}
+                >
                   <AddShoppingCartIcon />
                 </IconButton>
                 <Box sx={{ ml: 'auto', pr: 1 }}>
@@ -83,16 +106,18 @@ const ProductList = () => {
         </Button>
       </Box>
 
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert onClose={() => setOpenSnackbar(false)} severity='success' sx={{ width: '100%' }}>
-          Thêm sản phẩm vào giỏ hàng thành công!
-        </Alert>
-      </Snackbar>
+      {snackbar && (
+        <Snackbar
+          open
+          autoHideDuration={3000}
+          onClose={() => setSnackbar(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+        >
+          <Alert onClose={() => setSnackbar(null)} severity={snackbar.type} sx={{ width: '100%' }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      )}
     </Box>
   )
 }

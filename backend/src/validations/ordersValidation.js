@@ -5,10 +5,10 @@ import ApiError from '~/utils/ApiError'
 import validObjectId from '~/utils/validObjectId'
 
 const verifyId = (req, res, next) => {
-  const productId = req.params.productId
+  const orderId = req.params.orderId
 
   // Kiểm tra format ObjectId
-  validObjectId(productId, next)
+  validObjectId(orderId, next)
 
   next()
 }
@@ -43,7 +43,46 @@ const order = async (req, res, next) => {
       .valid('Pending', 'Completed', 'Failed')
       .allow(null),
 
-    isDelivered: Joi.boolean().default(false)
+    isDelivered: Joi.boolean().default(false),
+
+    note: Joi.string().trim().min(1).max(500).allow(null)
+  })
+
+  try {
+    await correctCondition.validateAsync(req.body, {
+      abortEarly: false // Không dừng lại khi gặp lỗi đầu tiên
+    })
+
+    next() // Nếu không có lỗi, tiếp tục xử lý request sang controller
+  } catch (err) {
+    const errorMessage = new Error(err).message
+    const customError = new ApiError(
+      StatusCodes.UNPROCESSABLE_ENTITY,
+      errorMessage
+    )
+    next(customError) // Gọi middleware xử lý lỗi tập trung
+  }
+}
+
+const updateOrder = async (req, res, next) => {
+  // Xác thực dữ liệu đầu vào correctCondition: điều kiện đúng
+  const correctCondition = Joi.object({
+    status: Joi.string()
+      .valid('Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled')
+      .required(),
+
+    isPaid: Joi.boolean().required(),
+
+    paymentStatus: Joi.string()
+      .valid('Pending', 'Completed', 'Failed')
+      .required(),
+
+    paymentMethod: Joi.string()
+      .valid('COD', 'vnpay', 'momo', 'paypal', 'credit_card')
+      .allow(null),
+    isDelivered: Joi.boolean().required(),
+
+    note: Joi.string().trim().min(1).max(500).allow(null)
   })
 
   try {
@@ -64,5 +103,6 @@ const order = async (req, res, next) => {
 
 export const ordersValidation = {
   verifyId,
-  order
+  order,
+  updateOrder
 }

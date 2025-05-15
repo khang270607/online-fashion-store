@@ -23,7 +23,13 @@ export default React.memo(function UserRow({ user, index, handleOpenModal }) {
   return (
     <StyledTableRow>
       <StyledTableCell sx={{ textAlign: 'center' }}>{index}</StyledTableCell>
-      <StyledTableCell title={user.name}>{user.name}</StyledTableCell>
+      <StyledTableCell title={user.name}>
+        {user.name
+          ?.toLowerCase()
+          .split(' ')
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(' ') || ''}
+      </StyledTableCell>
       <StyledTableCell title={user.email}>{user.email}</StyledTableCell>
       <StyledTableCell>
         {user.role === 'admin' ? 'QUẢN TRỊ' : 'KHÁCH HÀNG'}

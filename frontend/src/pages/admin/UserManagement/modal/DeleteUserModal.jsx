@@ -35,11 +35,18 @@ const DeleteUserModal = React.memo(({ open, onClose, user, onDelete }) => {
       <DialogTitle sx={dialogTitleStyle}>Xác nhận xóa người dùng</DialogTitle>
       <DialogContent dividers>
         <Typography>
-          Bạn có chắc chắn muốn xóa người dùng <strong>{user?.name}</strong>{' '}
+          Bạn có chắc chắn muốn xóa người dùng{' '}
+          <strong>
+            {user?.name
+              ?.toLowerCase()
+              .split(' ')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ') || ''}
+          </strong>{' '}
           không?
         </Typography>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button
           color='inherit'
           onClick={onClose}

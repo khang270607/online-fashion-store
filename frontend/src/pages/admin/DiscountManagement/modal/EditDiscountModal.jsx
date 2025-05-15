@@ -176,7 +176,7 @@ const EditDiscountModal = ({ open, onClose, discount, onSave }) => {
           </Box>
         </DialogContent>
         <Divider sx={{ my: 0 }} />
-        <DialogActions>
+        <DialogActions sx={{ padding: '16px 24px' }}>
           <Button onClick={handleClose} color='inherit'>
             Hủy
           </Button>

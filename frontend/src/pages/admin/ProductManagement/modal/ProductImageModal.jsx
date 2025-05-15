@@ -11,7 +11,19 @@ import CloseIcon from '@mui/icons-material/Close'
 
 const ProductImageModal = ({ open, onClose, imageSrc, productName }) => {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth='md'
+      fullWidth
+      PaperProps={{
+        sx: {
+          maxHeight: '80vh',
+          display: 'flex',
+          flexDirection: 'column'
+        }
+      }}
+    >
       {/* ===== Header ===== */}
       <DialogTitle sx={{ position: 'relative', pr: 6 }}>
         Ảnh sản phẩm
@@ -43,7 +55,7 @@ const ProductImageModal = ({ open, onClose, imageSrc, productName }) => {
       </DialogContent>
 
       {/* ===== Footer ===== */}
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} color='error' variant='contained'>
           Đóng
         </Button>

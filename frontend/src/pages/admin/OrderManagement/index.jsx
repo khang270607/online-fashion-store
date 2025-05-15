@@ -1,225 +1,160 @@
-import * as React from 'react'
-import { styled } from '@mui/material/styles'
+import React from 'react'
 import Typography from '@mui/material/Typography'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell, { tableCellClasses } from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Paper from '@mui/material/Paper'
-import Pagination from '@mui/material/Pagination'
-import Stack from '@mui/material/Stack'
-import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
-import CancelIcon from '@mui/icons-material/Cancel'
+import OrderTable from './OrderTable'
+import OrderPagination from './OrderPagination'
+import ViewOrderModal from './modal/ViewOrderModal'
+import EditOrderModal from './modal/EditOrderModal' // import modal sửa
+import DeleteOrderModal from './modal/DeleteOrderModal' // import modal xoá
+import useOrders from '~/hook/useOrders'
+import { deleteOrderById } from '~/services/orderService'
 
-import ViewOrderModal from '~/components/modals/ViewOrderModal.jsx'
-import CancelOrderModal from '~/components/modals/CancelOrderModal.jsx'
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: '#001f5d',
-    color: theme.palette.common.white,
-    fontWeight: 'bold',
-    borderRight: '1px solid #e0e0e0',
-    padding: '8px',
-    whiteSpace: 'nowrap'
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-    borderRight: '1px solid #e0e0e0',
-    padding: '8px',
-    whiteSpace: 'nowrap'
-  }
-}))
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  '&:nth-of-type(odd)': {
-    backgroundColor: theme.palette.action.hover
-  }
-}))
-
-const StyledTableContainer = styled(TableContainer)(({ theme }) => ({
-  overflowX: 'auto',
-  maxWidth: '100%',
-  '&::-webkit-scrollbar': {
-    height: '8px'
-  },
-  '&::-webkit-scrollbar-thumb': {
-    backgroundColor: '#001f5d',
-    borderRadius: '4px'
-  },
-  '&::-webkit-scrollbar-track': {
-    backgroundColor: '#f1f1f1'
-  },
-  [theme.breakpoints.down('sm')]: {
-    minWidth: '600px'
-  }
-}))
-
-const ROWS_PER_PAGE = 10
-
-const orders = [
-  {
-    id: 'DH001',
-    products: [
-      { name: 'Áo sơ mi trắng', quantity: 1, price: 450000 },
-      { name: 'Quần jean xanh', quantity: 1, price: 450000 }
-    ],
-    totalQuantity: 2,
-    totalPrice: 900000,
-    status: 'Đang xử lý'
-  },
-  {
-    id: 'DH002',
-    productName: 'Quần jean xanh',
-    totalQuantity: 1,
-    totalPrice: 600000,
-    status: 'Đã giao'
-  },
-  {
-    id: 'DH003',
-    productName: 'Áo thun đen basic',
-    totalQuantity: 3,
-    totalPrice: 750000,
-    status: 'Đã huỷ'
-  }
-]
-
-export default function Index() {
+const OrderManagement = () => {
   const [page, setPage] = React.useState(1)
+  const [openViewModal, setOpenViewModal] = React.useState(false)
+  const [openEditModal, setOpenEditModal] = React.useState(false) // modal sửa
+  const [openDeleteModal, setOpenDeleteModal] = React.useState(false) // modal xoá
   const [selectedOrder, setSelectedOrder] = React.useState(null)
-  const [modalType, setModalType] = React.useState(null)
+  const [histories, setHistories] = React.useState([])
+  const [orderDetails, setOrderDetails] = React.useState([])
+  const [shippingAddress, setShippingAddress] = React.useState(null)
+  const [loadingEdit, setLoadingEdit] = React.useState(false)
+  const [loadingDelete, setLoadingDelete] = React.useState(false)
+  const {
+    orders,
+    totalPages,
+    loading,
+    fetchOrders,
+    getOrderHistoriesByOrderId,
+    getOrderDetailsByOrderId,
+    getShippingAddressById,
+    updateOrderById
+  } = useOrders()
 
-  const pageCount = Math.ceil(orders.length / ROWS_PER_PAGE)
-  const displayedRows = orders.slice(
-    (page - 1) * ROWS_PER_PAGE,
-    page * ROWS_PER_PAGE
-  )
-
-  const handleOpenModal = (type, order) => {
+  // Mở modal xem
+  const handleOpenModalView = async (order) => {
     setSelectedOrder(order)
-    setModalType(type)
+    const [historiesData, detailsData, addressData] = await Promise.all([
+      getOrderHistoriesByOrderId(order._id),
+      getOrderDetailsByOrderId(order._id),
+      getShippingAddressById(order.shippingAddressId)
+    ])
+    setHistories(historiesData)
+    setOrderDetails(detailsData)
+    setShippingAddress(addressData)
+    setOpenViewModal(true)
   }
 
-  const handleCloseModal = () => {
+  const handleCloseModalView = () => {
+    setOpenViewModal(false)
     setSelectedOrder(null)
-    setModalType(null)
+    setHistories([])
+    setOrderDetails([])
+    setShippingAddress(null)
   }
 
-  const handleCancelOrder = (order) => {
-    console.log('Huỷ đơn hàng:', order)
+  // Mở modal sửa
+  const handleOpenModalEdit = async (order) => {
+    setLoadingEdit(true)
+    setSelectedOrder(order)
+    // Nếu cần fetch thêm data thì await ở đây
+    setOpenEditModal(true)
+    setLoadingEdit(false)
   }
 
-  const handleChangePage = (event, value) => {
-    setPage(value)
+  const handleCloseModalEdit = () => {
+    setOpenEditModal(false)
+    setSelectedOrder(null)
+    setLoadingEdit(false)
   }
+
+  // Mở modal xoá
+  const handleOpenModalDelete = (order) => {
+    setSelectedOrder(order)
+    setOpenDeleteModal(true)
+    setLoadingDelete(false) // chưa xoá
+  }
+
+  const handleCloseModalDelete = () => {
+    setOpenDeleteModal(false)
+    setSelectedOrder(null)
+    setLoadingDelete(false)
+  }
+
+  // Xử lý update đơn hàng
+  const handleUpdateOrder = async (orderId, data) => {
+    // Gọi API cập nhật (bạn cần tạo hàm updateOrder trong service tương tự)
+    try {
+      // Giả sử bạn có hàm updateOrderById trong service
+      await updateOrderById(orderId, data)
+      fetchOrders(page)
+      handleCloseModalEdit()
+    } catch (error) {
+      console.error('Lỗi cập nhật đơn hàng:', error)
+    }
+  }
+
+  // Xử lý xoá đơn hàng
+  const handleDeleteOrder = async () => {
+    if (!selectedOrder) return
+    const success = await deleteOrderById(selectedOrder._id)
+    if (success) {
+      fetchOrders(page)
+      handleCloseModalDelete()
+    } else {
+      alert('Xoá đơn hàng thất bại, vui lòng thử lại.')
+    }
+  }
+
+  React.useEffect(() => {
+    fetchOrders(page)
+  }, [page])
 
   return (
     <>
       <Typography variant='h5' sx={{ mb: 2 }}>
         Quản lý đơn hàng
       </Typography>
-      <StyledTableContainer component={Paper}>
-        <Table sx={{ tableLayout: 'fixed', minWidth: '100%' }}>
-          <TableHead>
-            <TableRow>
-              <StyledTableCell sx={{ width: '50px', textAlign: 'center' }}>
-                STT
-              </StyledTableCell>
-              <StyledTableCell>Mã đơn hàng</StyledTableCell>
-              <StyledTableCell>Tên sản phẩm</StyledTableCell>
-              <StyledTableCell>Số lượng</StyledTableCell>
-              <StyledTableCell>Tổng tiền</StyledTableCell>
-              <StyledTableCell>Trạng thái</StyledTableCell>
-              <StyledTableCell>Hành động</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {displayedRows.map((order, index) => (
-              <StyledTableRow key={order.id}>
-                <StyledTableCell sx={{ textAlign: 'center' }}>
-                  {(page - 1) * ROWS_PER_PAGE + index + 1}
-                </StyledTableCell>
-                <StyledTableCell>{order.id}</StyledTableCell>
-                <StyledTableCell>
-                  <span
-                    style={{
-                      display: 'block',
-                      overflow: 'hidden',
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap',
-                      width: '100%'
-                    }}
-                    title={(order.products
-                      ? order.products.map((p) => p.name)
-                      : [order.productName]
-                    )
-                      .filter(Boolean)
-                      .join(', ')}
-                  >
-                    {(order.products
-                      ? order.products.map((p) => p.name)
-                      : [order.productName]
-                    )
-                      .filter(Boolean)
-                      .join(', ')}
-                  </span>
-                </StyledTableCell>
-                <StyledTableCell>{order.totalQuantity}</StyledTableCell>
-                <StyledTableCell>
-                  {Number(order.totalPrice).toLocaleString()} đ
-                </StyledTableCell>
-                <StyledTableCell>{order.status}</StyledTableCell>
-                <StyledTableCell sx={{ display: 'flex', gap: '8px' }}>
-                  <RemoveRedEyeIcon
-                    sx={{ cursor: 'pointer', fontSize: '20px' }}
-                    onClick={() => handleOpenModal('view', order)}
-                  />
-                  {order.status !== 'Đã huỷ' && order.status !== 'Đã giao' && (
-                    <CancelIcon
-                      sx={{ cursor: 'pointer', fontSize: '20px' }}
-                      onClick={() => handleOpenModal('cancel', order)}
-                    />
-                  )}
-                </StyledTableCell>
-              </StyledTableRow>
-            ))}
-          </TableBody>
-        </Table>
 
-        {modalType === 'view' && (
-          <ViewOrderModal
-            open={true}
-            onClose={handleCloseModal}
-            order={selectedOrder}
-          />
-        )}
-        {modalType === 'cancel' && (
-          <CancelOrderModal
-            open={true}
-            onClose={handleCloseModal}
-            order={selectedOrder}
-            onCancel={handleCancelOrder}
-          />
-        )}
-      </StyledTableContainer>
+      <OrderTable
+        orders={orders}
+        loading={loading}
+        onView={handleOpenModalView}
+        onEdit={handleOpenModalEdit} // truyền sự kiện mở modal sửa
+        onDelete={handleOpenModalDelete} // truyền sự kiện mở modal xoá
+      />
 
-      <Stack spacing={2} sx={{ mt: 2 }} alignItems='center'>
-        <Pagination
-          count={pageCount}
-          page={page}
-          onChange={handleChangePage}
-          color='primary'
-          sx={{
-            '& .Mui-selected': {
-              backgroundColor: '#001f5d !important',
-              color: '#fff',
-              fontWeight: 'bold'
-            }
-          }}
-        />
-      </Stack>
+      <OrderPagination
+        page={page}
+        totalPages={totalPages}
+        onPageChange={(e, val) => setPage(val)}
+      />
+
+      <ViewOrderModal
+        open={openViewModal}
+        onClose={handleCloseModalView}
+        order={selectedOrder}
+        histories={histories}
+        orderDetails={orderDetails}
+        shippingAddress={shippingAddress}
+      />
+
+      <EditOrderModal
+        open={openEditModal}
+        onClose={handleCloseModalEdit}
+        order={selectedOrder}
+        onUpdate={handleUpdateOrder}
+        loading={loadingEdit}
+      />
+
+      <DeleteOrderModal
+        open={openDeleteModal}
+        onClose={handleCloseModalDelete}
+        order={selectedOrder}
+        onConfirm={handleDeleteOrder}
+        loading={loadingDelete}
+      />
     </>
   )
 }
+
+export default OrderManagement

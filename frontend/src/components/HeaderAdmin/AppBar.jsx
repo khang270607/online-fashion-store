@@ -45,7 +45,11 @@ export default function AdminAppBar({
         {/* Desktop avatar */}
         <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
           <Typography variant='h6' noWrap component='div'>
-            {(profile?.name || '').toUpperCase()}
+            {profile?.name
+              ?.toLowerCase()
+              .split(' ')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ') || ''}
           </Typography>
           <IconButton
             size='large'

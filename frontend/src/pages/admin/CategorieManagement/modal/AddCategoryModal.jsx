@@ -65,7 +65,7 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
           />
         </DialogContent>
         <Divider sx={{ my: 0 }} />
-        <DialogActions>
+        <DialogActions sx={{ padding: '16px 24px' }}>
           <Button color='inherit' onClick={handleClose}>
             Hủy
           </Button>

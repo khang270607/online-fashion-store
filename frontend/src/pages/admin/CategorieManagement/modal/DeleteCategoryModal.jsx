@@ -31,7 +31,7 @@ const DeleteCategoryModal = ({ open, onClose, category, onDelete }) => {
         Bạn có chắc chắn muốn xoá danh mục <strong>{category.name}</strong>?
       </DialogContent>
       <Divider sx={{ my: 0 }} />
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} color='inherit' disabled={isDeleting}>
           Hủy
         </Button>

@@ -40,7 +40,7 @@ const DeleteDiscountModal = ({ open, onClose, discount, onDelete }) => {
         )}
       </DialogContent>
       <Divider sx={{ my: 0 }} />
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} color='inherit' disabled={loading}>
           Hủy
         </Button>

@@ -67,7 +67,7 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
         </form>
       </DialogContent>
       <Divider sx={{ my: 0 }} />
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} disabled={isSubmitting} color='inherit'>
           Hủy
         </Button>

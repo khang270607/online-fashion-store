@@ -58,7 +58,11 @@ export default function ProfileModal({ open, onClose, profile, fetchProfile }) {
                 Tên
               </Typography>
               <Typography variant='body1' gutterBottom>
-                {profile.name}
+                {profile?.name
+                  ?.toLowerCase()
+                  .split(' ')
+                  .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                  .join(' ') || ''}
               </Typography>
 
               <Typography variant='subtitle2' color='text.secondary'>

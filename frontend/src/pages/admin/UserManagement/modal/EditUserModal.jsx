@@ -59,7 +59,7 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-      <DialogTitle sx={{ paddingBottom: 0 }}>Chỉnh sửa người dùng</DialogTitle>
+      <DialogTitle>Chỉnh sửa người dùng</DialogTitle>
       <Divider sx={{ my: 1 }} />
       <DialogContent>
         <form id='edit-user-form' onSubmit={handleSubmit(onSubmit)}>
@@ -71,7 +71,8 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             InputProps={{ readOnly: true }}
             sx={{
               ...StyleAdmin.InputCustom,
-              ...StyleAdmin.InputCustom.CursorNone
+              ...StyleAdmin.InputCustom.CursorNone,
+              ...StyleAdmin.InputCustom.InputViews
             }}
           />
           <TextField
@@ -82,7 +83,8 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             InputProps={{ readOnly: true }}
             sx={{
               ...StyleAdmin.InputCustom,
-              ...StyleAdmin.InputCustom.CursorNone
+              ...StyleAdmin.InputCustom.CursorNone,
+              ...StyleAdmin.InputCustom.InputViews
             }}
           />
           <FormControl
@@ -125,7 +127,8 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             InputProps={{ readOnly: true }}
             sx={{
               ...StyleAdmin.InputCustom,
-              ...StyleAdmin.InputCustom.CursorNone
+              ...StyleAdmin.InputCustom.CursorNone,
+              ...StyleAdmin.InputCustom.InputViews
             }}
           />
           <TextField
@@ -138,13 +141,14 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
             InputProps={{ readOnly: true }}
             sx={{
               ...StyleAdmin.InputCustom,
-              ...StyleAdmin.InputCustom.CursorNone
+              ...StyleAdmin.InputCustom.CursorNone,
+              ...StyleAdmin.InputCustom.InputViews
             }}
           />
         </form>
       </DialogContent>
       <Divider />
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} disabled={isSubmitting} color='inherit'>
           Hủy
         </Button>

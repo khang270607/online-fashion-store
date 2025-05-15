@@ -23,7 +23,7 @@ const DiscountTable = ({ discounts, loading, onAction }) => {
           </StyledTableCell>
           <StyledTableCell sx={{ minWidth: '170px' }}>Mã giảm</StyledTableCell>
           <StyledTableCell>Loại</StyledTableCell>
-          <StyledTableCell>Giá trị giảm (VNĐ)</StyledTableCell>
+          <StyledTableCell>Giá trị giảm</StyledTableCell>
           <StyledTableCell>Số lượt sử dụng tối đa</StyledTableCell>
           <StyledTableCell>Số lượng còn lại</StyledTableCell>
           <StyledTableCell>Trạng thái</StyledTableCell>

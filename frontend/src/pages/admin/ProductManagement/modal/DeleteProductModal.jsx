@@ -33,7 +33,7 @@ const DeleteProductModal = ({ open, onClose, product, onDelete }) => {
           Bạn có chắc muốn xoá sản phẩm <b>{product.name}</b> không?
         </Typography>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} color='#001f5d'>
           Hủy
         </Button>

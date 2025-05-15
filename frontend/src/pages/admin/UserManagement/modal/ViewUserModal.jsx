@@ -18,8 +18,8 @@ const ViewUserModal = React.memo(({ open, onClose, user }) => {
 
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
-      <DialogTitle sx={{ paddingBottom: 0 }}>Chi tiết người dùng</DialogTitle>
-      <Divider />
+      <DialogTitle>Chi tiết người dùng</DialogTitle>
+      <Divider sx={{ my: 0 }} />
       <DialogContent>
         <TextField
           label='Tên người dùng'
@@ -82,7 +82,7 @@ const ViewUserModal = React.memo(({ open, onClose, user }) => {
         />
       </DialogContent>
       <Divider />
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} variant='contained' color='error'>
           Đóng
         </Button>

@@ -50,7 +50,12 @@ const tab = [
 export default function AdminDrawer({ open, onClose }) {
   const location = useLocation()
   const currentPath = location.pathname
-
+  const activeTabPath = tab
+    .map((t) => t.path)
+    .filter(
+      (path) => currentPath === path || currentPath.startsWith(path + '/')
+    )
+    .sort((a, b) => b.length - a.length)[0] // path dài nhất sẽ chính xác nhất
   return (
     <Drawer
       className={`drawer ${open ? 'open' : ''}`}
@@ -69,7 +74,7 @@ export default function AdminDrawer({ open, onClose }) {
       <Divider />
       <List sx={{ padding: 0 }} className='drawer-list'>
         {tab.map((item) => {
-          const isActive = currentPath === item.path
+          const isActive = item.path === activeTabPath
           return (
             <Link to={item.path} className='drawer-link' key={item.name}>
               <ListItem className='list-item' disablePadding>

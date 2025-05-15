@@ -27,7 +27,8 @@ const ViewCategoryModal = ({ open, onClose, category }) => {
             }}
             sx={{
               ...StyleAdmin.InputCustom,
-              ...StyleAdmin.InputCustom.CursorNone
+              ...StyleAdmin.InputCustom.CursorNone,
+              ...StyleAdmin.InputCustom.InputViews
             }}
           />
           {/* Mô tả - chỉ đọc */}
@@ -43,13 +44,14 @@ const ViewCategoryModal = ({ open, onClose, category }) => {
             }}
             sx={{
               ...StyleAdmin.InputCustom,
-              ...StyleAdmin.InputCustom.CursorNone
+              ...StyleAdmin.InputCustom.CursorNone,
+              ...StyleAdmin.InputCustom.InputViews
             }}
           />
         </form>
       </DialogContent>
       <Divider sx={{ my: 0 }} />
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} color='error' variant='contained'>
           Đóng
         </Button>

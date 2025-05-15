@@ -1,4 +1,3 @@
-// EditProductModal.jsx
 import React, { useState, useRef, useEffect } from 'react'
 import {
   Dialog,
@@ -20,8 +19,8 @@ import EditIcon from '@mui/icons-material/Edit'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useForm, Controller } from 'react-hook-form'
 
+import { addProduct } from '~/services/productService'
 import useCategories from '~/hook/useCategories'
-import { updateProduct, getProductById } from '~/services/productService'
 import AddCategoryModal from '~/pages/admin/CategorieManagement/modal/AddCategoryModal.jsx'
 import StyleAdmin from '~/components/StyleAdmin'
 
@@ -43,7 +42,7 @@ const uploadToCloudinary = async (file) => {
   return data.secure_url
 }
 
-const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
+const AddProductModal = ({ open, onClose, onSuccess }) => {
   const {
     control,
     register,
@@ -53,52 +52,15 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
   } = useForm()
 
   const [images, setImages] = useState([{ file: null, preview: '' }])
-  const fileInputRefs = useRef([])
   const { categories, loading, fetchCategories } = useCategories()
   const [categoryOpen, setCategoryOpen] = useState(false)
-
-  const loadProduct = async () => {
-    if (!productId) return
-    const product = await getProductById(productId)
-    if (product) {
-      reset({
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        quantity: product.quantity,
-        categoryId: product.categoryId
-      })
-
-      const initialImages =
-        product.image?.map((url) => ({
-          file: null,
-          preview: url
-        })) || []
-
-      if (
-        initialImages.length === 0 ||
-        initialImages[initialImages.length - 1].file ||
-        initialImages.length < 9
-      ) {
-        initialImages.push({ file: null, preview: '' })
-      }
-
-      setImages(initialImages)
-    }
-  }
-
-  useEffect(() => {
-    if (open) {
-      fetchCategories()
-      loadProduct()
-    }
-  }, [open, productId])
+  const fileInputRefs = useRef([])
 
   const handleImageChange = (index, file) => {
     const newImages = [...images]
     newImages[index] = { file, preview: URL.createObjectURL(file) }
 
-    if (index === newImages.length - 1 && file && newImages.length < 9) {
+    if (index === images.length - 1 && file && newImages.length < 9) {
       newImages.push({ file: null, preview: '' })
     }
 
@@ -121,18 +83,16 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
         if (img.file) {
           const url = await uploadToCloudinary(img.file)
           imageUrls.push(url)
-        } else if (img.preview) {
-          imageUrls.push(img.preview)
         }
       }
 
-      const result = await updateProduct(productId, {
+      const result = await addProduct({
         name: data.name,
         description: data.description,
         price: Number(data.price),
-        quantity: Number(data.quantity),
+        image: imageUrls,
         categoryId: data.categoryId,
-        image: imageUrls
+        quantity: Number(data.quantity)
       })
 
       if (result) {
@@ -141,12 +101,17 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
         reset()
         setImages([{ file: null, preview: '' }])
       } else {
-        console.log('Cập nhật sản phẩm không thành công')
+        alert('Thêm sản phẩm không thành công')
       }
     } catch (error) {
-      console.error('Lỗi khi cập nhật sản phẩm:', error)
+      console.error('Lỗi khi thêm sản phẩm:', error)
+      alert('Có lỗi xảy ra, vui lòng thử lại')
     }
   }
+
+  useEffect(() => {
+    if (open) fetchCategories()
+  }, [open])
 
   return (
     <>
@@ -157,7 +122,7 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
         maxWidth='xl'
         PaperProps={{ sx: { mt: 8, maxHeight: '90vh', width: '90vw' } }}
       >
-        <DialogTitle>Chỉnh sửa Sản Phẩm</DialogTitle>
+        <DialogTitle>Thêm Sản Phẩm</DialogTitle>
         <Divider />
         <form onSubmit={handleSubmit(onSubmit)}>
           <DialogContent sx={{ display: 'flex', gap: 2, overflowY: 'auto' }}>
@@ -225,7 +190,7 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
                     <Select
                       {...field}
                       label='Danh mục'
-                      value={field.value || ''}
+                      value={field.value}
                       disabled={loading}
                       MenuProps={{
                         PaperProps: { sx: StyleAdmin.FormSelect.SelectMenu }
@@ -310,18 +275,15 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
                             }}
                           />
                           <Box
-                            className='overlay'
                             sx={{
                               position: 'absolute',
                               top: 5,
-                              right: 5,
-                              display: 'flex',
-                              flexDirection: 'column',
-                              gap: 0.5,
+                              left: 5,
+                              zIndex: 2,
                               opacity: 0,
-                              transition: 'opacity 0.3s',
-                              zIndex: 2
+                              transition: 'opacity 0.3s'
                             }}
+                            className='overlay'
                           >
                             <IconButton
                               size='small'
@@ -333,6 +295,20 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
                                 sx={{ fontSize: 18, color: '#2196f3' }}
                               />
                             </IconButton>
+                          </Box>
+
+                          {/* Icon xoá ở góc trên bên phải */}
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 5,
+                              right: 5,
+                              zIndex: 2,
+                              opacity: 0,
+                              transition: 'opacity 0.3s'
+                            }}
+                            className='overlay'
+                          >
                             <IconButton
                               size='small'
                               onClick={() => handleRemoveImage(index)}
@@ -376,7 +352,7 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
             </Box>
           </DialogContent>
           <Divider />
-          <DialogActions>
+          <DialogActions sx={{ padding: '16px 24px' }}>
             <Button onClick={onClose} color='inherit'>
               Hủy
             </Button>
@@ -386,12 +362,13 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
               sx={{ backgroundColor: '#001f5d' }}
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'Đang cập nhật...' : 'Cập nhật'}
+              {isSubmitting ? 'Đang thêm...' : 'Thêm'}
             </Button>
           </DialogActions>
         </form>
       </Dialog>
 
+      {/* Modal thêm danh mục */}
       <AddCategoryModal
         open={categoryOpen}
         onClose={() => setCategoryOpen(false)}
@@ -401,4 +378,4 @@ const EditProductModal = ({ open, onClose, onSuccess, productId }) => {
   )
 }
 
-export default EditProductModal
+export default AddProductModal

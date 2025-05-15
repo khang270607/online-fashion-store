@@ -36,7 +36,8 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone
+                ...StyleAdmin.InputCustom.CursorNone,
+                ...StyleAdmin.InputCustom.InputViews
               }}
             />
             <TextField
@@ -51,7 +52,8 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone
+                ...StyleAdmin.InputCustom.CursorNone,
+                ...StyleAdmin.InputCustom.InputViews
               }}
             />
             <TextField
@@ -67,7 +69,8 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone
+                ...StyleAdmin.InputCustom.CursorNone,
+                ...StyleAdmin.InputCustom.InputViews
               }}
             />
             <FormControlLabel
@@ -87,7 +90,8 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone
+                ...StyleAdmin.InputCustom.CursorNone,
+                ...StyleAdmin.InputCustom.InputViews
               }}
             />
             <TextField
@@ -99,7 +103,8 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone
+                ...StyleAdmin.InputCustom.CursorNone,
+                ...StyleAdmin.InputCustom.InputViews
               }}
             />
             <TextField
@@ -111,7 +116,8 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone
+                ...StyleAdmin.InputCustom.CursorNone,
+                ...StyleAdmin.InputCustom.InputViews
               }}
             />
             <TextField
@@ -123,7 +129,8 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone
+                ...StyleAdmin.InputCustom.CursorNone,
+                ...StyleAdmin.InputCustom.InputViews
               }}
             />
             <TextField
@@ -135,14 +142,15 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone
+                ...StyleAdmin.InputCustom.CursorNone,
+                ...StyleAdmin.InputCustom.InputViews
               }}
             />
           </Box>
         </Box>
       </DialogContent>
       <Divider sx={{ my: 0 }} />
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button onClick={onClose} variant='contained' color='error'>
           Đóng
         </Button>

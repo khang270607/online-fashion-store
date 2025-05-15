@@ -254,18 +254,15 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
                           }}
                         />
                         <Box
-                          className='overlay'
                           sx={{
                             position: 'absolute',
                             top: 5,
-                            right: 5,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            gap: 0.5,
+                            left: 5,
+                            zIndex: 2,
                             opacity: 0,
-                            transition: 'opacity 0.3s',
-                            zIndex: 2
+                            transition: 'opacity 0.3s'
                           }}
+                          className='overlay'
                         >
                           <IconButton
                             size='small'
@@ -275,6 +272,20 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
                           >
                             <EditIcon sx={{ fontSize: 18, color: '#2196f3' }} />
                           </IconButton>
+                        </Box>
+
+                        {/* Icon xoá ở góc trên bên phải */}
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            top: 5,
+                            right: 5,
+                            zIndex: 2,
+                            opacity: 0,
+                            transition: 'opacity 0.3s'
+                          }}
+                          className='overlay'
+                        >
                           <IconButton
                             size='small'
                             onClick={() => handleImageDelete(index)}
@@ -319,7 +330,7 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
         </DialogContent>
 
         <Divider />
-        <DialogActions sx={{ px: 3, py: 2 }}>
+        <DialogActions sx={{ padding: '16px 24px' }}>
           <Button onClick={onClose} variant='inherit'>
             Hủy
           </Button>

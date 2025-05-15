@@ -173,7 +173,7 @@ const ViewProductModal = ({ open, onClose, product }) => {
           </Typography>
         </Box>
       </DialogContent>
-      <DialogActions>
+      <DialogActions sx={{ padding: '16px 24px' }}>
         <Button color='error' variant='contained' onClick={onClose}>
           Đóng
         </Button>

@@ -1,6 +1,13 @@
 const StyleAdmin = {
   InputCustom: {
-    color: '#808080 !important',
+    '& .MuiOutlinedInput-input': {
+      color: '#000' // đây là phần text trong input
+    },
+    InputViews: {
+      '& .MuiOutlinedInput-input': {
+        color: '#808080' // đây là phần text trong input
+      }
+    },
     '& label': {
       color: '#000' // màu label
     },

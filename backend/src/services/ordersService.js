@@ -8,7 +8,6 @@ import { couponsService } from '~/services/couponsService'
 import { ProductModel } from '~/models/ProductModel'
 import { OrderItemModel } from '~/models/OrderItemModel'
 import { OrderStatusHistoryModel } from '~/models/OrderStatusHistoryModel'
-import { UserModel } from '~/models/UserModel'
 
 const createOrder = async (userId, reqBody) => {
   // eslint-disable-next-line no-useless-catch

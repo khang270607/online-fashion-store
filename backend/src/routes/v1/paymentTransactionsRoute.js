@@ -6,7 +6,7 @@ import { authMiddleware } from '~/middlewares/authMiddleware'
 
 const Router = express.Router()
 
-// Danh sách Giao dịch thanh toán
+// Danh sách Giao dịch thanh toán theo Order
 Router.route('/').get(paymentTransactionsController.getPaymentTransactionList)
 
 // Lấy thông tin một Giao dịch thanh toán.

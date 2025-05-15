@@ -36,7 +36,7 @@ const validateCoupon = async (userId, reqBody) => {
       $expr: { $lte: ['$usedCount', '$usageLimit'] }
     })
 
-    if (!coupon || (reqBody.cartTotal < coupon.minOrderValue)) {
+    if (!coupon || reqBody.cartTotal < coupon.minOrderValue) {
       return {
         valid: false, // Mã sai hoặc hết hạn
         message: 'Mã không hợp lệ hoặc đã hết hạn'

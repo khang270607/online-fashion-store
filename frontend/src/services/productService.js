@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 // services/productService.js
 import AuthorizedAxiosInstance from '~/utils/authorizedAxios.js'
 import { API_ROOT } from '~/utils/constants.js'

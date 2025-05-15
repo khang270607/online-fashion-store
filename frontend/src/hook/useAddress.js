@@ -58,6 +58,6 @@ export const useAddress = () => {
     addAddress,
     editAddress,
     removeAddress,
-    refetch: fetchAddresses
+    fetchAddresses
   }
 }

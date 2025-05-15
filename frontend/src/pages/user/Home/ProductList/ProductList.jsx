@@ -50,6 +50,7 @@ const ProductList = () => {
       dispatch(setCartItems(updatedCart?.cartItems || []))
       setSnackbar({ type: 'success', message: 'Thêm sản phẩm vào giỏ hàng thành công!' })
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Thêm vào giỏ hàng lỗi:', error)
       setSnackbar({ type: 'error', message: 'Thêm sản phẩm thất bại!' })
     } finally {
@@ -64,7 +65,12 @@ const ProductList = () => {
       <Grid container justifyContent='center' alignItems='center' sx={{ mt: 5, gap: '20px' }}>
         {products.map((product) => (
           <Grid item xs={12} sm={6} md={4} key={product._id}>
-            <Card sx={{ maxWidth: 345, mb: 2 }}>
+            <Card sx={{
+              width: '290px',
+              height: 420,
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
               <a href={`/productdetail/${product._id}`} style={{ textDecoration: 'none' }}>
                 <CardMedia
                   component='img'

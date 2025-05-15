@@ -28,6 +28,14 @@ export const AddressModal = ({ open, onClose, onConfirm }) => {
     city: ''
   })
 
+  // Fetch địa chỉ khi mở modal
+  useEffect(() => {
+    if (open) {
+      fetchAddresses()
+    }
+  }, [open])
+
+  // Reset formData khi chọn để sửa hoặc thêm mới
   useEffect(() => {
     if (editingAddress) {
       setFormData({
@@ -49,6 +57,30 @@ export const AddressModal = ({ open, onClose, onConfirm }) => {
       })
     }
   }, [editingAddress])
+
+  // Set selectedId mặc định khi có danh sách
+  useEffect(() => {
+    if (addresses.length > 0 && !selectedId) {
+      setSelectedId(addresses[0]._id)
+    }
+  }, [addresses])
+
+  // Reset khi modal đóng
+  useEffect(() => {
+    if (!open) {
+      setMode('list')
+      setEditingAddress(null)
+      setFormData({
+        fullName: '',
+        phone: '',
+        address: '',
+        ward: '',
+        district: '',
+        city: ''
+      })
+      setSelectedId(null)
+    }
+  }, [open])
 
   const handleFormChange = (e) => {
     const { name, value } = e.target
@@ -77,6 +109,7 @@ export const AddressModal = ({ open, onClose, onConfirm }) => {
       } else {
         await addAddress(formData)
       }
+      await fetchAddresses()
       setMode('list')
       setEditingAddress(null)
     } catch (err) {
@@ -117,7 +150,8 @@ export const AddressModal = ({ open, onClose, onConfirm }) => {
                         label={
                           <Box>
                             <Typography fontWeight={700}>
-                              {addr.fullName} <Typography component="span" fontWeight={400}>({addr.phone})</Typography>
+                              {addr.fullName}{' '}
+                              <Typography component="span" fontWeight={400}>({addr.phone})</Typography>
                             </Typography>
                             <Typography>{addr.address}</Typography>
                             <Typography>{addr.ward}, {addr.district}, {addr.city}</Typography>
@@ -151,7 +185,9 @@ export const AddressModal = ({ open, onClose, onConfirm }) => {
         {mode === 'list' ? (
           <>
             <Button onClick={onClose}>Huỷ</Button>
-            <Button variant="contained" onClick={() => onConfirm(selectedId)}>Xác nhận</Button>
+            <Button variant="contained" onClick={() => onConfirm(selectedId)} disabled={!selectedId}>
+              Xác nhận
+            </Button>
           </>
         ) : (
           <Button variant="contained" onClick={handleSaveAddress}>Lưu</Button>

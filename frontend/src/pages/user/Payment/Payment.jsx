@@ -95,10 +95,12 @@ const Payment = () => {
       shippingAddressId: selectedAddress._id,
       total,
       paymentMethod,
-      note,
     }
 
-    // Chỉ gửi coupon khi có mã voucher hợp lệ
+    if (note && note.trim() !== '') {
+      orderData.note = note.trim()
+    }
+
     if (voucher && voucher.trim() !== '') {
       orderData.couponId = couponId
       orderData.couponCode = voucher
@@ -106,12 +108,13 @@ const Payment = () => {
 
     try {
       await createOrder(orderData)
-      alert('Đặt hàng thành công!')
-      // TODO: Xử lý chuyển trang hoặc reset giỏ hàng nếu cần
+      // Sau khi tạo đơn thành công thì reload trang
+      window.location.reload()
     } catch (error) {
       alert('Đặt hàng thất bại: ' + (error.message || error))
     }
   }
+
 
   return (
     <Container sx={{ py: 4 }}>

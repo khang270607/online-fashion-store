@@ -5,10 +5,10 @@ import ApiError from '~/utils/ApiError'
 import validObjectId from '~/utils/validObjectId'
 
 const verifyId = (req, res, next) => {
-  const orderItemId = req.params.orderItemId
+  const orderId = req.params.orderId
 
   // Kiểm tra format ObjectId
-  validObjectId(orderItemId, next)
+  validObjectId(orderId, next)
 
   next()
 }

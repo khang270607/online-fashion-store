@@ -2,20 +2,6 @@ import { StatusCodes } from 'http-status-codes'
 
 import { paymentTransactionsService } from '~/services/paymentTransactionsService'
 
-const createPaymentTransaction = async (req, res, next) => {
-  try {
-    // Lấy Danh mục sản phẩm mới tạo từ tầng Service chuyển qua
-    const result = await paymentTransactionsService.createPaymentTransaction(
-      req.body
-    )
-
-    // Có kết quả thì trả về Client
-    res.status(StatusCodes.CREATED).json(result)
-  } catch (err) {
-    next(err)
-  }
-}
-
 const getPaymentTransactionList = async (req, res, next) => {
   try {
     // Lấy danh sách Danh mục sản phẩm từ tầng Service chuyển qua
@@ -73,26 +59,9 @@ const deletePaymentTransaction = async (req, res, next) => {
   }
 }
 
-const getListPaymentTransactionOfCategory = async (req, res, next) => {
-  try {
-    const categoryId = req.params.categoryId
-
-    const result =
-      await paymentTransactionsService.getListPaymentTransactionOfCategory(
-        categoryId
-      )
-
-    res.status(StatusCodes.OK).json(result)
-  } catch (err) {
-    next(err)
-  }
-}
-
 export const paymentTransactionsController = {
-  createPaymentTransaction,
   getPaymentTransactionList,
   getPaymentTransaction,
   updatePaymentTransaction,
-  deletePaymentTransaction,
-  getListPaymentTransactionOfCategory
+  deletePaymentTransaction
 }

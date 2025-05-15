@@ -14,38 +14,46 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUserAPI, selectCurrentUser } from '~/redux/user/userSlice'
 import { getProfile } from '~/services/userService'
+import { toast } from 'react-toastify'
 
 const HeaderAction = () => {
   const [anchorEl, setAnchorEl] = useState(null)
-  const [localUser, setLocalUser] = useState(null)
   const open = Boolean(anchorEl)
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const currentUser = useSelector(selectCurrentUser)
+  const [tokenUpdated, setTokenUpdated] = useState(
+    localStorage.getItem('token')
+  ) // Theo dõi token
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const profileData = await getProfile()
         if (profileData && profileData.name) {
-          setLocalUser({
-            name: profileData.name,
-            avatarUrl: profileData.avatarUrl || ''
+          dispatch({
+            type: 'user/loginUserAPI/fulfilled',
+            payload: profileData
           })
           console.log('Thông tin người dùng từ API:', profileData)
         } else {
-          setLocalUser(null)
-          dispatch(logoutUserAPI())
+          throw new Error('Không tìm thấy thông tin người dùng')
         }
       } catch (error) {
-        console.error('Lỗi khi gọi getProfile:', error)
-        setLocalUser(null)
-        dispatch(logoutUserAPI())
+        toast.error(error.message || 'Lỗi tải thông tin người dùng')
+        dispatch(logoutUserAPI(false))
+        localStorage.removeItem('token')
+        setTokenUpdated(null)
       }
     }
 
-    fetchProfile()
-  }, [dispatch])
+    // Gọi API nếu có token
+    const token = localStorage.getItem('token')
+    if (token) {
+      setTokenUpdated(token)
+      fetchProfile()
+    }
+  }, [dispatch, tokenUpdated])
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget)
@@ -57,29 +65,27 @@ const HeaderAction = () => {
 
   const handleLogout = () => {
     dispatch(logoutUserAPI())
+    localStorage.removeItem('token')
+    setTokenUpdated(null)
     handleClose()
-    navigate('/login') // Điều hướng về trang đăng nhập sau khi đăng xuất
+    navigate('/login')
   }
 
-  // Tự động đóng menu khi scroll
   useEffect(() => {
     const handleScroll = () => {
       if (anchorEl) handleClose()
     }
-
     window.addEventListener('scroll', handleScroll)
-    return () => {
-      window.removeEventListener('scroll', handleScroll)
-    }
+    return () => window.removeEventListener('scroll', handleScroll)
   }, [anchorEl])
 
   return (
     <>
       <IconButton color='inherit' onClick={handleClick}>
-        {localUser && localUser.avatarUrl ? (
+        {currentUser && currentUser.avatarUrl ? (
           <Avatar
-            src={localUser.avatarUrl}
-            alt={localUser.name || 'User'}
+            src={currentUser.avatarUrl}
+            alt={currentUser.name || 'User'}
             sx={{ width: 30, height: 30 }}
           />
         ) : (
@@ -104,7 +110,7 @@ const HeaderAction = () => {
           }
         }}
       >
-        {currentUser || localUser ? (
+        {currentUser ? (
           <>
             <MenuItem component={Link} to='/profile' onClick={handleClose}>
               Hồ sơ

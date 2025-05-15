@@ -114,7 +114,7 @@ const ProductList = () => {
                 sx={{
                   width: '350px',
                   marginBottom: '20px',
-                  borderRadius: '20px'
+                  borderRadius: '10px'
                 }}
               >
                 <a

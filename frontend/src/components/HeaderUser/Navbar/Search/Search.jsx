@@ -18,7 +18,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   position: 'relative',
   display: 'flex',
   alignItems: 'center',
-  width: 300,
+  width: 220,
   height: 40,
   padding: '0 8px',
   borderRadius: 20,
@@ -99,7 +99,7 @@ const Search = () => {
   }
 
   return (
-    <div style={{ position: 'relative' }}>
+    <div style={{ position: 'relative', width: '100px' }}>
       <StyledPaper component='form' onSubmit={handleSubmit}>
         <StyledInput
           placeholder='Tìm kiếm sản phẩm...'

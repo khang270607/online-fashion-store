@@ -1,4 +1,3 @@
-// components/Header.jsx
 import React, { useState } from 'react'
 import {
   AppBar,
@@ -40,8 +39,7 @@ const HeaderUser = () => {
 
   return (
     <>
-      <Topbar></Topbar>
-      {/* Navbar */}
+      <Topbar />
       <StyledAppBar>
         <Container maxWidth='lg'>
           <Toolbar
@@ -49,37 +47,90 @@ const HeaderUser = () => {
               display: 'flex',
               justifyContent: 'space-between',
               alignItems: 'center',
-              minHeight: { xs: 56, sm: 64 }
+              minHeight: { xs: 56, sm: 64 },
+              paddingY: 0
             }}
           >
-            {/* Phần logo và menu icon */}
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            {/* Logo + menu icon mobile */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                width: { xs: 80, sm: 100, md: '20%' },
+                flexShrink: 0
+              }}
+            >
               <IconButton
                 color='inherit'
                 edge='start'
                 onClick={handleDrawerToggle}
-                sx={{ mr: 2, display: { md: 'none' } }}
+                sx={{ mr: 0.5, display: { md: 'none' } }}
               >
                 <MenuIcon />
               </IconButton>
-              <Typography variant='h6'>
+              <Typography
+                variant='h6'
+                sx={{
+                  width: { xs: 60, sm: 80, md: '100%' },
+                  fontSize: { xs: '0.8rem', sm: '0.9rem', md: '1rem' }
+                }}
+              >
                 <Logo href='/'>ICONDEWIM™</Logo>
               </Typography>
             </Box>
-            <Box>
-              <Menu></Menu>
+
+            {/* Menu + Search */}
+            <Box
+              sx={{
+                display: { xs: 'none', md: 'flex' },
+                alignItems: 'center',
+                gap: 1,
+                flexGrow: 1,
+                justifyContent: 'flex-start',
+                maxWidth: 600,
+                minWidth: 600
+              }}
+            >
+              <Menu />
+              <Box
+                sx={{
+                  width: 50,
+                  maxWidth: '100%',
+                  height: 36,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                <Search />
+              </Box>
             </Box>
-            {/* Phần tìm kiếm và các hành động người dùng */}
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Search />
+
+            {/* Auth + Action */}
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: { xs: 0.5, sm: 1, md: 2 },
+                flexShrink: 0
+              }}
+            >
               <AuthButtons />
-              <HeaderAction />
+              <Box
+                sx={{
+                  width: 36,
+                  maxWidth: '100%',
+                  height: 36,
+                  display: 'flex',
+                  alignItems: 'center'
+                }}
+              >
+                <HeaderAction />
+              </Box>
             </Box>
           </Toolbar>
         </Container>
       </StyledAppBar>
 
-      {/* Drawer cho mobile */}
       <MobileDrawer open={mobileOpen} onClose={handleDrawerToggle} />
     </>
   )

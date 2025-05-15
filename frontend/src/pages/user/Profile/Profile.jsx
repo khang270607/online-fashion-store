@@ -9,12 +9,22 @@ import {
   Button,
   Paper,
   Snackbar,
-  Alert
+  Alert,
+  List,
+  ListItem,
+  ListItemText,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Divider
 } from '@mui/material'
 import UploadIcon from '@mui/icons-material/CloudUpload'
 import EmailIcon from '@mui/icons-material/Email'
 import PersonIcon from '@mui/icons-material/Person'
 import LockIcon from '@mui/icons-material/Lock'
+import ShippingAdress from './shippingAdress/shippingAdress'
 import { getProfile, updateProfile } from '~/services/userService'
 
 const CLOUDINARY_URI = 'https://api.cloudinary.com/v1_1/dkwsy9sph/image/upload'
@@ -33,7 +43,6 @@ const uploadToCloudinary = async (file) => {
   })
 
   const data = await res.json()
-  console.log('Phản hồi từ Cloudinary:', data)
   return data.secure_url
 }
 
@@ -58,7 +67,6 @@ const Profile = () => {
       setAvatarFile(file)
       const blobUrl = URL.createObjectURL(file)
       setAvatarPreview(blobUrl)
-      console.log('URL blob ảnh xem trước:', blobUrl)
     }
   }
 
@@ -74,7 +82,6 @@ const Profile = () => {
 
   const handleUpdate = async () => {
     const trimmedName = name.trim()
-    console.log('Giá trị name trước khi gửi:', trimmedName)
     if (!trimmedName) {
       showSnackbar('Tên không được để trống!', 'error')
       return
@@ -89,14 +96,13 @@ const Profile = () => {
     if (avatarFile) {
       const avatarUrl = await uploadToCloudinary(avatarFile)
       if (!avatarUrl) {
-        showSnackbar('Không thể upload ảnh!', 'error')
+        showSnackbar('Không thể tải ảnh lên!', 'error')
         setLoading(false)
         return
       }
       payload.avatarUrl = avatarUrl
     }
 
-    console.log('Payload gửi lên:', payload)
     const result = await updateProfile(payload)
     setLoading(false)
 
@@ -111,13 +117,12 @@ const Profile = () => {
         'error'
       )
       if (result?.error?.message.includes('avatarUrl')) {
-        console.log('Thử lại chỉ với name')
         const retryResult = await updateProfile({ name: trimmedName })
         if (retryResult && !retryResult.error) {
           setName(retryResult.name)
           setAvatarPreview(retryResult.avatarUrl || '')
           setAvatarFile(null)
-          showSnackbar('Cập nhật thành công (không bao gồm avatarUrl)!')
+          showSnackbar('Cập nhật thành công (không bao gồm avatar)!')
         } else {
           showSnackbar(
             `Cập nhật thất bại: ${retryResult?.error?.message || 'Lỗi không xác định'}`,
@@ -133,15 +138,12 @@ const Profile = () => {
       setLoading(true)
       const profileData = await getProfile()
       if (profileData) {
-        const initialName = profileData.name || 'User'
-        console.log('Tên từ API:', initialName)
-        console.log('Avatar URL từ API:', profileData.avatarUrl)
-        setName(initialName)
+        setName(profileData.name || 'Người dùng')
         setEmail(profileData.email || '')
         setAvatarPreview(profileData.avatarUrl || '')
       } else {
         showSnackbar('Không thể tải thông tin hồ sơ!', 'error')
-        setName('User')
+        setName('Người dùng')
         setAvatarPreview('')
       }
       setLoading(false)
@@ -153,82 +155,94 @@ const Profile = () => {
   return (
     <Box
       sx={{
-        width: '100%',
         minHeight: '100vh',
-        backgroundColor: '#f9f9f9',
+        bgcolor: '#f5f5f5',
+        p: 4,
         display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        py: 4
+        gap: 4
       }}
     >
-      <Tabs
-        value={tab}
-        onChange={handleTabChange}
-        centered
-        textColor='primary'
-        indicatorColor='primary'
-        sx={{ mb: 3 }}
-      >
-        <Tab icon={<PersonIcon />} iconPosition='start' label='Account' />
-        <Tab icon={<LockIcon />} iconPosition='start' label='Security' />
-      </Tabs>
-
+      {/* Sidebar bên trái */}
       <Paper
         elevation={3}
         sx={{
-          p: 4,
-          width: '100%',
-          maxWidth: 500,
-          backgroundColor: '#fff',
-          borderRadius: 2
+          width: 350,
+          p: 3,
+          borderRadius: 2,
+          bgcolor: '#ffffff',
+          height: 'fit-content'
         }}
       >
+        <Tabs
+          value={tab}
+          onChange={handleTabChange}
+          orientation='vertical'
+          sx={{ mb: 2 }}
+          textColor='primary'
+          indicatorColor='primary'
+        >
+          <Tab icon={<PersonIcon />} iconPosition='start' label='Tài khoản' />
+          <Tab icon={<LockIcon />} iconPosition='start' label='Bảo mật' />
+        </Tabs>
+
         {tab === 0 && (
-          <Box textAlign='center'>
+          <Box>
             {loading ? (
-              <Typography>Đang tải thông tin...</Typography>
+              <Typography>Đang tải...</Typography>
             ) : (
               <>
-                <Avatar
-                  sx={{ width: 80, height: 80, mx: 'auto', mb: 1 }}
-                  src={avatarPreview}
-                  alt='User Avatar'
-                />
-                <Button
-                  startIcon={<UploadIcon />}
-                  variant='contained'
-                  component='label'
-                  sx={{ mb: 3 }}
-                >
-                  Chọn ảnh
-                  <input
-                    hidden
-                    accept='image/*'
-                    type='file'
-                    onChange={handleImageChange}
+                <Box sx={{ textAlign: 'center', mb: 3 }}>
+                  <Avatar
+                    sx={{
+                      width: 100,
+                      height: 100,
+                      mx: 'auto',
+                      mb: 2,
+                      border: '2px solid #1976d2'
+                    }}
+                    src={avatarPreview}
+                    alt='Avatar người dùng'
                   />
-                </Button>
+                  <Button
+                    startIcon={<UploadIcon />}
+                    variant='outlined'
+                    component='label'
+                    sx={{ textTransform: 'none', borderRadius: 2 }}
+                  >
+                    Chọn ảnh
+                    <input
+                      hidden
+                      accept='image/*'
+                      type='file'
+                      onChange={handleImageChange}
+                    />
+                  </Button>
+                </Box>
 
                 <TextField
                   fullWidth
-                  label='Your Email'
+                  label='Email'
                   value={email}
                   InputProps={{
-                    startAdornment: <EmailIcon sx={{ mr: 1 }} />
+                    startAdornment: (
+                      <EmailIcon sx={{ mr: 1, color: '#1976d2' }} />
+                    )
                   }}
                   margin='normal'
                   InputLabelProps={{ shrink: true }}
                   disabled
+                  sx={{ bgcolor: '#f9f9f9' }}
                 />
 
                 <TextField
                   fullWidth
-                  label='Your Name'
+                  label='Tên'
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   InputProps={{
-                    startAdornment: <PersonIcon sx={{ mr: 1 }} />
+                    startAdornment: (
+                      <PersonIcon sx={{ mr: 1, color: '#1976d2' }} />
+                    )
                   }}
                   margin='normal'
                   InputLabelProps={{ shrink: true }}
@@ -245,11 +259,16 @@ const Profile = () => {
                 <Button
                   variant='contained'
                   fullWidth
-                  sx={{ mt: 3, backgroundColor: '#007bff' }}
+                  sx={{
+                    mt: 3,
+                    borderRadius: 2,
+                    bgcolor: '#1976d2',
+                    textTransform: 'none'
+                  }}
                   onClick={handleUpdate}
                   disabled={loading}
                 >
-                  {loading ? 'Đang cập nhật...' : 'Update'}
+                  {loading ? 'Đang cập nhật...' : 'Cập nhật'}
                 </Button>
               </>
             )}
@@ -259,12 +278,15 @@ const Profile = () => {
         {tab === 1 && (
           <Box>
             <Typography variant='h6' textAlign='center' mb={3}>
-              Security Settings (Coming Soon)
+              Cài đặt bảo mật (Sắp ra mắt)
             </Typography>
           </Box>
         )}
       </Paper>
-
+      <Box>
+        <ShippingAdress></ShippingAdress>
+      </Box>
+      {/* Snackbar thông báo */}
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}

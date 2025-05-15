@@ -1,4 +1,3 @@
-// hooks/useCarts.js
 import { useEffect, useState } from 'react'
 import {
   getCart,
@@ -14,52 +13,78 @@ export const useCart = () => {
   const [loading, setLoading] = useState(true)
   const dispatch = useDispatch()
 
-  // Accessing cart state from Redux to keep it synced
-  const cart = useSelector((state) => state.cart)
+  const cart = useSelector(state => state.cart)
 
   const fetchCart = async () => {
     setLoading(true)
     const data = await getCart()
-    dispatch(setCartItems(data?.cartItems || []))  // Store cart items in Redux store
+    dispatch(setCartItems(data?.cartItems || []))
     setLoading(false)
   }
 
-  const handleAddToCart = async (product) => {
-    const updated = await addToCart(product)
-    if (updated) {
-      // Update Redux store after adding to cart
-      dispatch(setCartItems(updated?.cartItems || []))
+  const handleAddToCart = async (payload) => {
+    try {
+      console.log('Gửi payload lên addToCart:', payload)
+      const newItem = await addToCart(payload)
+      console.log('API trả về:', newItem)
+
+      if (newItem) {
+        // So sánh productId string: cẩn thận khi productId có thể là object hoặc string
+        const newProductId = typeof newItem.productId === 'object' ? newItem.productId._id : newItem.productId
+
+        const existingItem = cart.cartItems.find(item => {
+          const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId
+          return itemProductId === newProductId
+        })
+
+        let newCartItems
+        if (existingItem) {
+          newCartItems = cart.cartItems.map(item => {
+            const itemProductId = typeof item.productId === 'object' ? item.productId._id : item.productId
+            if (itemProductId === newProductId) {
+              return {
+                ...item,
+                quantity: (Number(item.quantity) || 0) + (Number(newItem.quantity) || 0)
+              }
+            }
+            return item
+          })
+        } else {
+          newCartItems = [...cart.cartItems, newItem]
+        }
+
+        dispatch(setCartItems(newCartItems))
+      }
+    } catch (error) {
+      console.error('Error adding to cart:', error)
+      throw error
     }
   }
 
   const handleUpdateItem = async (productId, data) => {
     const updated = await updateCartItem(productId, data)
     if (updated) {
-      // Update Redux store after item update
       dispatch(setCartItems(updated?.cartItems || []))
     }
   }
 
   const handleDeleteItem = async (productId) => {
     await deleteCartItem(productId)
-    // Update Redux store after deletion
     fetchCart()
   }
 
   const handleClearCart = async () => {
     const cleared = await clearCart()
     if (cleared) {
-      // Clear the cart in Redux store
       dispatch(setCartItems([]))
     }
   }
 
   useEffect(() => {
-    fetchCart()  // Initial fetch of cart when the hook is mounted
+    fetchCart()
   }, [])
 
-  // Calculate cart count (total quantity)
-  const cartCount = cart?.cartItems?.reduce((total, item) => total + item.quantity, 0) || 0
+  const cartCount = cart?.cartItems?.reduce((total, item) => total + (Number(item.quantity) || 0), 0) || 0
 
   return {
     cart,

@@ -3,54 +3,45 @@ import {
   Box,
   Grid,
   Button,
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
-  IconButton,
-  Typography,
   Snackbar,
   Alert
 } from '@mui/material'
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
-import FavoriteIcon from '@mui/icons-material/Favorite'
 import { addToCart, getCart } from '~/services/cartService'
 import useProducts from '~/hook/useProducts'
-import { useDispatch } from 'react-redux'
+import { useDispatch, } from 'react-redux'
 import { setCartItems } from '~/redux/cart/cartSlice'
-
+import ProductCard from '~/components/ProductCards/ProductCards'
 const ProductList = () => {
   const { products } = useProducts()
   const [snackbar, setSnackbar] = useState(null) // { type: 'success' | 'error' | 'max', message: string }
   const [isAdding, setIsAdding] = useState({})
   const dispatch = useDispatch()
-
+  // const cart = useSelector((state) => state.cart)
   const handleAddToCart = async (product) => {
     if (isAdding[product._id]) return
     setIsAdding(prev => ({ ...prev, [product._id]: true }))
 
     try {
-      const currentCart = await getCart()
-      const existingItem = currentCart?.cartItems?.find(
+      // OPTIONAL: fetch latest cart if unsure about Redux sync
+      const updatedCart = await getCart()
+      const existingItem = updatedCart?.cartItems?.find(
         item => item.productId._id === product._id
       )
       const currentQty = existingItem?.quantity || 0
-      const maxQty = product.quantity
+      const maxQty = product.quantity // optionally fetch from latest product API too
 
-      if (currentQty + 1 > maxQty) {
+      if (currentQty >= maxQty) {
         setSnackbar({ type: 'warning', message: 'Bạn đã thêm tối đa số lượng tồn kho!' })
         return
       }
 
-      await addToCart({
+      const res = await addToCart({
         cartItems: [{ productId: product._id, quantity: 1 }]
       })
 
-      const updatedCart = await getCart()
-      dispatch(setCartItems(updatedCart?.cartItems || []))
+      dispatch(setCartItems(res?.cartItems || updatedCart?.cartItems || []))
       setSnackbar({ type: 'success', message: 'Thêm sản phẩm vào giỏ hàng thành công!' })
     } catch (error) {
-      // eslint-disable-next-line no-console
       console.error('Thêm vào giỏ hàng lỗi:', error)
       setSnackbar({ type: 'error', message: 'Thêm sản phẩm thất bại!' })
     } finally {
@@ -62,46 +53,14 @@ const ProductList = () => {
 
   return (
     <Box sx={{ backgroundColor: '#03235e', p: 2, borderRadius: 3, m: 2, boxShadow: 3 }}>
-      <Grid container justifyContent='center' alignItems='center' sx={{ mt: 5, gap: '20px' }}>
-        {products.map((product) => (
+      <Grid container justifyContent="center" alignItems="center" sx={{ mt: 5, gap: '20px' }}>
+        {products.slice(0, 8).map(product => (
           <Grid item xs={12} sm={6} md={4} key={product._id}>
-            <Card sx={{
-              width: '290px',
-              height: 420,
-              display: 'flex',
-              flexDirection: 'column'
-            }}>
-              <a href={`/productdetail/${product._id}`} style={{ textDecoration: 'none' }}>
-                <CardMedia
-                  component='img'
-                  height='294'
-                  image={product.image?.[0]}
-                  alt={product.name}
-                />
-              </a>
-              <CardContent>
-                <a
-                  href={`/productdetail/${product._id}`}
-                  style={{ textDecoration: 'none', color: 'black', fontWeight: 'bold' }}
-                >
-                  {product.name}
-                </a>
-              </CardContent>
-              <CardActions disableSpacing>
-                <IconButton><FavoriteIcon /></IconButton>
-                <IconButton
-                  onClick={() => handleAddToCart(product)}
-                  disabled={isAdding[product._id]}
-                >
-                  <AddShoppingCartIcon />
-                </IconButton>
-                <Box sx={{ ml: 'auto', pr: 1 }}>
-                  <Typography variant='subtitle1' fontWeight='bold'>
-                    {product.price.toLocaleString()}₫
-                  </Typography>
-                </Box>
-              </CardActions>
-            </Card>
+            <ProductCard
+              product={product}
+              handleAddToCart={handleAddToCart}
+              isAdding={!!isAdding[product._id]}
+            />
           </Grid>
         ))}
       </Grid>

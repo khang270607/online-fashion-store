@@ -1,35 +1,52 @@
-// hooks/useCoupon.js
 import { useState } from 'react'
 import { validateCoupon } from '~/services/couponService'
 
-const useCoupon = (subTotal) => {
+const useCoupon = () => {
   const [voucher, setVoucher] = useState('')
   const [discount, setDiscount] = useState(0)
   const [discountMessage, setDiscountMessage] = useState('')
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [couponId, setCouponId] = useState(null)
 
-  const handleApplyVoucher = async () => {
-    if (!voucher) {
-      setDiscountMessage('Vui lòng nhập mã giảm giá!')
+  const handleInputChange = (value) => {
+    setVoucher(value)
+    setError('')
+    setDiscountMessage('') // reset message khi đổi voucher
+
+    if (value.length > 5) {
+      setError('Mã giảm giá tối đa 5 ký tự')
+    }
+  }
+
+  const handleApplyVoucher = async (inputVoucher, subTotal) => {
+    if (!inputVoucher) {
+      setError('Vui lòng nhập mã giảm giá')
+      return
+    }
+    if (inputVoucher.length > 5) {
+      setError('Mã giảm giá tối đa 5 ký tự')
       return
     }
 
     setLoading(true)
+    setError('')
+    setDiscountMessage('')
+
     try {
-      // Gọi API kiểm tra mã giảm giá
-      const result = await validateCoupon(subTotal, voucher)
+      const result = await validateCoupon(subTotal, inputVoucher)
 
       if (result.valid) {
         setDiscount(result.discountAmount || 0)
         setDiscountMessage(result.message || 'Áp dụng mã giảm giá thành công!')
+        setCouponId(result.id || null)
       } else {
         setDiscount(0)
-        setDiscountMessage(result.message || 'Mã giảm giá không hợp lệ!')
+        setError(result.message || 'Mã giảm giá không hợp lệ!')
       }
     } catch (error) {
-      console.error('Lỗi khi kiểm tra mã giảm giá:', error)
       setDiscount(0)
-      setDiscountMessage('Lỗi từ hệ thống, vui lòng thử lại sau!')
+      setError(error.message || 'Lỗi khi kiểm tra mã giảm giá')
     } finally {
       setLoading(false)
     }
@@ -37,11 +54,13 @@ const useCoupon = (subTotal) => {
 
   return {
     voucher,
-    setVoucher,
+    error,
+    setVoucher: handleInputChange,
     discount,
     discountMessage,
+    couponId,
     loading,
-    handleApplyVoucher
+    handleApplyVoucher,
   }
 }
 

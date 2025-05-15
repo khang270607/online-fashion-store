@@ -1,15 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import * as addressService from '~/services/addressService'
 
 export const useAddress = () => {
   const [addresses, setAddresses] = useState([])
   const [loading, setLoading] = useState(true)
 
+  const fetchedRef = useRef(false) 
+
   const fetchAddresses = async () => {
+    if (fetchedRef.current) return // Nếu đã fetch, không gọi lại
     setLoading(true)
     try {
       const res = await addressService.getAddresses()
       setAddresses(res)
+      fetchedRef.current = true // Ghi nhớ là đã fetch
     } catch (error) {
       console.error('Lỗi khi lấy địa chỉ:', error)
     } finally {

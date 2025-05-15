@@ -5,15 +5,19 @@ import {
 } from '@mui/material'
 import { Delete, Add, Remove } from '@mui/icons-material'
 import { useCart } from '~/hook/useCarts'
+import { useNavigate } from 'react-router-dom'
 
 const Cart = () => {
   const { cart, loading, deleteItem, clearCart, updateItem } = useCart()
   const [selectedItems, setSelectedItems] = useState([])
   const [cartItems, setCartItems] = useState([])
   const [showMaxQuantityAlert, setShowMaxQuantityAlert] = useState(false)
+  const navigate = useNavigate()
+
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'auto' })
   }, [])
+
   useEffect(() => {
     if (cart?.cartItems) setCartItems(cart.cartItems)
   }, [cart])
@@ -75,101 +79,144 @@ const Cart = () => {
   )
 
   if (loading) {
-    return <Typography sx={{ height: '70vh', mt: 10, textAlign: 'center' }}>Đang tải giỏ hàng...</Typography>
-  }
-
-  if (cartItems.length === 0) {
     return (
-      <Box sx={{ height: '70vh' }} mt={16} textAlign='center'>
-        <Typography variant='h6'>Giỏ hàng của bạn đang trống</Typography>
-      </Box>
+      <Typography sx={{ height: '70vh', mt: 10, textAlign: 'center' }}>
+        Đang tải giỏ hàng...
+      </Typography>
     )
   }
 
   return (
     <Container maxWidth='lg' sx={{ minHeight: '70vh', mt: 10, mb: 5, overflowX: 'auto' }}>
-      <Table size='medium'>
+      <Table size='medium' sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow>
-            <TableCell padding="checkbox">
-              <Checkbox
-                checked={selectedItems.length === cartItems.length && cartItems.length > 0}
-                indeterminate={selectedItems.length > 0 && selectedItems.length < cartItems.length}
-                onChange={(e) => {
-                  setSelectedItems(e.target.checked
-                    ? cartItems.map(item => item.productId?._id)
-                    : []
-                  )
-                }}
-              />
-            </TableCell>
-            <TableCell align='left'>Sản phẩm</TableCell>
-            <TableCell align='center'>Giá</TableCell>
-            <TableCell align='center'>Số lượng</TableCell>
-            <TableCell align='center'>Thao tác</TableCell>
+            <TableCell padding="checkbox" sx={{ width: 50 }} />
+            <TableCell align='left' sx={{ fontWeight: 'bold' }}>Sản phẩm</TableCell>
+            <TableCell align='center' sx={{ fontWeight: 'bold', width: 120 }}>Giá</TableCell>
+            <TableCell align='center' sx={{ fontWeight: 'bold', width: 130 }}>Số lượng</TableCell>
+            <TableCell align='center' sx={{ fontWeight: 'bold', width: 90 }}>Thao tác</TableCell>
           </TableRow>
         </TableHead>
-        <TableBody>
-          {cartItems.map(item => {
-            const product = item.productId
-            if (!product) return null
 
-            return (
-              <TableRow key={item._id}>
-                <TableCell padding='checkbox'>
-                  <Checkbox
-                    checked={selectedItems.includes(product._id)}
-                    onChange={() => handleSelect(product._id)}
-                  />
-                </TableCell>
-                <TableCell>
-                  <Box display='flex' alignItems='center' gap={2}>
-                    <Avatar
-                      src={product.image?.[0] || '/default.jpg'}
-                      variant='square'
-                      sx={{ width: 64, height: 64 }}
+        <TableBody>
+          {cartItems.length === 0 ? (
+            <TableRow>
+              <TableCell colSpan={5} align='center' sx={{ py: 8, fontSize: '1.2rem', color: 'text.secondary' }}>
+                Giỏ hàng của bạn đang trống
+              </TableCell>
+            </TableRow>
+          ) : (
+            cartItems.map(item => {
+              const product = item.productId
+              if (!product) return null
+
+              return (
+                <TableRow key={item._id} hover>
+                  <TableCell padding='checkbox'>
+                    <Checkbox
+                      checked={selectedItems.includes(product._id)}
+                      onChange={() => handleSelect(product._id)}
+                      color='primary'
                     />
-                    <Box>
-                      <Typography fontWeight={600}>{product.name}</Typography>
-                      <Typography variant='body2' color='text.secondary'>
-                        {product.description}
-                      </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Box display='flex' alignItems='center' gap={2}>
+                      <Box
+                        sx={{ cursor: 'pointer' }}
+                        onClick={() => navigate(`/productdetail/${product._id}`)}
+                      >
+                        <Avatar
+                          src={product.image?.[0] || '/default.jpg'}
+                          variant='square'
+                          sx={{ width: 64, height: 64, borderRadius: 1, objectFit: 'cover' }}
+                        />
+                      </Box>
+                      <Box>
+                        <Typography
+                          fontWeight={600}
+                          sx={{
+                            lineHeight: 1.2,
+                            maxWidth: 350,
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                        >
+                          {product.name}
+                        </Typography>
+
+                        <Typography
+                          variant='body2'
+                          color='text.secondary'
+                          sx={{
+                            maxWidth: 350,
+                            whiteSpace: 'nowrap',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                          }}
+                        >
+                          {product.description}
+                        </Typography>
+                      </Box>
                     </Box>
-                  </Box>
-                </TableCell>
-                <TableCell align='center'>{formatPrice(product.price)}</TableCell>
-                <TableCell align='center'>
-                  <Box display='flex' alignItems='center' justifyContent='center'>
+                  </TableCell>
+                  <TableCell align='center' sx={{ fontWeight: '600', color: '#007B00' }}>
+                    {formatPrice(product.price)}
+                  </TableCell>
+                  <TableCell align='center'>
+                    <Box display='flex' alignItems='center' justifyContent='center'>
+                      <IconButton
+                        size='small'
+                        onClick={() => handleQuantityChange(product._id, item.quantity, -1)}
+                        disabled={item.quantity <= 1}
+                        aria-label='Giảm số lượng'
+                      >
+                        <Remove />
+                      </IconButton>
+                      <TextField
+                        value={item.quantity}
+                        size='small'
+                        sx={{ width: 50, mx: 1 }}
+                        inputProps={{ style: { textAlign: 'center' }, readOnly: true }}
+                      />
+                      <IconButton
+                        size='small'
+                        onClick={() => handleQuantityChange(product._id, item.quantity, 1)}
+                        aria-label='Tăng số lượng'
+                      >
+                        <Add />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
+                  <TableCell align='center'>
                     <IconButton
-                      onClick={() => handleQuantityChange(product._id, item.quantity, -1)}
-                      disabled={item.quantity <= 1}
+                      color='error'
+                      onClick={() => handleRemove(product._id)}
+                      aria-label='Xoá sản phẩm'
                     >
-                      <Remove />
+                      <Delete />
                     </IconButton>
-                    <TextField
-                      value={item.quantity}
-                      size='small'
-                      sx={{ width: 50, mx: 1 }}
-                      inputProps={{ style: { textAlign: 'center' }, readOnly: true }}
-                    />
-                    <IconButton onClick={() => handleQuantityChange(product._id, item.quantity, 1)}>
-                      <Add />
-                    </IconButton>
-                  </Box>
-                </TableCell>
-                <TableCell align='center'>
-                  <IconButton color='error' onClick={() => handleRemove(product._id)}>
-                    <Delete />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            )
-          })}
+                  </TableCell>
+                </TableRow>
+              )
+            })
+          )}
         </TableBody>
       </Table>
 
-      <Box display='flex' justifyContent='space-between' alignItems='center' mt={4}>
-        <Typography variant='h6'>Tổng tiền: {formatPrice(totalPrice)}</Typography>
+      <Box
+        display='flex'
+        justifyContent='space-between'
+        alignItems='center'
+        mt={4}
+        px={1}
+        flexWrap='wrap'
+        gap={2}
+      >
+        <Typography variant='h6' sx={{ flexGrow: 1, color: '#222' }}>
+          Tổng tiền: {formatPrice(totalPrice)}
+        </Typography>
         <Box display='flex' gap={2}>
           <Button
             href='/payment'
@@ -177,6 +224,7 @@ const Cart = () => {
             color='primary'
             disabled={selectedItems.length === 0}
             onClick={() => console.log('Thanh toán:', selectedCartItems)}
+            sx={{ minWidth: 120 }}
           >
             Thanh toán
           </Button>
@@ -188,6 +236,7 @@ const Cart = () => {
               setCartItems([])
               setSelectedItems([])
             }}
+            sx={{ minWidth: 120 }}
           >
             Xoá toàn bộ
           </Button>

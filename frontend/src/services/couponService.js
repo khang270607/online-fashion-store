@@ -9,7 +9,13 @@ export const validateCoupon = async (cartTotal, couponCode) => {
     })
     return response.data
   } catch (error) {
-    console.error('Lỗi khi kiểm tra mã giảm giá:', error)
-    throw error
+    let errorMessage = 'Lỗi không xác định'
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage = error.response.data.message
+    } else if (error.message) {
+      errorMessage = error.message
+    }
+    console.error('Lỗi khi kiểm tra mã giảm giá:', errorMessage)
+    throw new Error(errorMessage)  // Ném ra lỗi có message rõ ràng
   }
 }

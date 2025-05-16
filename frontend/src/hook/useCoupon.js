@@ -10,23 +10,23 @@ const useCoupon = () => {
   const [couponId, setCouponId] = useState(null)
 
   const handleInputChange = (value) => {
-    setVoucher(value)
+    setVoucher(value.toUpperCase())
     setError('')
-    setDiscountMessage('') // reset message khi đổi voucher
-
-    if (value.length > 5) {
-      setError('Mã giảm giá tối đa 5 ký tự')
+    setDiscountMessage('')
+    if (value.length > 10) {
+      setError('Mã giảm giá tối đa 10 ký tự')
     }
   }
 
   const handleApplyVoucher = async (inputVoucher, subTotal) => {
     if (!inputVoucher) {
       setError('Vui lòng nhập mã giảm giá')
-      return
+      return { valid: false, message: 'Vui lòng nhập mã giảm giá' }
     }
-    if (inputVoucher.length > 5) {
-      setError('Mã giảm giá tối đa 5 ký tự')
-      return
+
+    if (inputVoucher.length < 5) {
+      setError('Mã giảm giá phải có ít nhất 5 ký tự')
+      return { valid: false, message: 'Mã giảm giá quá ngắn' }
     }
 
     setLoading(true)
@@ -40,13 +40,19 @@ const useCoupon = () => {
         setDiscount(result.discountAmount || 0)
         setDiscountMessage(result.message || 'Áp dụng mã giảm giá thành công!')
         setCouponId(result.id || null)
+        return result
       } else {
         setDiscount(0)
-        setError(result.message || 'Mã giảm giá không hợp lệ!')
+        setCouponId(null)
+        setError(result.message || 'Mã giảm giá không hợp lệ hoặc đã hết hạn')
+        return result
       }
     } catch (error) {
       setDiscount(0)
-      setError(error.message || 'Lỗi khi kiểm tra mã giảm giá')
+      setCouponId(null)
+      const message = error?.response?.data?.message || error.message || 'Lỗi khi kiểm tra mã giảm giá'
+      setError(message)
+      return { valid: false, message }
     } finally {
       setLoading(false)
     }
@@ -60,7 +66,7 @@ const useCoupon = () => {
     discountMessage,
     couponId,
     loading,
-    handleApplyVoucher,
+    handleApplyVoucher
   }
 }
 

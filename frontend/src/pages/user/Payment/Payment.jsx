@@ -97,19 +97,45 @@ const Payment = () => {
 
   const handleApplyVoucherClick = async () => {
     if (!voucherInput.trim()) {
-      setSnackbar({ open: true, severity: 'warning', message: 'Vui lòng nhập mã giảm giá' })
+      setSnackbar({
+        open: true,
+        severity: 'warning',
+        message: 'Vui lòng nhập mã giảm giá'
+      })
       return
     }
 
     try {
-      await handleApplyVoucher(voucherInput, subTotal)
-      setVoucherApplied(true)
-      setSnackbar({ open: true, severity: 'success', message: 'Áp dụng mã giảm giá thành công' })
+      const response = await handleApplyVoucher(voucherInput, subTotal)
+
+      if (response?.valid) {
+        setVoucherApplied(true)
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message: response.message || 'Áp dụng mã giảm giá thành công'
+        })
+      } else {
+        setVoucherApplied(false)
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: response?.message || 'Mã giảm giá không hợp lệ hoặc đã hết hạn'
+        })
+      }
     } catch (err) {
       setVoucherApplied(false)
-      setSnackbar({ open: true, severity: 'error', message: err.message || 'Mã giảm giá không hợp lệ' })
+      const errorMessage =
+        err?.response?.data?.message || err.message || 'Có lỗi xảy ra khi áp dụng mã'
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: errorMessage
+      })
     }
   }
+
+
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress) {
@@ -261,7 +287,8 @@ const Payment = () => {
                   label="Nhập mã giảm giá"
                   value={voucherInput}
                   onChange={(e) => {
-                    setVoucherInput(e.target.value)
+                    const value = e.target.value.toUpperCase().slice(0, 10)
+                    setVoucherInput(value)
                     setVoucherApplied(false)
                   }}
                   size="small"
@@ -330,15 +357,18 @@ const Payment = () => {
           open={snackbar.open}
           autoHideDuration={4000}
           onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }} // Góc phải trên
         >
           <Alert
             onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
             severity={snackbar.severity}
             sx={{ width: '100%' }}
+            variant="filled"
           >
             {snackbar.message}
           </Alert>
         </Snackbar>
+
       </Container>
     </Box>
   )

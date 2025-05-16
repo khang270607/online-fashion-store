@@ -85,7 +85,7 @@ const Product = () => {
   const [snackbar, setSnackbar] = useState(null) // { type, message }
   const [isAdding, setIsAdding] = useState({})
 
-  // Filter products based on selected filters
+  // Filter
   useEffect(() => {
     let filtered = allProducts
 

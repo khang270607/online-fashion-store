@@ -33,6 +33,12 @@ const Cart = () => {
       ? val.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
       : '0₫'
 
+  // Hàm cắt chuỗi tối đa maxLength ký tự, thêm ... nếu dài hơn
+  const truncate = (str, maxLength) => {
+    if (!str) return ''
+    return str.length > maxLength ? str.slice(0, maxLength) + '...' : str
+  }
+
   const handleQuantityChange = async (id, currentQty, delta) => {
     const item = cartItems.find(i => i.productId?._id === id)
     const maxQty = item?.productId?.quantity || 1
@@ -135,28 +141,19 @@ const Cart = () => {
                       <Box>
                         <Typography
                           fontWeight={600}
-                          sx={{
-                            lineHeight: 1.2,
-                            maxWidth: 350,
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                          }}
+                          sx={{ lineHeight: 1.2, maxWidth: 350 }}
+                          title={product.name}
                         >
-                          {product.name}
+                          {truncate(product.name, 20)}
                         </Typography>
 
                         <Typography
                           variant='body2'
                           color='text.secondary'
-                          sx={{
-                            maxWidth: 350,
-                            whiteSpace: 'nowrap',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                          }}
+                          sx={{ maxWidth: 350 }}
+                          title={product.description}
                         >
-                          {product.description}
+                          {truncate(product.description, 20)}
                         </Typography>
                       </Box>
                     </Box>

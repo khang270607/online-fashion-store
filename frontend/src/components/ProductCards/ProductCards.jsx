@@ -11,6 +11,12 @@ import {
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 
+// Hàm cắt chuỗi, nếu dài quá maxLength thì thêm dấu "..."
+const truncate = (str, maxLength) => {
+  if (!str) return ''
+  return str.length > maxLength ? str.slice(0, maxLength) + '...' : str
+}
+
 const ProductCard = ({ product, handleAddToCart, isAdding }) => {
   return (
     <Card
@@ -33,8 +39,9 @@ const ProductCard = ({ product, handleAddToCart, isAdding }) => {
         <a
           href={`/productdetail/${product._id}`}
           style={{ textDecoration: 'none', color: 'black', fontWeight: 'bold' }}
+          title={product.name} // Tooltip xem tên đầy đủ
         >
-          {product.name}
+          {truncate(product.name, 20)}
         </a>
       </CardContent>
       <CardActions disableSpacing>

@@ -4,7 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { styled } from '@mui/system'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUserAPI, selectCurrentUser } from '~/redux/user/userSlice'
-import { getProfile } from '~/services/userService'
+import { getProfileUser } from '~/services/userService'
 import { toast } from 'react-toastify'
 
 const StyledButton = styled(Button)(({ theme }) => ({
@@ -53,7 +53,7 @@ const AuthButtons = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const profileData = await getProfile()
+        const profileData = await getProfileUser()
         if (profileData && profileData.name) {
           dispatch({
             type: 'user/loginUserAPI/fulfilled',

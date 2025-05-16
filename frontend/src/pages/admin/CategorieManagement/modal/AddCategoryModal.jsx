@@ -1,4 +1,3 @@
-// components/modal/AddCategoryModal.jsx
 import React from 'react'
 import {
   Dialog,
@@ -6,11 +5,13 @@ import {
   DialogContent,
   DialogActions,
   TextField,
-  Button
+  Button,
+  Divider
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
 import { addCategory } from '~/services/categoryService'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 const AddCategoryModal = ({ open, onClose, onAdded }) => {
   const {
     register,
@@ -20,7 +21,6 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
   } = useForm()
 
   const onSubmit = async (data) => {
-    console.log('Dữ liệu gửi lên:', data)
     const payload = {
       name: data.name,
       description: data.description || ''
@@ -41,8 +41,17 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='sm'>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Thêm danh mục mới</DialogTitle>
+      <Divider sx={{ my: 0 }} />
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <TextField
@@ -52,6 +61,7 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
             {...register('name', { required: 'Tên danh mục là bắt buộc' })}
             error={!!errors.name}
             helperText={errors.name?.message}
+            sx={StyleAdmin.InputCustom}
           />
           <TextField
             label='Mô tả'
@@ -60,10 +70,12 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
             multiline
             rows={3}
             {...register('description', { required: 'Mô tả là bắt buộc' })}
+            sx={StyleAdmin.InputCustom}
           />
         </DialogContent>
-        <DialogActions>
-          <Button color='#001f5d' onClick={handleClose}>
+        <Divider sx={{ my: 0 }} />
+        <DialogActions sx={{ padding: '16px 24px' }}>
+          <Button color='inherit' onClick={handleClose}>
             Hủy
           </Button>
           <Button

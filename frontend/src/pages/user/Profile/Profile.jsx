@@ -25,7 +25,7 @@ import EmailIcon from '@mui/icons-material/Email'
 import PersonIcon from '@mui/icons-material/Person'
 import LockIcon from '@mui/icons-material/Lock'
 import ShippingAdress from './shippingAdress/shippingAdress'
-import { getProfile, updateProfile } from '~/services/userService'
+import { getProfileUser, updateProfile } from '~/services/userService'
 
 const CLOUDINARY_URI = 'https://api.cloudinary.com/v1_1/dkwsy9sph/image/upload'
 const UPLOAD_PRESET = 'demo_unsigned'
@@ -136,7 +136,7 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       setLoading(true)
-      const profileData = await getProfile()
+      const profileData = await getProfileUser()
       if (profileData) {
         setName(profileData.name || 'Người dùng')
         setEmail(profileData.email || '')

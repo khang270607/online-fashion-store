@@ -26,7 +26,8 @@ import { styled } from '@mui/system'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { loginUserAPI } from '~/redux/user/userSlice'
-import { getProfile } from '~/services/userService'
+import { getProfileUser } from '~/services/userService'
+import { logoutUserAPI } from '~/redux/user/userSlice'
 
 const SocialButton = styled(Button)({
   padding: '8px',
@@ -67,7 +68,7 @@ function Login() {
       localStorage.setItem('token', response.token) // Lưu token
       // Gọi getProfile ngay sau đăng nhập
       try {
-        const profileData = await getProfile()
+        const profileData = await getProfileUser()
         dispatch({ type: 'user/loginUserAPI/fulfilled', payload: profileData })
         console.log('Thông tin người dùng từ API:', profileData)
       } catch (error) {

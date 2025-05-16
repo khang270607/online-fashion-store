@@ -4,33 +4,62 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  TextField,
   Button,
-  Typography
+  Divider
 } from '@mui/material'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 const ViewCategoryModal = ({ open, onClose, category }) => {
   return (
-    <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
-      <DialogTitle>
-        <Typography variant='h5'>Xem thông tin danh mục</Typography>
-      </DialogTitle>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
+      <DialogTitle>Xem thông tin danh mục</DialogTitle>
+      <Divider sx={{ my: 0 }} />
       <DialogContent>
-        <Typography
-          variant='h6'
-          gutterBottom
-          sx={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}
-        >
-          <strong>Tên danh mục:</strong> {category.name}
-        </Typography>
-        <Typography
-          variant='h6'
-          sx={{ whiteSpace: 'pre-line', wordBreak: 'break-word' }}
-        >
-          <strong>Mô tả:</strong> {category.description}
-        </Typography>
+        <form id='view-category-form'>
+          {/* Tên danh mục - chỉ đọc */}
+          <TextField
+            label='Tên danh mục'
+            fullWidth
+            margin='normal'
+            defaultValue={category.name}
+            InputProps={{
+              readOnly: true // Đặt trường này chỉ để đọc, không thể chỉnh sửa
+            }}
+            sx={{
+              ...StyleAdmin.InputCustom,
+              ...StyleAdmin.InputCustom.CursorNone
+            }}
+          />
+          {/* Mô tả - chỉ đọc */}
+          <TextField
+            label='Mô tả'
+            fullWidth
+            margin='normal'
+            multiline
+            minRows={3}
+            defaultValue={category.description}
+            InputProps={{
+              readOnly: true // Đặt trường này chỉ để đọc, không thể chỉnh sửa
+            }}
+            sx={{
+              ...StyleAdmin.InputCustom,
+              ...StyleAdmin.InputCustom.CursorNone
+            }}
+          />
+        </form>
       </DialogContent>
-      <DialogActions>
-        <Button color='error' variant='contained' onClick={onClose}>
+      <Divider sx={{ my: 0 }} />
+      <DialogActions sx={{ padding: '16px 24px' }}>
+        <Button onClick={onClose} color='error' variant='contained'>
           Đóng
         </Button>
       </DialogActions>

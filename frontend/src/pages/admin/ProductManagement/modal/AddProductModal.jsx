@@ -1,7 +1,5 @@
-import React, { useState, useRef } from 'react'
-import { useForm, Controller } from 'react-hook-form'
+import React, { useState, useRef, useEffect } from 'react'
 import {
-  MenuItem,
   Dialog,
   DialogTitle,
   DialogContent,
@@ -12,11 +10,20 @@ import {
   Typography,
   FormControl,
   Select,
-  InputLabel
+  InputLabel,
+  MenuItem,
+  IconButton,
+  Divider
 } from '@mui/material'
+import EditIcon from '@mui/icons-material/Edit'
+import DeleteIcon from '@mui/icons-material/Delete'
+import { useForm, Controller } from 'react-hook-form'
+
 import { addProduct } from '~/services/productService'
-import { addCategory } from '~/services/categoryService'
 import useCategories from '~/hook/useCategories'
+import AddCategoryModal from '~/pages/admin/CategorieManagement/modal/AddCategoryModal.jsx'
+import StyleAdmin from '~/components/StyleAdmin'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const URI = 'https://api.cloudinary.com/v1_1/dkwsy9sph/image/upload'
 const CloudinaryProduct = 'product_upload'
@@ -43,27 +50,43 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting }
-  } = useForm()
+  } = useForm({
+    defaultValues: {
+      name: '',
+      description: '',
+      price: '',
+      image: [],
+      categoryId: '',
+      quantity: '',
+      origin: '',
+      slug: '',
+      sizes: [], // phải là mảng
+      colors: [] // phải là mảng
+    }
+  })
+
   const [images, setImages] = useState([{ file: null, preview: '' }])
   const { categories, loading, fetchCategories } = useCategories()
   const [categoryOpen, setCategoryOpen] = useState(false)
-  const [categoryName, setCategoryName] = useState('')
-  const [categoryDescription, setCategoryDescription] = useState('')
-  const categoryNameRef = useRef()
-  const categoryDescriptionRef = useRef()
+  const fileInputRefs = useRef([])
 
   const handleImageChange = (index, file) => {
     const newImages = [...images]
     newImages[index] = { file, preview: URL.createObjectURL(file) }
 
-    if (
-      index === images.length - 1 &&
-      file &&
-      newImages.length < 9 // giới hạn tối đa 10 ảnh
-    ) {
+    if (index === images.length - 1 && file && newImages.length < 9) {
       newImages.push({ file: null, preview: '' })
     }
 
+    setImages(newImages)
+  }
+
+  const handleRemoveImage = (index) => {
+    const newImages = [...images]
+    newImages.splice(index, 1)
+    if (newImages.length === 0 || newImages[newImages.length - 1].file) {
+      newImages.push({ file: null, preview: '' })
+    }
     setImages(newImages)
   }
 
@@ -83,9 +106,12 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
         price: Number(data.price),
         image: imageUrls,
         categoryId: data.categoryId,
-        quantity: Number(data.quantity)
+        quantity: Number(data.quantity),
+        origin: data.origin,
+        sizes: data.sizes || [],
+        colors: data.colors || []
       })
-      console.log('categoryId', data.categoryId)
+
       if (result) {
         onSuccess()
         onClose()
@@ -100,230 +126,353 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
     }
   }
 
-  const handleAddCategory = async () => {
-    const newCategory = {
-      name: categoryName,
-      description: categoryDescription
-    }
-
-    const addedCategory = await addCategory(newCategory)
-    if (addedCategory) {
-      setCategoryOpen(false)
-      setCategoryName('')
-      setCategoryDescription('')
-      // Cập nhật lại danh sách danh mục
-      fetchCategories() // Gọi lại API để lấy danh sách danh mục mới
-    } else {
-      alert('Lỗi khi thêm danh mục')
-    }
-  }
+  useEffect(() => {
+    if (open) fetchCategories()
+  }, [open])
 
   return (
-    <Dialog
-      open={open}
-      onClose={onClose}
-      fullWidth
-      maxWidth='lg' // tăng kích thước modal
-      PaperProps={{
-        sx: {
-          mt: 8,
-          maxHeight: '90vh'
-        }
-      }}
-    >
-      <DialogTitle>Thêm Sản Phẩm</DialogTitle>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <DialogContent
-          sx={{ display: 'flex', gap: 2, overflowY: 'auto', flexGrow: 1 }}
-        >
-          {/* Form nhập liệu bên trái */}
-          <Box sx={{ flex: 2 }}>
-            <TextField
-              label='Tên sản phẩm'
-              fullWidth
-              margin='normal'
-              {...register('name', {
-                required: 'Tên sản phẩm không được bỏ trống'
-              })}
-              error={!!errors.name}
-              helperText={errors.name?.message}
-            />
-
-            <TextField
-              label='Mô tả'
-              fullWidth
-              multiline
-              rows={3}
-              margin='normal'
-              {...register('description', {
-                required: 'Mô tả không được bỏ trống'
-              })}
-              error={!!errors.description}
-              helperText={errors.description?.message}
-            />
-
-            <TextField
-              label='Giá (VNĐ)'
-              type='number'
-              fullWidth
-              margin='normal'
-              {...register('price', { required: 'Giá không được bỏ trống' })}
-              error={!!errors.price}
-              helperText={errors.price?.message}
-            />
-
-            <TextField
-              label='Số lượng'
-              type='number'
-              fullWidth
-              margin='normal'
-              {...register('quantity', {
-                required: 'Số lượng không được bỏ trống'
-              })}
-              error={!!errors.quantity}
-              helperText={errors.quantity?.message}
-            />
-
-            <FormControl fullWidth margin='normal' error={!!errors.categoryId}>
-              <InputLabel>Danh mục</InputLabel>
-              <Controller
-                name='categoryId'
-                control={control}
-                rules={{ required: 'Danh mục không được bỏ trống' }}
-                render={({ field }) => (
-                  <Select
-                    {...field}
-                    label='Danh mục'
-                    value={field.value}
-                    disabled={loading}
-                  >
-                    {categories
-                      ?.filter((cat) => !cat.destroy)
-                      .map((cat) => (
-                        <MenuItem key={cat._id} value={cat._id}>
-                          {cat.name}
+    <>
+      <Dialog
+        open={open}
+        onClose={onClose}
+        fullWidth
+        maxWidth='xl'
+        PaperProps={{ sx: { mt: 8, maxHeight: '90vh', width: '90vw' } }}
+        BackdropProps={{
+          sx: styleAdmin.OverlayModal
+        }}
+      >
+        <DialogTitle>Thêm Sản Phẩm</DialogTitle>
+        <Divider />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <DialogContent sx={{ display: 'flex', gap: 2, overflowY: 'auto' }}>
+            <Box sx={{ flex: 2 }}>
+              <TextField
+                label='Tên sản phẩm'
+                fullWidth
+                margin='normal'
+                {...register('name', {
+                  required: 'Tên sản phẩm không được bỏ trống'
+                })}
+                error={!!errors.name}
+                helperText={errors.name?.message}
+                sx={StyleAdmin.InputCustom}
+              />
+              <TextField
+                label='Mô tả'
+                fullWidth
+                multiline
+                rows={3}
+                margin='normal'
+                {...register('description', {
+                  required: 'Mô tả không được bỏ trống'
+                })}
+                error={!!errors.description}
+                helperText={errors.description?.message}
+                sx={StyleAdmin.InputCustom}
+              />
+              <TextField
+                label='Giá (VNĐ)'
+                type='number'
+                fullWidth
+                margin='normal'
+                {...register('price', {
+                  required: 'Giá không được bỏ trống'
+                })}
+                error={!!errors.price}
+                helperText={errors.price?.message}
+                sx={StyleAdmin.InputCustom}
+              />
+              <TextField
+                label='Số lượng'
+                type='number'
+                fullWidth
+                margin='normal'
+                {...register('quantity', {
+                  required: 'Số lượng không được bỏ trống'
+                })}
+                error={!!errors.quantity}
+                helperText={errors.quantity?.message}
+                sx={StyleAdmin.InputCustom}
+              />
+              <TextField
+                label='Xuất xứ'
+                fullWidth
+                margin='normal'
+                {...register('origin', {
+                  required: 'Xuất xứ không được bỏ trống'
+                })}
+                error={!!errors.origin}
+                helperText={errors.origin?.message}
+                sx={StyleAdmin.InputCustom}
+              />
+              <FormControl
+                fullWidth
+                margin='normal'
+                error={!!errors.sizes}
+                sx={StyleAdmin.FormSelect}
+              >
+                <InputLabel>Kích cỡ</InputLabel>
+                <Controller
+                  name='sizes'
+                  control={control}
+                  rules={{ required: 'Kích cỡ không được bỏ trống' }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label='Kích cỡ'
+                      multiple
+                      MenuProps={{
+                        PaperProps: { sx: StyleAdmin.FormSelect.SelectMenu }
+                      }}
+                    >
+                      {['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
+                        <MenuItem key={size} value={size}>
+                          {size}
                         </MenuItem>
                       ))}
-                    <MenuItem onClick={() => setCategoryOpen(true)}>
-                      Thêm danh mục mới
-                    </MenuItem>
-                  </Select>
-                )}
-              />
-              <Typography variant='caption' color='error'>
-                {errors.categoryId?.message}
+                    </Select>
+                  )}
+                />
+                <Typography variant='caption' color='error'>
+                  {errors.sizes?.message}
+                </Typography>
+              </FormControl>
+              <FormControl
+                fullWidth
+                margin='normal'
+                error={!!errors.colors}
+                sx={StyleAdmin.FormSelect}
+              >
+                <InputLabel>Màu sắc</InputLabel>
+                <Controller
+                  name='colors'
+                  control={control}
+                  rules={{ required: 'Màu sắc không được bỏ trống' }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label='Màu sắc'
+                      multiple
+                      MenuProps={{
+                        PaperProps: { sx: StyleAdmin.FormSelect.SelectMenu }
+                      }}
+                    >
+                      {['Đỏ', 'Xanh dương', 'Đen', 'Trắng', 'Vàng'].map(
+                        (color) => (
+                          <MenuItem key={color} value={color}>
+                            {color}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  )}
+                />
+                <Typography variant='caption' color='error'>
+                  {errors.colors?.message}
+                </Typography>
+              </FormControl>
+
+              <FormControl
+                fullWidth
+                margin='normal'
+                error={!!errors.categoryId}
+                sx={StyleAdmin.FormSelect}
+              >
+                <InputLabel>Danh mục</InputLabel>
+                <Controller
+                  name='categoryId'
+                  control={control}
+                  rules={{ required: 'Danh mục không được bỏ trống' }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label='Danh mục'
+                      value={field.value}
+                      disabled={loading}
+                      MenuProps={{
+                        PaperProps: { sx: StyleAdmin.FormSelect.SelectMenu }
+                      }}
+                    >
+                      {categories
+                        ?.filter((c) => !c.destroy)
+                        .map((cat) => (
+                          <MenuItem key={cat._id} value={cat._id}>
+                            {cat.name}
+                          </MenuItem>
+                        ))}
+                      <MenuItem onClick={() => setCategoryOpen(true)}>
+                        Thêm danh mục mới
+                      </MenuItem>
+                    </Select>
+                  )}
+                />
+                <Typography variant='caption' color='error'>
+                  {errors.categoryId?.message}
+                </Typography>
+              </FormControl>
+            </Box>
+
+            <Box sx={{ flex: 1 }}>
+              <Typography variant='subtitle1' sx={{ mb: 1 }}>
+                Hình ảnh sản phẩm (tối đa 9 ảnh)
               </Typography>
-            </FormControl>
-          </Box>
-
-          {/* Hình ảnh bên phải */}
-          <Box sx={{ flex: 1 }}>
-            <Typography variant='subtitle1' sx={{ mb: 1 }}>
-              Hình ảnh sản phẩm (tối đa 9 ảnh)
-            </Typography>
-
-            <Box
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
-                gap: 2
-              }}
-            >
-              {images.map((img, index) => (
-                <Box key={index}>
-                  <Button
-                    variant='outlined'
-                    component='label'
-                    sx={{
-                      width: '100%',
-                      borderColor: '#001f5d',
-                      color: '#001f5d',
-                      fontSize: '12px',
-                      minHeight: '36px'
-                    }}
-                  >
-                    {img.file ? 'Sửa' : 'Thêm'}
+              <Box
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
+                  gap: 2
+                }}
+              >
+                {images.map((img, index) => (
+                  <Box key={index} sx={{ position: 'relative' }}>
                     <input
                       type='file'
                       accept='image/*'
                       hidden
+                      ref={(el) => (fileInputRefs.current[index] = el)}
                       onChange={(e) =>
                         handleImageChange(index, e.target.files[0])
                       }
                     />
-                  </Button>
-
-                  {img.preview && (
                     <Box
-                      component='img'
-                      src={img.preview}
-                      alt={`preview-${index}`}
                       sx={{
                         width: '100%',
-                        height: 80,
-                        mt: 1,
-                        objectFit: 'cover',
+                        height: '200px',
                         borderRadius: 1,
-                        border: '1px solid #ccc'
+                        border: '1px solid #000',
+                        overflow: 'hidden',
+                        position: 'relative',
+                        '&:hover .overlay, &:hover .overlay-bg': { opacity: 1 }
                       }}
-                    />
-                  )}
-                </Box>
-              ))}
+                    >
+                      {img.preview ? (
+                        <>
+                          <Box
+                            component='img'
+                            src={img.preview}
+                            alt={`preview-${index}`}
+                            sx={{
+                              width: '100%',
+                              height: '100%',
+                              objectFit: 'cover'
+                            }}
+                          />
+                          <Box
+                            className='overlay-bg'
+                            sx={{
+                              position: 'absolute',
+                              top: 0,
+                              left: 0,
+                              width: '100%',
+                              height: '100%',
+                              backgroundColor: 'rgba(0,0,0,0.3)',
+                              opacity: 0,
+                              transition: 'opacity 0.3s',
+                              zIndex: 1
+                            }}
+                          />
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 5,
+                              left: 5,
+                              zIndex: 2,
+                              opacity: 0,
+                              transition: 'opacity 0.3s'
+                            }}
+                            className='overlay'
+                          >
+                            <IconButton
+                              size='small'
+                              onClick={() =>
+                                fileInputRefs.current[index]?.click()
+                              }
+                            >
+                              <EditIcon
+                                sx={{ fontSize: 18, color: '#2196f3' }}
+                              />
+                            </IconButton>
+                          </Box>
+
+                          {/* Icon xoá ở góc trên bên phải */}
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              top: 5,
+                              right: 5,
+                              zIndex: 2,
+                              opacity: 0,
+                              transition: 'opacity 0.3s'
+                            }}
+                            className='overlay'
+                          >
+                            <IconButton
+                              size='small'
+                              onClick={() => handleRemoveImage(index)}
+                            >
+                              <DeleteIcon
+                                sx={{ fontSize: 18, color: '#f44336' }}
+                              />
+                            </IconButton>
+                          </Box>
+                        </>
+                      ) : (
+                        <Button
+                          variant='outlined'
+                          component='label'
+                          sx={{
+                            width: '100%',
+                            height: '100%',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                            borderColor: '#000',
+                            color: '#000',
+                            fontSize: '12px'
+                          }}
+                        >
+                          Thêm ảnh
+                          <input
+                            type='file'
+                            accept='image/*'
+                            hidden
+                            onChange={(e) =>
+                              handleImageChange(index, e.target.files[0])
+                            }
+                          />
+                        </Button>
+                      )}
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
             </Box>
-          </Box>
-        </DialogContent>
-
-        <DialogActions>
-          <Button onClick={onClose} color='#001f5d'>
-            Hủy
-          </Button>
-          <Button
-            type='submit'
-            variant='contained'
-            sx={{ backgroundColor: '#001f5d' }}
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? 'Đang thêm...' : 'Thêm'}
-          </Button>
-        </DialogActions>
-      </form>
-
-      {/* Thêm danh mục mới */}
-      <Dialog open={categoryOpen} onClose={() => setCategoryOpen(false)}>
-        <DialogTitle>Thêm Danh Mục Mới</DialogTitle>
-        <DialogContent>
-          <TextField
-            label='Tên danh mục'
-            fullWidth
-            margin='normal'
-            value={categoryName}
-            onChange={(e) => setCategoryName(e.target.value)}
-            inputRef={categoryNameRef}
-          />
-          <TextField
-            label='Mô tả'
-            fullWidth
-            margin='normal'
-            value={categoryDescription}
-            onChange={(e) => setCategoryDescription(e.target.value)}
-            inputRef={categoryDescriptionRef}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setCategoryOpen(false)} color='#001f5d'>
-            Hủy
-          </Button>
-          <Button
-            onClick={handleAddCategory}
-            variant='contained'
-            sx={{ backgroundColor: '#001f5d' }}
-          >
-            Lưu
-          </Button>
-        </DialogActions>
+          </DialogContent>
+          <Divider />
+          <DialogActions sx={{ padding: '16px 24px' }}>
+            <Button onClick={onClose} color='inherit'>
+              Hủy
+            </Button>
+            <Button
+              type='submit'
+              variant='contained'
+              sx={{ backgroundColor: '#001f5d' }}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Đang thêm...' : 'Thêm'}
+            </Button>
+          </DialogActions>
+        </form>
       </Dialog>
-    </Dialog>
+
+      {/* Modal thêm danh mục */}
+      <AddCategoryModal
+        open={categoryOpen}
+        onClose={() => setCategoryOpen(false)}
+        onAdded={fetchCategories}
+      />
+    </>
   )
 }
 

@@ -13,7 +13,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUserAPI, selectCurrentUser } from '~/redux/user/userSlice'
-import { getProfile } from '~/services/userService'
+import { getProfileUser } from '~/services/userService'
 import { toast } from 'react-toastify'
 
 const HeaderAction = () => {
@@ -29,7 +29,7 @@ const HeaderAction = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const profileData = await getProfile()
+        const profileData = await getProfileUser()
         if (profileData && profileData.name) {
           dispatch({
             type: 'user/loginUserAPI/fulfilled',

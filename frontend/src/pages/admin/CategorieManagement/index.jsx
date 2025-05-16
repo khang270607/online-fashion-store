@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography'
 import Button from '@mui/material/Button'
 import CategoryTable from './CategoryTable'
 import CategoryPagination from './CategoryPagination'
-import useCategories from '~/hook/useCategories'
+import useCategories from '~/hook/useCategories.js'
 import { updateCategory, deleteCategory } from '~/services/categoryService'
 import AddIcon from '@mui/icons-material/Add'
 // Lazy load các modal
@@ -53,13 +53,11 @@ const CategoryManagement = () => {
       const response = await updateCategory(categoryId, updatedData)
       if (response) {
         await fetchCategories(page)
-        console.log('Cập nhật thành công')
       } else {
         console.log('Cập nhật không thành công')
       }
     } catch (error) {
       console.error('Lỗi:', error)
-      alert('Đã có lỗi xảy ra, vui lòng thử lại')
     }
   }
 
@@ -68,13 +66,11 @@ const CategoryManagement = () => {
       const result = await deleteCategory(categoryId)
       if (result) {
         await fetchCategories(page)
-        console.log('Xoá thành công')
       } else {
         console.log('Xoá không thành công')
       }
     } catch (error) {
       console.error('Lỗi:', error)
-      alert('Đã có lỗi xảy ra, vui lòng thử lại')
     }
   }
 

@@ -17,6 +17,7 @@
     "@mui/material": "^7.0.2",
     "@reduxjs/toolkit": "^2.7.0",
     "axios": "^1.9.0",
+    "dayjs": "^1.11.13",
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "react": "^19.0.0",

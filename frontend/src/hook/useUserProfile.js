@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getProfile, updateProfile } from '~/services/profileService.jsx'
+import { getProfile, updateProfile } from '~/services/profileService.js'
 
 export default function useProfile() {
   const [profile, setProfile] = useState(null)
@@ -18,5 +18,6 @@ export default function useProfile() {
     if (updated) setProfile(updated)
     setLoading(false)
   }
+
   return { profile, loading, fetchProfile, updateUserProfile }
 }

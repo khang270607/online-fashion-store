@@ -31,15 +31,20 @@ const ProductTable = ({ products, loading, handleOpenModal }) => {
       <Table>
         <TableHead>
           <StyledTableRow>
-            <StyledTableCell>STT</StyledTableCell>
-            <StyledTableCell>Ảnh</StyledTableCell>
+            <StyledTableCell sx={{ textAlign: 'center', width: '50px' }}>
+              STT
+            </StyledTableCell>
+            <StyledTableCell sx={{ width: '50px' }}>Ảnh</StyledTableCell>
             <StyledTableCell>Tên</StyledTableCell>
-            <StyledTableCell>Giá</StyledTableCell>
-            <StyledTableCell>Số lượng</StyledTableCell>
+            <StyledTableCell sx={{ width: '100px' }}>Giá (VNĐ)</StyledTableCell>
+            <StyledTableCell sx={{ width: '70px' }}>Số lượng</StyledTableCell>
             <StyledTableCell>Mô tả</StyledTableCell>
-            <StyledTableCell>Danh mục</StyledTableCell>
-            <StyledTableCell>Trạng thái</StyledTableCell>
-            <StyledTableCell>Hành động</StyledTableCell>
+            <StyledTableCell sx={{ width: '100px' }}>Xuất xứ</StyledTableCell>
+            <StyledTableCell sx={{ width: '100px' }}>Danh mục</StyledTableCell>
+            <StyledTableCell sx={{ width: '70px' }}>Trạng thái</StyledTableCell>
+            <StyledTableCell sx={{ maxWidth: '130px', width: '130px' }}>
+              Hành động
+            </StyledTableCell>
           </StyledTableRow>
         </TableHead>
         <TableBody>

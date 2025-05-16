@@ -39,6 +39,7 @@ const ProductTable = ({ products, loading, handleOpenModal }) => {
             <StyledTableCell sx={{ width: '100px' }}>Giá (VNĐ)</StyledTableCell>
             <StyledTableCell sx={{ width: '70px' }}>Số lượng</StyledTableCell>
             <StyledTableCell>Mô tả</StyledTableCell>
+            <StyledTableCell sx={{ width: '100px' }}>Xuất xứ</StyledTableCell>
             <StyledTableCell sx={{ width: '100px' }}>Danh mục</StyledTableCell>
             <StyledTableCell sx={{ width: '70px' }}>Trạng thái</StyledTableCell>
             <StyledTableCell sx={{ maxWidth: '130px', width: '130px' }}>

@@ -9,6 +9,7 @@ import {
   Divider
 } from '@mui/material'
 import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 const ViewUserModal = React.memo(({ open, onClose, user }) => {
   useEffect(() => {
     if (!open) {
@@ -17,7 +18,15 @@ const ViewUserModal = React.memo(({ open, onClose, user }) => {
   }, [open])
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Chi tiết người dùng</DialogTitle>
       <Divider sx={{ my: 0 }} />
       <DialogContent>

@@ -9,6 +9,7 @@ import {
   Typography,
   CircularProgress
 } from '@mui/material'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const DeleteDiscountModal = ({ open, onClose, discount, onDelete }) => {
   const [loading, setLoading] = useState(false)
@@ -23,7 +24,15 @@ const DeleteDiscountModal = ({ open, onClose, discount, onDelete }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Xóa mã giảm giá</DialogTitle>
       <Divider sx={{ my: 0 }} />
       <DialogContent>

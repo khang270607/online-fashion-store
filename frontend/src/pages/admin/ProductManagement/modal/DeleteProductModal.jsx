@@ -7,6 +7,7 @@ import {
   Button,
   Typography
 } from '@mui/material'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const DeleteProductModal = ({ open, onClose, product, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState(false)
@@ -26,7 +27,15 @@ const DeleteProductModal = ({ open, onClose, product, onDelete }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth='sm' fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth='sm'
+      fullWidth
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Xoá sản phẩm</DialogTitle>
       <DialogContent dividers>
         <Typography>

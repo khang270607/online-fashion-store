@@ -19,6 +19,7 @@ import {
   TableBody
 } from '@mui/material'
 import dayjs from 'dayjs'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const ViewOrderModal = ({
   open,
@@ -59,6 +60,9 @@ const ViewOrderModal = ({
           display: 'flex',
           flexDirection: 'column'
         }
+      }}
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
       }}
     >
       <DialogTitle>Xem chi tiết đơn hàng</DialogTitle>

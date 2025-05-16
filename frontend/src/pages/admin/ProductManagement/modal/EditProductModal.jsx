@@ -283,7 +283,7 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
                   <Box
                     sx={{
                       width: '100%',
-                      height: 140,
+                      height: '200px',
                       borderRadius: 1,
                       border: '1px solid #000',
                       overflow: 'hidden',

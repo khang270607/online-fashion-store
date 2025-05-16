@@ -17,10 +17,19 @@ import {
   Select
 } from '@mui/material'
 import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 const ViewDiscountModal = ({ open, onClose, discount }) => {
   if (!discount) return null
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='lg'>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='lg'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Chi tiết mã giảm giá</DialogTitle>
       <Divider sx={{ my: 0 }} />
       <DialogContent>

@@ -7,6 +7,7 @@ import {
   Button,
   Divider
 } from '@mui/material'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const DeleteCategoryModal = ({ open, onClose, category, onDelete }) => {
   const [isDeleting, setIsDeleting] = useState(false)
@@ -24,7 +25,15 @@ const DeleteCategoryModal = ({ open, onClose, category, onDelete }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Xoá danh mục</DialogTitle>
       <Divider sx={{ my: 0 }} />
       <DialogContent>

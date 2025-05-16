@@ -13,6 +13,7 @@ import {
   dialogTitleStyle,
   cancelButtonStyle
 } from './StyleModal.js'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const DeleteUserModal = React.memo(({ open, onClose, user, onDelete }) => {
   const [isDeleting, setIsDeleting] = React.useState(false)
@@ -31,7 +32,14 @@ const DeleteUserModal = React.memo(({ open, onClose, user, onDelete }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle sx={dialogTitleStyle}>Xác nhận xóa người dùng</DialogTitle>
       <DialogContent dividers>
         <Typography>

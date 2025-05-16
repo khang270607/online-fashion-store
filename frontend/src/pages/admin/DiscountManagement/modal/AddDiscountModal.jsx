@@ -19,6 +19,7 @@ import {
 import { Box } from '@mui/material'
 import { addDiscount } from '~/services/discountService'
 import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 const AddDiscountModal = ({ open, onClose, onAdded }) => {
   const {
     register,
@@ -59,7 +60,15 @@ const AddDiscountModal = ({ open, onClose, onAdded }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='lg'>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth='lg'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Thêm mã giảm giá</DialogTitle>
       <Divider sx={{ my: 0 }} />
       <form onSubmit={handleSubmit(onSubmit)}>

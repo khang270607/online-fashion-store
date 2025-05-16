@@ -63,6 +63,7 @@ const ProductRow = ({ index, product, handleOpenModal }) => {
         >
           {product.description}
         </StyledTableCell>
+        <StyledTableCell>{product.origin}</StyledTableCell>
         <StyledTableCell>{product.categoryId.name}</StyledTableCell>
         <StyledTableCell>
           {product.destroy ? 'Ngừng bán' : 'Đang bán'}

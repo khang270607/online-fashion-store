@@ -23,6 +23,7 @@ import { addProduct } from '~/services/productService'
 import useCategories from '~/hook/useCategories'
 import AddCategoryModal from '~/pages/admin/CategorieManagement/modal/AddCategoryModal.jsx'
 import StyleAdmin from '~/components/StyleAdmin'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const URI = 'https://api.cloudinary.com/v1_1/dkwsy9sph/image/upload'
 const CloudinaryProduct = 'product_upload'
@@ -137,6 +138,9 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
         fullWidth
         maxWidth='xl'
         PaperProps={{ sx: { mt: 8, maxHeight: '90vh', width: '90vw' } }}
+        BackdropProps={{
+          sx: styleAdmin.OverlayModal
+        }}
       >
         <DialogTitle>Thêm Sản Phẩm</DialogTitle>
         <Divider />
@@ -334,7 +338,7 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
                     <Box
                       sx={{
                         width: '100%',
-                        height: 140,
+                        height: '200px',
                         borderRadius: 1,
                         border: '1px solid #000',
                         overflow: 'hidden',

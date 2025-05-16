@@ -11,6 +11,7 @@ import {
 import { useForm } from 'react-hook-form'
 import { addCategory } from '~/services/categoryService'
 import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 const AddCategoryModal = ({ open, onClose, onAdded }) => {
   const {
     register,
@@ -40,7 +41,15 @@ const AddCategoryModal = ({ open, onClose, onAdded }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='sm'>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Thêm danh mục mới</DialogTitle>
       <Divider sx={{ my: 0 }} />
       <form onSubmit={handleSubmit(onSubmit)}>

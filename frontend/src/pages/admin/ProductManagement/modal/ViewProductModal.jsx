@@ -10,6 +10,7 @@ import {
   Typography,
   Divider
 } from '@mui/material'
+import StyleAdmin from '~/components/StyleAdmin.jsx'
 
 const ViewProductModal = ({ open, onClose, product }) => {
   const imageList = Array.isArray(product?.image) ? product.image : []
@@ -25,13 +26,14 @@ const ViewProductModal = ({ open, onClose, product }) => {
     <Dialog
       open={open}
       onClose={onClose}
-      maxWidth='md'
+      maxWidth='xl'
       fullWidth
       PaperProps={{
         sx: {
           mt: 8,
           maxHeight: '85vh'
-        }
+        },
+        ...StyleAdmin.InputCustom
       }}
     >
       <DialogTitle>Chi tiết sản phẩm</DialogTitle>
@@ -49,7 +51,7 @@ const ViewProductModal = ({ open, onClose, product }) => {
                 alt='Ảnh sản phẩm'
                 sx={{
                   width: '500px',
-                  height: 300,
+                  height: '460px',
                   objectFit: 'contain',
                   backgroundColor: '#f5f5f5',
                   borderRadius: 2,
@@ -137,7 +139,48 @@ const ViewProductModal = ({ open, onClose, product }) => {
                 {product.quantity}
               </Typography>
               <Divider sx={{ my: 1 }} />
+              {/* Thêm trường Xuất xứ */}
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                gutterBottom
+              >
+                Xuất xứ
+              </Typography>
+              <Typography variant='body1' gutterBottom>
+                {product.origin || 'Chưa có'}
+              </Typography>
+              <Divider sx={{ my: 1 }} />
 
+              {/* Thêm trường Kích thước */}
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                gutterBottom
+              >
+                Kích thước
+              </Typography>
+              <Typography variant='body1' gutterBottom>
+                {product.sizes && product.sizes.length > 0
+                  ? product.sizes.join(', ')
+                  : 'Chưa có'}
+              </Typography>
+              <Divider sx={{ my: 1 }} />
+
+              {/* Thêm trường Màu sắc */}
+              <Typography
+                variant='subtitle2'
+                color='text.secondary'
+                gutterBottom
+              >
+                Màu sắc
+              </Typography>
+              <Typography variant='body1' gutterBottom>
+                {product.colors && product.colors.length > 0
+                  ? product.colors.join(', ')
+                  : 'Chưa có'}
+              </Typography>
+              <Divider sx={{ my: 1 }} />
               <Typography
                 variant='subtitle2'
                 color='text.secondary'

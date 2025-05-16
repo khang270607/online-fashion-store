@@ -17,7 +17,7 @@ import CategoryIcon from '@mui/icons-material/Category'
 import InventoryIcon from '@mui/icons-material/Inventory'
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong'
 import LocalOfferIcon from '@mui/icons-material/LocalOffer'
-
+import PaymentIcon from '@mui/icons-material/Payment'
 const tab = [
   { name: 'Thống kê', path: '/admin', icon: <PollIcon /> },
   {
@@ -44,6 +44,11 @@ const tab = [
     name: 'Quản lý mã giảm giá',
     path: '/admin/discount-management',
     icon: <LocalOfferIcon />
+  },
+  {
+    name: 'Quản lý thanh toán',
+    path: '/admin/transaction-management',
+    icon: <PaymentIcon />
   }
 ]
 
@@ -81,18 +86,31 @@ export default function AdminDrawer({ open, onClose }) {
                 <ListItemButton
                   className='list-item-button'
                   sx={{
-                    backgroundColor: isActive ? '#ddd' : 'transparent'
+                    backgroundColor: isActive
+                      ? 'rgba(0, 31, 93, 0.3)'
+                      : 'transparent',
+                    '&:hover': {
+                      backgroundColor: isActive
+                        ? 'rgba(0, 31, 93, 0.3)'
+                        : 'rgba(0, 31, 93, 0.1)'
+                    }
                   }}
                 >
                   <ListItemIcon
                     className='list-item-icon'
-                    sx={{ minWidth: '36px' }}
+                    sx={{
+                      minWidth: '36px',
+                      color: isActive ? '#001f5d' : 'inherit'
+                    }}
                   >
                     {item.icon}
                   </ListItemIcon>
                   <ListItemText
                     className='list-item-text'
                     primary={item.name}
+                    primaryTypographyProps={{
+                      sx: { color: isActive ? '#001f5d' : 'inherit' }
+                    }}
                   />
                 </ListItemButton>
               </ListItem>

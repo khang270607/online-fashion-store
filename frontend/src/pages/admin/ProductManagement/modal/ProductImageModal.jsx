@@ -8,6 +8,7 @@ import {
   Button
 } from '@mui/material'
 import CloseIcon from '@mui/icons-material/Close'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const ProductImageModal = ({ open, onClose, imageSrc, productName }) => {
   return (
@@ -22,6 +23,9 @@ const ProductImageModal = ({ open, onClose, imageSrc, productName }) => {
           display: 'flex',
           flexDirection: 'column'
         }
+      }}
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
       }}
     >
       {/* ===== Header ===== */}

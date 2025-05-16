@@ -1,4 +1,7 @@
 const StyleAdmin = {
+  OverlayModal: {
+    backgroundColor: 'rgba(0, 0, 0, 0.3)'
+  },
   InputCustom: {
     '& .MuiOutlinedInput-input': {
       color: '#000' // đây là phần text trong input

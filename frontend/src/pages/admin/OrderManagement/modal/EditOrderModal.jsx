@@ -15,6 +15,7 @@ import {
   Stack
 } from '@mui/material'
 import { useForm, Controller } from 'react-hook-form'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const statusOptions = [
   'Pending',
@@ -113,7 +114,15 @@ const EditOrderModal = ({ open, onClose, order, onUpdate, loading }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       {/* Header */}
       <DialogTitle>Sửa thông tin đơn hàng</DialogTitle>
 

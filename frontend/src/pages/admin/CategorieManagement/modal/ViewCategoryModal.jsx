@@ -9,9 +9,18 @@ import {
   Divider
 } from '@mui/material'
 import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 const ViewCategoryModal = ({ open, onClose, category }) => {
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Xem thông tin danh mục</DialogTitle>
       <Divider sx={{ my: 0 }} />
       <DialogContent>

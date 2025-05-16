@@ -17,6 +17,7 @@ import { useForm } from 'react-hook-form'
 import AuthorizedAxiosInstance from '~/utils/authorizedAxios.js'
 import { API_ROOT } from '~/utils/constants.js'
 import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
   const {
     register,
@@ -58,7 +59,15 @@ const EditUserModal = React.memo(({ open, onClose, user, onSave }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Chỉnh sửa người dùng</DialogTitle>
       <Divider sx={{ my: 1 }} />
       <DialogContent>

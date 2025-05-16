@@ -73,7 +73,7 @@ export default function ProfileModal({ open, onClose, profile, fetchProfile }) {
           </Grid>
         </DialogContent>
         <Divider />
-        <DialogActions sx={{ px: 3, pb: 2 }}>
+        <DialogActions sx={{ padding: '16px 24px' }}>
           <Button color='inherit' onClick={onClose}>
             Đóng
           </Button>

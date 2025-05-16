@@ -8,6 +8,7 @@ import {
   CircularProgress,
   Typography
 } from '@mui/material'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const DeleteOrderModal = ({ open, onClose, onConfirm, order }) => {
   const [isDeleting, setIsDeleting] = React.useState(false)
@@ -26,7 +27,15 @@ const DeleteOrderModal = ({ open, onClose, onConfirm, order }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Xác nhận xoá đơn hàng</DialogTitle>
       <DialogContent dividers>
         <Typography>

@@ -17,6 +17,7 @@ import {
   FormControl
 } from '@mui/material'
 import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 // Hàm định dạng lại datetime cho input type="datetime-local"
 const formatDateTimeLocal = (isoString) => {
@@ -72,7 +73,15 @@ const EditDiscountModal = ({ open, onClose, discount, onSave }) => {
   }
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth='lg'>
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth='lg'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Chỉnh sửa mã giảm giá</DialogTitle>
       <Divider sx={{ my: 0 }} />
       <form onSubmit={handleSubmit(onSubmit)}>

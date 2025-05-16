@@ -17,13 +17,6 @@ const getPaymentTransactionList = async (orderId) => {
 
     const result = await PaymentTransactionModel.find({ orderId }).lean()
 
-    if (!result) {
-      throw new ApiError(
-        StatusCodes.NOT_FOUND,
-        'Không tìm thấy Giao dịch thanh toán nào hoặc orderId không tồn tại'
-      )
-    }
-
     return result
   } catch (err) {
     throw err

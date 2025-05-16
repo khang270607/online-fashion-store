@@ -1,19 +1,29 @@
-import React, { useState } from 'react'
-import { Box, CssBaseline } from '@mui/material'
+import React, { useState, useEffect } from 'react'
+import { Box, CssBaseline, Button } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 import AdminAppBar from '~/components/HeaderAdmin/AppBar'
 import AdminDrawer from '~/components/HeaderAdmin/Drawer'
 import AdminMenu from '~/components/HeaderAdmin/Menu'
 import '~/layout/AdminLayout.css'
+import ProfileModal from '~/components/ProfileAdmin/index.jsx'
+import useProfile from '~/hook/useUserProfile.js'
 
 export default function AdminLayout() {
   const [open, setOpen] = useState(true)
   const [anchorEl, setAnchorEl] = useState(null)
+  const [openProfile, setOpenProfile] = useState(false)
+  const { profile, fetchProfile } = useProfile()
 
   const handleDrawerOpen = () => setOpen(true)
   const handleDrawerClose = () => setOpen(false)
   const handleProfileMenuOpen = (event) => setAnchorEl(event.currentTarget)
   const handleMenuClose = () => setAnchorEl(null)
+
+  useEffect(() => {
+    if (open) {
+      fetchProfile()
+    }
+  }, [open])
 
   const styles = {
     box: {
@@ -37,12 +47,23 @@ export default function AdminLayout() {
         onProfileMenuOpen={handleProfileMenuOpen}
         onProfileMenuClose={handleMenuClose}
         onMenuClose={handleDrawerClose}
+        profile={profile}
       />
       <AdminDrawer open={open} onClose={handleDrawerClose} />
       <AdminMenu
         anchorEl={anchorEl}
         isOpen={Boolean(anchorEl)}
         onClose={handleMenuClose}
+        onProfileClick={() => {
+          setOpenProfile(true)
+          handleMenuClose()
+        }}
+      />
+      <ProfileModal
+        fetchProfile={fetchProfile}
+        profile={profile}
+        open={openProfile}
+        onClose={() => setOpenProfile(false)}
       />
       <main className='main-content'>
         <div className='drawer-header' />

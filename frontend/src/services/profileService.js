@@ -18,7 +18,6 @@ export const updateProfile = async (updatedData) => {
       `${API_ROOT}/v1/users/profile`,
       updatedData
     )
-    console.log('Cập nhật thành công:', response.data)
     return response.data
   } catch (error) {
     console.error('Lỗi khi cập nhật hồ sơ:', error)

@@ -17,7 +17,7 @@ const CategoryTable = ({ categories, loading, handleOpenModal }) => {
           <StyledTableCell sx={{ textAlign: 'center', width: '50px' }}>
             STT
           </StyledTableCell>
-          <StyledTableCell>Tên danh mục</StyledTableCell>
+          <StyledTableCell sx={{ width: '20%' }}>Tên danh mục</StyledTableCell>
           <StyledTableCell>Mô tả</StyledTableCell>
           <StyledTableCell sx={{ width: '130px', maxWidth: '130px' }}>
             Hành động

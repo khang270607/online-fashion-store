@@ -1,7 +1,13 @@
 import React from 'react'
-import { AppBar, Toolbar, IconButton, Typography, Box } from '@mui/material'
+import {
+  AppBar,
+  Toolbar,
+  IconButton,
+  Typography,
+  Box,
+  Avatar
+} from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
-import AccountCircle from '@mui/icons-material/AccountCircle'
 import MoreIcon from '@mui/icons-material/MoreVert'
 
 export default function AdminAppBar({
@@ -10,7 +16,8 @@ export default function AdminAppBar({
   onDrawerOpen,
   onProfileMenuOpen,
   onProfileMenuClose,
-  onMenuClose
+  onMenuClose,
+  profile
 }) {
   const menuId = 'primary-search-account-menu'
   const mobileMenuId = 'primary-search-account-menu-mobile'
@@ -28,11 +35,22 @@ export default function AdminAppBar({
         >
           <MenuIcon />
         </IconButton>
+
         <Typography variant='h6' noWrap component='div'>
-          Xin chào {/*Tên quản trị viên*/}
+          Xin chào
         </Typography>
+
         <Box sx={{ flexGrow: 1 }} />
-        <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+
+        {/* Desktop avatar */}
+        <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
+          <Typography variant='h6' noWrap component='div'>
+            {profile?.name
+              ?.toLowerCase()
+              .split(' ')
+              .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+              .join(' ') || ''}
+          </Typography>
           <IconButton
             size='large'
             edge='end'
@@ -42,9 +60,15 @@ export default function AdminAppBar({
             onClick={anchorEl ? onProfileMenuClose : onProfileMenuOpen}
             color='inherit'
           >
-            <AccountCircle />
+            <Avatar
+              src={profile?.avatarUrl}
+              alt={profile?.name}
+              sx={{ width: 32, height: 32 }}
+            />
           </IconButton>
         </Box>
+
+        {/* Mobile icon fallback */}
         <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
           <IconButton
             size='large'

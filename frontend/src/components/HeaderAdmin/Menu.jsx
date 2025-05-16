@@ -7,11 +7,21 @@ import {
   ClickAwayListener,
   Popper
 } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-
-export default function AdminMenu({ anchorEl, isOpen, onClose }) {
-  const navigate = useNavigate()
-
+// import { useNavigate } from 'react-router-dom'
+import { useDispatch } from 'react-redux'
+import { logoutUserAPI } from '~/redux/user/userSlice'
+export default function AdminMenu({
+  anchorEl,
+  isOpen,
+  onClose,
+  onProfileClick
+}) {
+  const dispatch = useDispatch()
+  // const navigate = useNavigate()
+  const handleLogout = () => {
+    dispatch(logoutUserAPI())
+    onClose()
+  }
   return (
     <Popper
       open={isOpen}
@@ -29,8 +39,8 @@ export default function AdminMenu({ anchorEl, isOpen, onClose }) {
               <List>
                 <MenuItem
                   onClick={() => {
-                    onClose()
-                    navigate('/admin/profile') // Chuyển hướng tới trang profile
+                    onProfileClick()
+                    // navigate('/admin/profile') // Chuyển hướng tới trang profile
                   }}
                   sx={{ borderBottom: '1px solid #ccc' }}
                 >
@@ -38,8 +48,7 @@ export default function AdminMenu({ anchorEl, isOpen, onClose }) {
                 </MenuItem>
                 <MenuItem
                   onClick={() => {
-                    onClose()
-                    console.log('Đăng xuất') // Giữ logic đăng xuất
+                    handleLogout()
                   }}
                 >
                   Đăng xuất

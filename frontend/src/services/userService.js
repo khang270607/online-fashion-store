@@ -7,14 +7,18 @@ export const getUsers = async (page = 1, limit = 10) => {
     const response = await AuthorizedAxiosInstance.get(
       `${API_ROOT}/v1/users?page=${page}&limit=${limit}`
     )
-    console.log('Danh sách người dùng:', response.data)
     return { users: response.data, total: response.data.length }
   } catch (error) {
     console.error('Lỗi khi lấy danh sách người dùng:', error)
     return { users: [], total: 0 }
   }
 }
-
+export const getUserById = async (userId) => {
+  const response = await AuthorizedAxiosInstance.get(
+    `${API_ROOT}/v1/users/${userId}`
+  )
+  return response.data
+}
 export const deleteUser = async (id) => {
   try {
     await AuthorizedAxiosInstance.delete(`${API_ROOT}/v1/users/${id}`)

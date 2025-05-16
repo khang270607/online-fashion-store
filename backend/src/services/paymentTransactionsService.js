@@ -3,16 +3,19 @@ import { StatusCodes } from 'http-status-codes'
 import { PaymentTransactionModel } from '~/models/PaymentTransactionModel'
 import ApiError from '~/utils/ApiError'
 import { slugify } from '~/utils/formatters'
+import mongoose from 'mongoose'
 
-const getPaymentTransactionList = async () => {
+const getPaymentTransactionList = async (orderId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await PaymentTransactionModel.find({ destroy: false })
-      .populate({
-        path: 'categoryId',
-        select: 'name description slug _id'
-      })
-      .lean()
+    if (!orderId || !mongoose.Types.ObjectId.isValid(orderId)) {
+      throw new ApiError(
+        StatusCodes.BAD_REQUEST,
+        'Thiếu tham số orderId trong query string (?orderId=...) hoặc orderId không tồn tại'
+      )
+    }
+
+    const result = await PaymentTransactionModel.find({ orderId }).lean()
 
     return result
   } catch (err) {

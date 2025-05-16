@@ -30,9 +30,16 @@ const createProduct = async (reqBody) => {
   }
 }
 
-const getProductList = async () => {
+const getProductList = async (reqQuery) => {
   // eslint-disable-next-line no-useless-catch
   try {
+    const { page, limit, search, category } = reqQuery
+
+    console.log('page', page)
+    console.log('limit', limit)
+    console.log('search', search)
+    console.log('category', category)
+
     const result = await ProductModel.find({ destroy: false })
       .populate({
         path: 'categoryId',

@@ -3,213 +3,110 @@ import {
   Box,
   Grid,
   Button,
-  Card,
-  CardMedia,
-  CardContent,
-  CardActions,
-  IconButton,
-  Typography,
   Snackbar,
   Alert
 } from '@mui/material'
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import { useLocation } from 'react-router-dom'
-import { getProducts, getProductsByCategory } from '~/services/productService'
-
-const MAX_PRODUCTS = 8
+import { addToCart, getCart } from '~/services/cartService'
+import useProducts from '~/hook/useProducts'
+import { useDispatch } from 'react-redux'
+import { setCartItems } from '~/redux/cart/cartSlice'
+import ProductCard from '~/components/ProductCards/ProductCards'
 
 const ProductList = () => {
-  const [cart, setCart] = useState([]) // Giỏ hàng của người dùng
-  const [openSnackbar, setOpenSnackbar] = useState(false) // Trạng thái hiển thị Snackbar
-  const [products, setProducts] = useState([]) // Danh sách sản phẩm
-  const [isLoading, setIsLoading] = useState(false) // Trạng thái đang tải
-  const [error, setError] = useState(null) // Lỗi API
-  const location = useLocation()
+  const { products, fetchProducts } = useProducts()
+  const [snackbar, setSnackbar] = useState(null) // { type: 'success' | 'error' | 'warning', message: string }
+  const [isAdding, setIsAdding] = useState({})
+  const dispatch = useDispatch()
 
-  // Lấy sản phẩm từ API
   useEffect(() => {
-    const fetchData = async () => {
-      // Đọc danh mục từ URL
-      const searchParams = new URLSearchParams(location.search)
-      const categoryId = searchParams.get('category') || ''
+    fetchProducts()
+  }, [fetchProducts])
 
-      // Lấy sản phẩm
-      setIsLoading(true)
-      try {
-        let result
-        if (categoryId) {
-          result = await getProductsByCategory(categoryId, 1, MAX_PRODUCTS)
-        } else {
-          result = await getProducts(1, MAX_PRODUCTS)
-        }
-        setProducts(
-          Array.isArray(result.products)
-            ? result.products.slice(0, MAX_PRODUCTS)
-            : []
-        )
-      } catch (error) {
-        console.error('Lỗi khi lấy sản phẩm:', error)
-        setError('Không thể tải sản phẩm. Vui lòng thử lại.')
-        setProducts([])
-      } finally {
-        setIsLoading(false)
+  
+
+  const handleAddToCart = async (product) => {
+    if (isAdding[product._id]) return
+    setIsAdding(prev => ({ ...prev, [product._id]: true }))
+
+    try {
+      const updatedCart = await getCart()
+      const existingItem = updatedCart?.cartItems?.find(
+        item => item.productId._id === product._id
+      )
+      const currentQty = existingItem?.quantity || 0
+      const maxQty = product.quantity
+
+      if (currentQty >= maxQty) {
+        setSnackbar({ type: 'warning', message: 'Bạn đã thêm tối đa số lượng tồn kho!' })
+        return
       }
+
+      const res = await addToCart({
+        cartItems: [{ productId: product._id, quantity: 1 }]
+      })
+
+      dispatch(setCartItems(res?.cartItems || updatedCart?.cartItems || []))
+      setSnackbar({ type: 'success', message: 'Thêm sản phẩm vào giỏ hàng thành công!' })
+    } catch (error) {
+      console.error('Thêm vào giỏ hàng lỗi:', error)
+      setSnackbar({ type: 'error', message: 'Thêm sản phẩm thất bại!' })
+    } finally {
+      setTimeout(() => {
+        setIsAdding(prev => ({ ...prev, [product._id]: false }))
+      }, 500)
     }
-
-    fetchData()
-  }, [location.search])
-
-  // Hàm thêm sản phẩm vào giỏ hàng
-  const addToCart = (product) => {
-    setCart((prevCart) => {
-      const existingProduct = prevCart.find((item) => item._id === product._id)
-      if (existingProduct) {
-        return prevCart.map((item) =>
-          item._id === product._id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      } else {
-        return [...prevCart, { ...product, quantity: 1 }]
-      }
-    })
-    setOpenSnackbar(true)
   }
 
-  // Đóng Snackbar
-  const handleCloseSnackbar = () => {
-    setOpenSnackbar(false)
-  }
+  // Chia products thành 2 nhóm mỗi nhóm 4 sản phẩm
+  const first4Products = products.slice(0, 4)
+  const next4Products = products.slice(4, 8)
 
   return (
-    <Box
-      sx={{
-        padding: '5px',
-        borderRadius: '20px',
-        margin: '10px',
-        minHeight: '100vh',
-        mt: '150px'
-      }}
-    >
-      {isLoading ? (
-        <Box sx={{ textAlign: 'center', mt: 4, color: 'white' }}>
-          Đang tải...
-        </Box>
-      ) : products.length === 0 ? (
-        <Box sx={{ textAlign: 'center', mt: 4, color: 'white' }}>
-          Không có sản phẩm nào.
-        </Box>
-      ) : (
-        <Grid
-          container
-          direction='row'
-          justifyContent='center'
-          alignItems='center'
-          sx={{ marginTop: '50px', gap: '20px' }}
-        >
-          {products.map((product) => (
-            <Grid item xs={12} sm={6} md={4} key={product._id}>
-              <Card
-                sx={{
-                  width: '350px',
-                  marginBottom: '20px',
-                  borderRadius: '10px'
-                }}
-              >
-                <a
-                  href={`/productdetail/${product._id}`}
-                  style={{ textDecoration: 'none' }}
-                >
-                  <CardMedia
-                    component='img'
-                    height='294'
-                    image={product.image?.[0] || '/default.jpg'}
-                    alt={product.name}
-                    sx={{
-                      width: '100%', // Đảm bảo ảnh chiếm toàn bộ chiều rộng của card
-                      height: 294, // Hoặc bạn có thể dùng giá trị khác phù hợp
-                      objectFit: 'cover' // Đảm bảo ảnh luôn scale đúng mà không bị méo
-                    }}
-                  />
-                </a>
-                <CardContent>
-                  <a
-                    href={`/productdetail/${product._id}`}
-                    style={{
-                      textDecoration: 'none',
-                      color: 'black',
-                      fontWeight: 'bold'
-                    }}
-                  >
-                    {product.name}
-                  </a>
-                </CardContent>
-                <CardActions disableSpacing>
-                  <IconButton aria-label='add to favorites'>
-                    <FavoriteIcon />
-                  </IconButton>
-                  <IconButton
-                    aria-label='cart'
-                    onClick={() => addToCart(product)}
-                  >
-                    <AddShoppingCartIcon />
-                  </IconButton>
-                  <Box sx={{ marginLeft: 'auto', paddingRight: '10px' }}>
-                    <Typography variant='subtitle1' fontWeight='bold'>
-                      {product.price ? `${product.price}₫` : '---'}
-                    </Typography>
-                  </Box>
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
-      )}
+    <Box sx={{ backgroundColor: '#03235e', p: 2, borderRadius: 3, m: 2, boxShadow: 3 }}>
+      {/* 4 products */}
+      <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 5 }}>
+        {first4Products.map(product => (
+          <Grid item xs={12} sm={6} md={3} key={product._id}>
+            <ProductCard
+              product={product}
+              handleAddToCart={handleAddToCart}
+              isAdding={!!isAdding[product._id]}
+            />
+          </Grid>
+        ))}
+      </Grid>
 
-      {/* Nút xem tất cả */}
-      <Box
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: '30px'
-        }}
-      >
-        <Button
-          href='/product'
-          sx={{ color: 'white', backgroundColor: '#03235e' }}
-        >
+      {/* 4 products */}
+      <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 3 }}>
+        {next4Products.map(product => (
+          <Grid item xs={12} sm={6} md={3} key={product._id}>
+            <ProductCard
+              product={product}
+              handleAddToCart={handleAddToCart}
+              isAdding={!!isAdding[product._id]}
+            />
+          </Grid>
+        ))}
+      </Grid>
+
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <Button href='/product' sx={{ color: 'white' }}>
           Xem tất cả
         </Button>
       </Box>
 
-      {/* Snackbar thông báo */}
-      <Snackbar
-        open={openSnackbar}
-        autoHideDuration={3000}
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-      >
-        <Alert
-          onClose={handleCloseSnackbar}
-          severity='success'
-          sx={{ width: '100%' }}
+      {snackbar && (
+        <Snackbar
+          open
+          autoHideDuration={3000}
+          onClose={() => setSnackbar(null)}
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
         >
-          Thêm sản phẩm vào giỏ hàng thành công!
-        </Alert>
-      </Snackbar>
-
-      {/* Snackbar lỗi */}
-      <Snackbar
-        open={!!error}
-        autoHideDuration={6000}
-        onClose={() => setError(null)}
-      >
-        <Alert severity='error' onClose={() => setError(null)}>
-          {error}
-        </Alert>
-      </Snackbar>
+          <Alert onClose={() => setSnackbar(null)} severity={snackbar.type} sx={{ width: '100%' }}>
+            {snackbar.message}
+          </Alert>
+        </Snackbar>
+      )}
     </Box>
   )
 }

@@ -13,6 +13,7 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart'
 import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutUserAPI, selectCurrentUser } from '~/redux/user/userSlice'
+import { clearCart } from '~/redux/cart/cartSlice'
 import { getProfileUser } from '~/services/userService'
 import { toast } from 'react-toastify'
 
@@ -22,6 +23,10 @@ const HeaderAction = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const currentUser = useSelector(selectCurrentUser)
+  
+  // Lấy giỏ hàng từ Redux store
+  const cartItems = useSelector(state => state.cart.cartItems)
+  const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0)
   const [tokenUpdated, setTokenUpdated] = useState(
     localStorage.getItem('token')
   ) // Theo dõi token
@@ -65,6 +70,7 @@ const HeaderAction = () => {
 
   const handleLogout = () => {
     dispatch(logoutUserAPI())
+    dispatch(clearCart()) // Xóa giỏ hàng khi đăng xuất
     localStorage.removeItem('token')
     setTokenUpdated(null)
     handleClose()
@@ -112,26 +118,18 @@ const HeaderAction = () => {
       >
         {currentUser ? (
           <>
-            <MenuItem component={Link} to='/profile' onClick={handleClose}>
-              Hồ sơ
-            </MenuItem>
+            <MenuItem component={Link} to='/profile'>Hồ sơ</MenuItem>
             <MenuItem onClick={handleLogout}>Đăng xuất</MenuItem>
           </>
         ) : (
-          <MenuItem component={Link} to='/login' onClick={handleClose}>
-            Đăng nhập
-          </MenuItem>
+          <MenuItem component={Link} to='/login'>Đăng nhập</MenuItem>
         )}
-        <MenuItem component={Link} to='/cart' onClick={handleClose}>
-          Giỏ hàng
-        </MenuItem>
-        <MenuItem component={Link} to='/order' onClick={handleClose}>
-          Thông tin đơn hàng
-        </MenuItem>
+        <MenuItem component={Link} to='/cart'>Giỏ hàng</MenuItem>
+        <MenuItem component={Link} to='/order'>Thông tin đơn hàng</MenuItem>
       </Menu>
 
       <IconButton color='inherit' component={Link} to='/cart'>
-        <Badge badgeContent={3} color='error'>
+        <Badge badgeContent={cartCount} color='error'>
           <ShoppingCartIcon />
         </Badge>
       </IconButton>

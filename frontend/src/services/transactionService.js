@@ -1,24 +1,20 @@
 import AuthorizedAxiosInstance from '~/utils/authorizedAxios'
 import { API_ROOT } from '~/utils/constants'
 
-// Lấy danh sách giao dịch theo orderId
-export const getTransactionsByOrderId = async (orderId) => {
+// ✅ Lấy tất cả giao dịch (không truyền orderId)
+export const getAllTransactions = async () => {
   try {
     const response = await AuthorizedAxiosInstance.get(
-      `${API_ROOT}/v1/payment-transactions`, // chỉ gọi endpoint này
-      { params: { orderId } } // truyền orderId dưới dạng query param
+      `${API_ROOT}/v1/payment-transactions/`
     )
     return response.data
   } catch (error) {
-    console.error(
-      `Lỗi khi lấy danh sách giao dịch của đơn hàng ${orderId}:`,
-      error
-    )
+    console.error('Lỗi khi lấy danh sách giao dịch:', error)
     return []
   }
 }
 
-// Lấy chi tiết giao dịch theo transactionId
+// ✅ Lấy chi tiết giao dịch theo ID
 export const getTransactionById = async (transactionId) => {
   try {
     const response = await AuthorizedAxiosInstance.get(
@@ -31,6 +27,7 @@ export const getTransactionById = async (transactionId) => {
   }
 }
 
+// ✅ Cập nhật giao dịch
 export const updateTransactionById = async (transactionId, updateData) => {
   try {
     const response = await AuthorizedAxiosInstance.patch(
@@ -44,6 +41,7 @@ export const updateTransactionById = async (transactionId, updateData) => {
   }
 }
 
+// ✅ Xoá giao dịch
 export const deleteTransactionById = async (transactionId) => {
   try {
     await AuthorizedAxiosInstance.delete(

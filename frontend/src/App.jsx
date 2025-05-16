@@ -78,7 +78,7 @@ function App() {
           <Route path='order-management' element={<OrderManagement />} />
           <Route path='discount-management' element={<DiscountManagement />} />
           <Route
-            path='transaction-management/:orderId'
+            path='transaction-management'
             element={<TransactionManegement />}
           />
           <Route path='demo-cart' element={<DemoCart />} />

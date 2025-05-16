@@ -1,6 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import {
-  getTransactionsByOrderId,
+  getAllTransactions,
   getTransactionById,
   updateTransactionById,
   deleteTransactionById
@@ -10,9 +10,10 @@ const useTransactions = () => {
   const [transactions, setTransactions] = useState([])
   const [loading, setLoading] = useState(false)
 
-  const fetchTransactions = async (orderId) => {
+  // ✅ Không cần truyền orderId nếu gọi toàn bộ
+  const fetchTransactions = async () => {
     setLoading(true)
-    const data = await getTransactionsByOrderId(orderId)
+    const data = await getAllTransactions()
     setTransactions(data)
     setLoading(false)
   }

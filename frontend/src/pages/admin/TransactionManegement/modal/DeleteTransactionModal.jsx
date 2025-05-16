@@ -5,39 +5,32 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Typography,
   Divider,
-  CircularProgress
+  Typography
 } from '@mui/material'
 
-const DeleteTransactionModal = ({
-  open,
-  onClose,
-  transaction,
-  onConfirm,
-  loading
-}) => {
+const DeleteTransactionModal = ({ open, onClose, transaction, onDelete }) => {
+  const handleDelete = () => {
+    onDelete(transaction._id)
+  }
+
   return (
-    <Dialog open={open} onClose={onClose} maxWidth='xs' fullWidth>
-      <DialogTitle>Xác nhận xoá giao dịch</DialogTitle>
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth='xs'>
+      <DialogTitle>Xác nhận xoá</DialogTitle>
       <Divider />
-      <DialogContent dividers>
-        <Typography>
-          Bạn có chắc muốn xoá giao dịch <strong>{transaction?._id}</strong>{' '}
-          không?
+      <DialogContent>
+        <Typography>Bạn có chắc chắn muốn xoá giao dịch này không?</Typography>
+        <Typography variant='body2' color='text.secondary' mt={1}>
+          ID: {transaction?._id}
         </Typography>
       </DialogContent>
       <Divider />
       <DialogActions>
-        <Button onClick={onClose} disabled={loading} color='inherit'>
-          Huỷ
-        </Button>
+        <Button onClick={onClose}>Huỷ</Button>
         <Button
-          onClick={onConfirm}
+          onClick={() => handleDelete(transaction._id)}
           variant='contained'
           color='error'
-          disabled={loading}
-          startIcon={loading && <CircularProgress size={16} />}
         >
           Xoá
         </Button>

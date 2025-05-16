@@ -15,13 +15,16 @@ const ViewTransactionModal = ({ open, onClose, transaction }) => {
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='sm'>
       <DialogTitle>Chi tiết giao dịch</DialogTitle>
       <Divider />
-      <DialogContent>
-        <Stack spacing={2} mt={1}>
+      <DialogContent dividers>
+        <Stack spacing={2}>
           <Typography>
             <strong>Mã giao dịch:</strong> {transaction._id}
           </Typography>
           <Typography>
-            <strong>Đơn hàng:</strong> {transaction.orderId}
+            <strong>Đơn hàng:</strong>{' '}
+            {typeof transaction.orderId === 'object'
+              ? transaction.orderId._id
+              : transaction.orderId}
           </Typography>
           <Typography>
             <strong>Phương thức:</strong> {transaction.method}

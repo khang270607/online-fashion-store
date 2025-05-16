@@ -33,30 +33,58 @@ const createProduct = async (reqBody) => {
 const getProductList = async (reqQuery) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    let { page, limit, search, category, origin } = reqQuery
+    // let { page, limit, search, categoryId, origin } = reqQuery
+    //
+    // page = parseInt(page, 10)
+    // limit = parseInt(limit, 10)
+    //
+    // if (isNaN(page) || page < 1) page = 1
+    // if (isNaN(limit) || limit < 1) limit = 10
+    //
+    // const filter = { destroy: false }
+    //
+    // if (search) filter.name = { $regex: search, $options: 'i' }
+    //
+    // if (categoryId) filter.categoryId = categoryId
+    //
+    // if (origin) filter.origin = origin
+    //
+    // console.log('page', page)
+    // console.log('limit', limit)
+    // console.log('search', search)
+    // console.log('categoryId', categoryId)
+    // console.log('origin', origin)
+    //
+    // const [products, total] = await Promise.all([
+    //   ProductModel.find(filter)
+    //     .populate({
+    //       path: 'categoryId',
+    //       select: 'name description slug _id'
+    //     })
+    //     .skip((page - 1) * limit)
+    //     .limit(limit)
+    //     .lean(),
+    //   ProductModel.countDocuments(filter)
+    // ])
+    //
+    // const result = {
+    //   data: products,
+    //   meta: {
+    //     total,
+    //     page,
+    //     limit,
+    //     totalPages: Math.ceil(total / limit)
+    //   }
+    // }
 
-    page = parseInt(page, 10)
-    limit = parseInt(limit, 10)
+    const result = await ProductModel.find({ destroy: false })
+      .populate({
+        path: 'categoryId',
+        select: 'name description slug _id'
+      })
+      .lean()
 
-    if (isNaN(page) || page < 1) page = 1
-    if (isNaN(limit) || limit < 1) limit = 10
-
-    const filter = { destroy: false }
-
-    console.log('page', page)
-    console.log('limit', limit)
-    console.log('search', search)
-    console.log('category', category)
-    console.log('origin', origin)
-
-    // const result = await ProductModel.find({ destroy: false })
-    //   .populate({
-    //     path: 'categoryId',
-    //     select: 'name description slug _id'
-    //   })
-    //   .lean()
-
-    return []
+    return result || []
   } catch (err) {
     throw err
   }

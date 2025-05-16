@@ -7,9 +7,11 @@ import {
   TextField,
   Button,
   Box,
-  Avatar
+  Avatar,
+  Divider,
+  Typography
 } from '@mui/material'
-import useProfile from '~/hook/useUserProfile'
+import useProfile from '~/hook/useUserProfile.js'
 
 const CLOUDINARY_URI = 'https://api.cloudinary.com/v1_1/dkwsy9sph/image/upload'
 const UPLOAD_PRESET = 'demo_unsigned'
@@ -53,36 +55,42 @@ const EditProfileModal = ({ open, onClose, profile }) => {
   }
 
   const handleSubmit = async () => {
-    console.log('handleSubmit: test')
     setLoading(true)
     let avatarUrl = profile.avatarUrl
     if (avatarFile) {
       avatarUrl = await uploadToCloudinary(avatarFile)
     }
 
-    console.log('name: ', name)
-    console.log('avatarUrl: ', avatarUrl)
     await updateUserProfile({ name, avatarUrl })
     setLoading(false)
     onClose()
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Chỉnh sửa hồ sơ</DialogTitle>
-      <DialogContent>
-        <TextField
-          fullWidth
-          label='Tên'
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          margin='normal'
-        />
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth='sm'
+      fullWidth
+      PaperProps={{ sx: { borderRadius: 3, pt: 1 } }}
+    >
+      {/* HEADER */}
+      <DialogTitle sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+        Chỉnh sửa hồ sơ
+      </DialogTitle>
+      <Divider />
 
-        <Box display='flex' alignItems='center' mt={2}>
-          <Avatar src={avatarPreview} sx={{ width: 80, height: 80, mr: 2 }} />
-          <Button variant='outlined' component='label'>
-            Chọn ảnh
+      {/* CONTENT */}
+      <DialogContent sx={{ py: 4 }}>
+        {/* Chọn ảnh avatar */}
+        <Box display='flex' flexDirection='column' alignItems='center' mb={4}>
+          <Avatar src={avatarPreview} sx={{ width: 120, height: 120, mb: 2 }} />
+          <Button
+            variant='inherit'
+            component='label'
+            sx={{ border: '1px solid #000' }}
+          >
+            Chọn ảnh đại diện
             <input
               type='file'
               accept='image/*'
@@ -91,10 +99,28 @@ const EditProfileModal = ({ open, onClose, profile }) => {
             />
           </Button>
         </Box>
-      </DialogContent>
 
-      <DialogActions>
-        <Button onClick={onClose}>Hủy</Button>
+        {/* Chỉnh sửa tên */}
+        <Box>
+          <Typography variant='subtitle2' color='text.secondary' gutterBottom>
+            Tên hiển thị
+          </Typography>
+          <TextField
+            fullWidth
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder='Nhập tên của bạn'
+            variant='outlined'
+          />
+        </Box>
+      </DialogContent>
+      <Divider />
+
+      {/* FOOTER */}
+      <DialogActions sx={{ px: 3, py: 2 }}>
+        <Button color='inherit' onClick={onClose}>
+          Hủy
+        </Button>
         <Button
           onClick={handleSubmit}
           variant='contained'

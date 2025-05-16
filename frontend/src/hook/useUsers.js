@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { getUsers, deleteUser } from '~/services/userService'
 
-export default function useUsers() {
+export default function useUsers(limit = 10) {
   const [users, setUsers] = useState([])
   const [totalPages, setTotalPages] = useState(1)
   const [Loading, setLoading] = useState(false)
@@ -11,13 +11,16 @@ export default function useUsers() {
     setLoading(true)
     const { users, total } = await getUsers(page, ROWS_PER_PAGE)
     setUsers(users)
-    setTotalPages(Math.ceil(total / ROWS_PER_PAGE))
+    setTotalPages(Math.max(1, Math.ceil(total / limit)))
     setLoading(false)
   }
 
   const removeUser = async (id, page) => {
     const success = await deleteUser(id)
-    if (success) fetchUsers(page)
+    if (success) {
+      const newPage = page > 1 && users.length === 1 ? page - 1 : page
+      fetchUsers(newPage)
+    }
   }
 
   return { users, totalPages, fetchUsers, removeUser, Loading }

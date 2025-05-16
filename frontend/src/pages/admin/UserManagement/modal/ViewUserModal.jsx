@@ -1,69 +1,103 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
   Dialog,
   DialogTitle,
   DialogContent,
-  Typography,
-  Stack,
-  IconButton
+  DialogActions,
+  Button,
+  TextField,
+  Divider
 } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
-import { modalPaperProps, dialogTitleStyle } from './StyleModal.js'
+import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
+const ViewUserModal = React.memo(({ open, onClose, user }) => {
+  useEffect(() => {
+    if (!open) {
+      // Reset dữ liệu khi đóng modal
+    }
+  }, [open])
 
-export default function ViewUserModal({ open, onClose, user }) {
   return (
     <Dialog
       open={open}
       onClose={onClose}
       fullWidth
       maxWidth='sm'
-      PaperProps={modalPaperProps}
       BackdropProps={{
-        sx: {
-          backgroundColor: '#000',
-          opacity: '0.2 !important'
-        }
+        sx: styleAdmin.OverlayModal
       }}
     >
-      <DialogTitle sx={{ ...dialogTitleStyle, pr: 5, pt: '35px' }}>
-        Thông tin người dùng
-        <IconButton
-          aria-label='close'
-          onClick={onClose}
+      <DialogTitle>Chi tiết người dùng</DialogTitle>
+      <Divider sx={{ my: 0 }} />
+      <DialogContent>
+        <TextField
+          label='Tên người dùng'
+          fullWidth
+          margin='normal'
+          value={user?.name || ''}
+          InputProps={{ readOnly: true }}
           sx={{
-            position: 'absolute',
-            right: 16,
-            top: 16,
-            color: (theme) => theme.palette.grey[500]
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
           }}
-        >
-          <CloseIcon />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent dividers sx={{ p: '35px' }}>
-        <Stack spacing={2}>
-          <Typography fontSize={18}>
-            <strong>Tên:</strong> {user?.name}
-          </Typography>
-          <Typography fontSize={18}>
-            <strong>Email:</strong> {user?.email}
-          </Typography>
-          <Typography fontSize={18}>
-            <strong>Quyền:</strong>{' '}
-            {user?.role === 'admin' ? 'Quản trị viên' : 'Khách hàng'}
-          </Typography>
-          <Typography fontSize={18}>
-            <strong>Ngày tạo:</strong>{' '}
-            {user?.createdAt &&
-              new Date(user.createdAt).toLocaleString('vi-VN')}
-          </Typography>
-          <Typography fontSize={18}>
-            <strong>Ngày cập nhật:</strong>{' '}
-            {user?.updatedAt &&
-              new Date(user.updatedAt).toLocaleString('vi-VN')}
-          </Typography>
-        </Stack>
+        />
+        <TextField
+          label='Email'
+          fullWidth
+          margin='normal'
+          value={user?.email || ''}
+          InputProps={{ readOnly: true }}
+          sx={{
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
+          }}
+        />
+        <TextField
+          label='Quyền'
+          fullWidth
+          margin='normal'
+          value={user?.role === 'admin' ? 'QUẢN TRỊ' : 'KHÁCH HÀNG'}
+          InputProps={{ readOnly: true }}
+          sx={{
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
+          }}
+        />
+        <TextField
+          label='Ngày tạo'
+          fullWidth
+          margin='normal'
+          value={
+            user?.createdAt ? new Date(user.createdAt).toLocaleString() : ''
+          }
+          InputProps={{ readOnly: true }}
+          sx={{
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
+          }}
+        />
+        <TextField
+          label='Ngày cập nhật'
+          fullWidth
+          margin='normal'
+          value={
+            user?.updatedAt ? new Date(user.updatedAt).toLocaleString() : ''
+          }
+          InputProps={{ readOnly: true }}
+          sx={{
+            ...StyleAdmin.InputCustom,
+            ...StyleAdmin.InputCustom.CursorNone
+          }}
+        />
       </DialogContent>
+      <Divider />
+      <DialogActions sx={{ padding: '16px 24px' }}>
+        <Button onClick={onClose} variant='contained' color='error'>
+          Đóng
+        </Button>
+      </DialogActions>
     </Dialog>
   )
-}
+})
+
+export default ViewUserModal

@@ -133,7 +133,9 @@ const createOrder = async (userId, reqBody) => {
 const getOrderList = async (userId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await OrderModel.find({}).lean()
+    const result = await OrderModel.find({})
+      .populate('userId shippingAddressId couponId')
+      .lean()
 
     return result
   } catch (err) {

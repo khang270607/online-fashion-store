@@ -1,31 +1,56 @@
-// components/modal/DeleteCategoryModal.jsx
-import React from 'react'
+import React, { useState } from 'react'
 import {
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
-  Button
+  Button,
+  Divider
 } from '@mui/material'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 
 const DeleteCategoryModal = ({ open, onClose, category, onDelete }) => {
-  const handleDelete = () => {
-    onDelete(category._id) // Gọi hàm handleDeleteCategory từ parent component
-    onClose() // Đóng modal sau khi xoá
+  const [isDeleting, setIsDeleting] = useState(false)
+
+  const handleDelete = async () => {
+    setIsDeleting(true)
+    try {
+      await onDelete(category._id) // Đợi quá trình xoá hoàn tất
+      onClose()
+    } catch (error) {
+      console.error('Xoá thất bại:', error)
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Xoá danh mục</DialogTitle>
+      <Divider sx={{ my: 0 }} />
       <DialogContent>
         Bạn có chắc chắn muốn xoá danh mục <strong>{category.name}</strong>?
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color='inherit'>
+      <Divider sx={{ my: 0 }} />
+      <DialogActions sx={{ padding: '16px 24px' }}>
+        <Button onClick={onClose} color='inherit' disabled={isDeleting}>
           Hủy
         </Button>
-        <Button onClick={handleDelete} color='error' variant='contained'>
-          Xoá
+        <Button
+          onClick={handleDelete}
+          color='error'
+          variant='contained'
+          disabled={isDeleting}
+        >
+          {isDeleting ? 'Đang xoá...' : 'Xoá'}
         </Button>
       </DialogActions>
     </Dialog>

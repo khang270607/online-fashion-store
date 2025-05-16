@@ -6,10 +6,12 @@ import {
   DialogTitle,
   TextField,
   Button,
-  CircularProgress
+  CircularProgress,
+  Divider
 } from '@mui/material'
 import { useForm } from 'react-hook-form'
-
+import StyleAdmin from '~/components/StyleAdmin.jsx'
+import styleAdmin from '~/components/StyleAdmin.jsx'
 const EditCategoryModal = ({ open, onClose, category, onSave }) => {
   const {
     register,
@@ -38,8 +40,17 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
   }
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth='md' fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullWidth
+      maxWidth='sm'
+      BackdropProps={{
+        sx: styleAdmin.OverlayModal
+      }}
+    >
       <DialogTitle>Sửa danh mục</DialogTitle>
+      <Divider sx={{ my: 0 }} />
       <DialogContent>
         <form id='edit-category-form' onSubmit={handleSubmit(onSubmit)}>
           <TextField
@@ -49,6 +60,7 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
             {...register('name', { required: 'Tên danh mục là bắt buộc' })}
             error={!!errors.name}
             helperText={errors.name?.message}
+            sx={StyleAdmin.InputCustom}
           />
           <TextField
             label='Mô tả'
@@ -59,11 +71,13 @@ const EditCategoryModal = ({ open, onClose, category, onSave }) => {
             {...register('description', { required: 'Mô tả là bắt buộc' })}
             error={!!errors.description}
             helperText={errors.description?.message}
+            sx={StyleAdmin.InputCustom}
           />
         </form>
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} disabled={isSubmitting} color='error'>
+      <Divider sx={{ my: 0 }} />
+      <DialogActions sx={{ padding: '16px 24px' }}>
+        <Button onClick={onClose} disabled={isSubmitting} color='inherit'>
           Hủy
         </Button>
         <Button

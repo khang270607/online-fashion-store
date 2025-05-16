@@ -9,7 +9,6 @@ export const getProducts = async (page = 1, limit = 10) => {
     const response = await AuthorizedAxiosInstance.get(
       `${API_ROOT}/v1/products?page=${page}&limit=${limit}`
     )
-    // console.log('Danh sách sản phẩm:', response.data)
     return {
       products: response.data.products || response.data || [],
       total: response.data.total || 0
@@ -62,7 +61,6 @@ export const getProductById = async (productId) => {
     const response = await AuthorizedAxiosInstance.get(
       `${API_ROOT}/v1/products/${productId}`
     )
-    console.log(`API getProductById response (${productId}):`, response.data)
     return response.data || {}
   } catch (error) {
     console.error('Lỗi khi lấy sản phẩm:', error.response?.data || error)

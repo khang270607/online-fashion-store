@@ -24,7 +24,9 @@ const UserTable = React.memo(function UserTable({
       <Table>
         <TableHead>
           <TableRow>
-            <StyledTableCell sx={{ textAlign: 'center' }}>STT</StyledTableCell>
+            <StyledTableCell sx={{ textAlign: 'center', width: '50px' }}>
+              STT
+            </StyledTableCell>
             <StyledTableCell>Tên</StyledTableCell>
             <StyledTableCell>Email</StyledTableCell>
             <StyledTableCell>Quyền</StyledTableCell>

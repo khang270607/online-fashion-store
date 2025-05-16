@@ -216,7 +216,7 @@ function Product() {
         <FormControl fullWidth size='small'>
           <InputLabel>Xuất xứ</InputLabel>
           <Select value={origin} label='Xuất xứ' onChange={handleOriginChange}>
-            <MenuItem value=''>Tất cả</MenuItem>
+            <MenuItem value='Tất cả'>Tất cả</MenuItem>
             <MenuItem value='vietnam'>Việt Nam</MenuItem>
             <MenuItem value='china'>Trung Quốc</MenuItem>
           </Select>
@@ -300,18 +300,25 @@ function Product() {
                     flexDirection: 'column'
                   }}
                 >
-                  <a
-                    href={`/productdetail/${product._id}`}
-                    style={{ textDecoration: 'none' }}
-                  >
-                    <CardMedia
-                      component='img'
-                      height='280'
-                      image={product.image?.[0] || '/default.jpg'}
-                      alt={product.name}
-                    />
-                  </a>
-                  <CardContent sx={{ flex: 1 }}>
+                  <Box sx={{ height: '300px' }}>
+                    <a
+                      href={`/productdetail/${product._id}`}
+                      style={{ textDecoration: 'none' }}
+                    >
+                      <CardMedia
+                        component='img'
+                        height='280'
+                        image={product.image?.[0] || '/default.jpg'}
+                        alt={product.name}
+                        sx={{
+                          width: '100%', // Đảm bảo ảnh chiếm toàn bộ chiều rộng của card
+                          height: '100%', // Hoặc bạn có thể dùng giá trị khác phù hợp
+                          objectFit: 'cover' // Đảm bảo ảnh luôn scale đúng mà không bị méo
+                        }}
+                      />
+                    </a>
+                  </Box>
+                  <CardContent disableSpacing sx={{ flex: 1 }}>
                     <a
                       href={`/productdetail/${product._id}`}
                       style={{

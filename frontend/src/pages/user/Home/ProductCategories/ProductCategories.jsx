@@ -29,7 +29,9 @@ const ProductCategories = () => {
           >
             <Box
               component='img'
-              src={`https://example.com/category-${index}.jpg`}
+              src={
+                'https://bizweb.dktcdn.net/100/415/697/products/ts174.png?v=1701402984737'
+              }
               alt={`Nhóm ${category}`}
               sx={{
                 width: 100,

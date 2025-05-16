@@ -6,12 +6,12 @@ import {
   Grid,
   Typography,
   IconButton,
-  InputAdornment
+  InputAdornment,
+  Alert
 } from '@mui/material'
 import CardActions from '@mui/material/CardActions'
 import TextField from '@mui/material/TextField'
 import Zoom from '@mui/material/Zoom'
-import Alert from '@mui/material/Alert'
 import { useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import {
@@ -26,6 +26,20 @@ import { styled } from '@mui/system'
 import { useDispatch } from 'react-redux'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { loginUserAPI } from '~/redux/user/userSlice'
+import { getProfileUser } from '~/services/userService'
+import { logoutUserAPI } from '~/redux/user/userSlice'
+
+const SocialButton = styled(Button)({
+  padding: '8px',
+  borderRadius: '50%',
+  minWidth: '40px',
+  height: '40px',
+  borderColor: '#e0e0e0',
+  '&:hover': {
+    borderColor: '#1976d2',
+    backgroundColor: '#f5f5f5'
+  }
+})
 
 function Login() {
   const dispatch = useDispatch()
@@ -35,7 +49,6 @@ function Login() {
     handleSubmit,
     formState: { errors }
   } = useForm()
-
   const [showPassword, setShowPassword] = useState(false)
   const toggleShowPassword = () => setShowPassword((prev) => !prev)
   const [searchParams] = useSearchParams()
@@ -43,29 +56,33 @@ function Login() {
   const verifiedEmail = searchParams.get('verifiedEmail')
 
   const submitLogIn = async (data) => {
-    toast
-      .promise(dispatch(loginUserAPI(data)), {
-        pending: 'Đang đăng nhập...'
-      })
-      .then((res) => {
-        // Đoạn này phải kiểm tra không có lỗi thì mới redirect về route /
-        if (!res.error) {
-          navigate('/')
+    try {
+      const response = await toast.promise(
+        dispatch(loginUserAPI(data)).unwrap(),
+        {
+          pending: 'Đang đăng nhập...',
+          success: 'Đăng nhập thành công!',
+          error: 'Đăng nhập thất bại!'
         }
-      })
-  }
-
-  const SocialButton = styled(Button)({
-    padding: '8px',
-    borderRadius: '50%',
-    minWidth: '40px',
-    height: '40px',
-    borderColor: '#e0e0e0',
-    '&:hover': {
-      borderColor: '#1976d2',
-      backgroundColor: '#f5f5f5'
+      )
+      localStorage.setItem('token', response.token) // Lưu token
+      // Gọi getProfile ngay sau đăng nhập
+      try {
+        const profileData = await getProfileUser()
+        dispatch({ type: 'user/loginUserAPI/fulfilled', payload: profileData })
+        console.log('Thông tin người dùng từ API:', profileData)
+      } catch (error) {
+        toast.error(error.message || 'Lỗi tải thông tin người dùng')
+        dispatch(logoutUserAPI(false))
+        localStorage.removeItem('token')
+        navigate('/login')
+        return
+      }
+      navigate('/')
+    } catch (error) {
+      toast.error(error || 'Đăng nhập thất bại')
     }
-  })
+  }
 
   return (
     <Box
@@ -124,7 +141,6 @@ function Login() {
                 Vui lòng đăng nhập để tiếp tục
               </Typography>
 
-              {/*=========State User========*/}
               {verifiedEmail && (
                 <Alert
                   variant='outlined'
@@ -190,7 +206,6 @@ function Login() {
                   )
                 }}
               />
-
               {errors.password && (
                 <Alert severity='error' sx={{ mt: 1 }}>
                   {errors.password.message}

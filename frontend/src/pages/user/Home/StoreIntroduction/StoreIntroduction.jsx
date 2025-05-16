@@ -10,7 +10,6 @@ const StoreIntroduction = () => {
         alignItems: 'center',
         justifyContent: 'center',
         padding: '40px',
-        backgroundColor: '#f9f9f9',
         gap: 4
       }}
     >

@@ -33,21 +33,30 @@ const createProduct = async (reqBody) => {
 const getProductList = async (reqQuery) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const { page, limit, search, category } = reqQuery
+    let { page, limit, search, category, origin } = reqQuery
+
+    page = parseInt(page, 10)
+    limit = parseInt(limit, 10)
+
+    if (isNaN(page) || page < 1) page = 1
+    if (isNaN(limit) || limit < 1) limit = 10
+
+    const filter = { destroy: false }
 
     console.log('page', page)
     console.log('limit', limit)
     console.log('search', search)
     console.log('category', category)
+    console.log('origin', origin)
 
-    const result = await ProductModel.find({ destroy: false })
-      .populate({
-        path: 'categoryId',
-        select: 'name description slug _id'
-      })
-      .lean()
+    // const result = await ProductModel.find({ destroy: false })
+    //   .populate({
+    //     path: 'categoryId',
+    //     select: 'name description slug _id'
+    //   })
+    //   .lean()
 
-    return result
+    return []
   } catch (err) {
     throw err
   }

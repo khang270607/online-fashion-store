@@ -8,14 +8,18 @@ import mongoose from 'mongoose'
 const getPaymentTransactionList = async (orderId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    if (!orderId || !mongoose.Types.ObjectId.isValid(orderId)) {
-      throw new ApiError(
-        StatusCodes.BAD_REQUEST,
-        'Thiếu tham số orderId trong query string (?orderId=...) hoặc orderId không tồn tại'
-      )
-    }
+    // if (!orderId || !mongoose.Types.ObjectId.isValid(orderId)) {
+    //   throw new ApiError(
+    //     StatusCodes.BAD_REQUEST,
+    //     'Thiếu tham số orderId trong query string (?orderId=...) hoặc orderId không tồn tại'
+    //   )
+    // }
 
-    const result = await PaymentTransactionModel.find({ orderId }).lean()
+    const filter = orderId
+      ? { orderId } // Có orderId → chỉ tìm transaction của order đó
+      : {}
+
+    const result = await PaymentTransactionModel.find(filter).lean()
 
     return result
   } catch (err) {

@@ -11,7 +11,7 @@ import {
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'
 
-// Hàm cắt chuỗi, nếu dài quá maxLength thì thêm dấu "..."
+// Hàm cắt chuỗi
 const truncate = (str, maxLength) => {
   if (!str) return ''
   return str.length > maxLength ? str.slice(0, maxLength) + '...' : str

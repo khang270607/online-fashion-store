@@ -5,7 +5,7 @@ import {
   Snackbar, Alert
 } from '@mui/material'
 import { styled } from '@mui/system'
-import { AddressModal } from './Model/AddressModal'
+import { AddressModal } from './Modal/AddressModal'
 import { useAddress } from '~/hook/useAddress'
 import useCoupon from '~/hook/useCoupon'
 import { useCart } from '~/hook/useCarts'

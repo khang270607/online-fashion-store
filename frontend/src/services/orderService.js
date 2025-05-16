@@ -35,7 +35,7 @@ export const getOrderById = async (orderId) => {
 export const getOrderItems = async (orderId) => {
   try {
     const response = await AuthorizedAxiosInstance.get(
-      `${API_ROOT}/v1/order-items?orderId=${orderId}`
+      `${API_ROOT}/v1/order-items/${orderId}`
     )
 
     return response.data
@@ -58,18 +58,6 @@ export const getOrderHistories = async (orderId) => {
   }
 }
 
-// Lấy địa chỉ giao hàng theo addressId
-export const getShippingAddress = async (addressId) => {
-  try {
-    const response = await AuthorizedAxiosInstance.get(
-      `${API_ROOT}/v1/shipping-addresses/${addressId}`
-    )
-    return response.data
-  } catch (error) {
-    console.error(`Lỗi khi lấy địa chỉ giao hàng ${addressId}:`, error)
-    return null
-  }
-}
 export const getProductById = async (productId) => {
   try {
     const response = await AuthorizedAxiosInstance.get(

@@ -41,7 +41,12 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
         description: product.description || '',
         price: product.price || '',
         quantity: product.quantity || '',
-        categoryId: product.categoryId?._id || ''
+        categoryId: product.categoryId?._id || '',
+        origin: product.origin || '',
+        sizes: product.sizes || [],
+        colors: Array.isArray(product.colors)
+          ? product.colors.map((c) => (typeof c === 'string' ? c : c.color))
+          : []
       })
 
       const previews =
@@ -82,6 +87,9 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
       price: Number(data.price),
       quantity: Number(data.quantity),
       categoryId: data.categoryId,
+      origin: data.origin,
+      sizes: data.sizes || [],
+      colors: data.colors || [],
       image: imageUrls
     }
 
@@ -154,6 +162,62 @@ const EditProductModal = ({ open, onClose, product, onSave }) => {
               helperText={errors.quantity?.message}
               sx={StyleAdmin.InputCustom}
             />
+            <TextField
+              label='Xuất xứ'
+              fullWidth
+              margin='normal'
+              {...register('origin')}
+              sx={StyleAdmin.InputCustom}
+            />
+            <FormControl fullWidth margin='normal' sx={StyleAdmin.FormSelect}>
+              <InputLabel>Kích thước</InputLabel>
+              <Controller
+                name='sizes'
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    label='Kích thước'
+                    multiple
+                    MenuProps={{
+                      PaperProps: { sx: StyleAdmin.FormSelect.SelectMenu }
+                    }}
+                  >
+                    {['S', 'M', 'L', 'XL'].map((size) => (
+                      <MenuItem key={size} value={size}>
+                        {size}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
+              />
+            </FormControl>
+
+            <FormControl fullWidth margin='normal' sx={StyleAdmin.FormSelect}>
+              <InputLabel>Màu sắc</InputLabel>
+              <Controller
+                name='colors'
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    {...field}
+                    label='Màu sắc'
+                    multiple
+                    MenuProps={{
+                      PaperProps: { sx: StyleAdmin.FormSelect.SelectMenu }
+                    }}
+                  >
+                    {['Đỏ', 'Xanh dương', 'Đen', 'Trắng', 'Vàng'].map(
+                      (color) => (
+                        <MenuItem key={color} value={color}>
+                          {color}
+                        </MenuItem>
+                      )
+                    )}
+                  </Select>
+                )}
+              />
+            </FormControl>
 
             <FormControl
               fullWidth

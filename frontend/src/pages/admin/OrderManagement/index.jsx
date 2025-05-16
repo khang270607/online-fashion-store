@@ -16,7 +16,6 @@ const OrderManagement = () => {
   const [selectedOrder, setSelectedOrder] = React.useState(null)
   const [histories, setHistories] = React.useState([])
   const [orderDetails, setOrderDetails] = React.useState([])
-  const [shippingAddress, setShippingAddress] = React.useState(null)
   const [loadingEdit, setLoadingEdit] = React.useState(false)
   const [loadingDelete, setLoadingDelete] = React.useState(false)
   const {
@@ -26,21 +25,18 @@ const OrderManagement = () => {
     fetchOrders,
     getOrderHistoriesByOrderId,
     getOrderDetailsByOrderId,
-    getShippingAddressById,
     updateOrderById
   } = useOrders()
 
   // Mở modal xem
   const handleOpenModalView = async (order) => {
     setSelectedOrder(order)
-    const [historiesData, detailsData, addressData] = await Promise.all([
+    const [historiesData, detailsData] = await Promise.all([
       getOrderHistoriesByOrderId(order._id),
-      getOrderDetailsByOrderId(order._id),
-      getShippingAddressById(order.shippingAddressId)
+      getOrderDetailsByOrderId(order._id)
     ])
     setHistories(historiesData)
     setOrderDetails(detailsData)
-    setShippingAddress(addressData)
     setOpenViewModal(true)
   }
 
@@ -49,7 +45,6 @@ const OrderManagement = () => {
     setSelectedOrder(null)
     setHistories([])
     setOrderDetails([])
-    setShippingAddress(null)
   }
 
   // Mở modal sửa
@@ -108,7 +103,6 @@ const OrderManagement = () => {
   React.useEffect(() => {
     fetchOrders(page)
   }, [page])
-
   return (
     <>
       <Typography variant='h5' sx={{ mb: 2 }}>
@@ -135,7 +129,6 @@ const OrderManagement = () => {
         order={selectedOrder}
         histories={histories}
         orderDetails={orderDetails}
-        shippingAddress={shippingAddress}
       />
 
       <EditOrderModal

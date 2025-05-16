@@ -49,7 +49,20 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
     handleSubmit,
     reset,
     formState: { errors, isSubmitting }
-  } = useForm()
+  } = useForm({
+    defaultValues: {
+      name: '',
+      description: '',
+      price: '',
+      image: [],
+      categoryId: '',
+      quantity: '',
+      origin: '',
+      slug: '',
+      sizes: [], // phải là mảng
+      colors: [] // phải là mảng
+    }
+  })
 
   const [images, setImages] = useState([{ file: null, preview: '' }])
   const { categories, loading, fetchCategories } = useCategories()
@@ -92,7 +105,10 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
         price: Number(data.price),
         image: imageUrls,
         categoryId: data.categoryId,
-        quantity: Number(data.quantity)
+        quantity: Number(data.quantity),
+        origin: data.origin,
+        sizes: data.sizes || [],
+        colors: data.colors || []
       })
 
       if (result) {
@@ -175,6 +191,84 @@ const AddProductModal = ({ open, onClose, onSuccess }) => {
                 helperText={errors.quantity?.message}
                 sx={StyleAdmin.InputCustom}
               />
+              <TextField
+                label='Xuất xứ'
+                fullWidth
+                margin='normal'
+                {...register('origin', {
+                  required: 'Xuất xứ không được bỏ trống'
+                })}
+                error={!!errors.origin}
+                helperText={errors.origin?.message}
+                sx={StyleAdmin.InputCustom}
+              />
+              <FormControl
+                fullWidth
+                margin='normal'
+                error={!!errors.sizes}
+                sx={StyleAdmin.FormSelect}
+              >
+                <InputLabel>Kích cỡ</InputLabel>
+                <Controller
+                  name='sizes'
+                  control={control}
+                  rules={{ required: 'Kích cỡ không được bỏ trống' }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label='Kích cỡ'
+                      multiple
+                      MenuProps={{
+                        PaperProps: { sx: StyleAdmin.FormSelect.SelectMenu }
+                      }}
+                    >
+                      {['S', 'M', 'L', 'XL', 'XXL'].map((size) => (
+                        <MenuItem key={size} value={size}>
+                          {size}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+                <Typography variant='caption' color='error'>
+                  {errors.sizes?.message}
+                </Typography>
+              </FormControl>
+              <FormControl
+                fullWidth
+                margin='normal'
+                error={!!errors.colors}
+                sx={StyleAdmin.FormSelect}
+              >
+                <InputLabel>Màu sắc</InputLabel>
+                <Controller
+                  name='colors'
+                  control={control}
+                  rules={{ required: 'Màu sắc không được bỏ trống' }}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      label='Màu sắc'
+                      multiple
+                      MenuProps={{
+                        PaperProps: { sx: StyleAdmin.FormSelect.SelectMenu }
+                      }}
+                    >
+                      {['Đỏ', 'Xanh dương', 'Đen', 'Trắng', 'Vàng'].map(
+                        (color) => (
+                          <MenuItem key={color} value={color}>
+                            {color}
+                          </MenuItem>
+                        )
+                      )}
+                    </Select>
+                  )}
+                />
+                <Typography variant='caption' color='error'>
+                  {errors.colors?.message}
+                </Typography>
+              </FormControl>
+
               <FormControl
                 fullWidth
                 margin='normal'

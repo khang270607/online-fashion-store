@@ -19,44 +19,15 @@ import {
   TableBody
 } from '@mui/material'
 import dayjs from 'dayjs'
-import { getUserById } from '~/services/userService'
 
 const ViewOrderModal = ({
   open,
   onClose,
   order,
   histories = [],
-  orderDetails = [],
-  shippingAddress
+  orderDetails = []
 }) => {
   const [tab, setTab] = React.useState(0)
-  const [usersMap, setUsersMap] = React.useState({})
-  React.useEffect(() => {
-    if (histories.length === 0) return
-
-    const fetchUsers = async () => {
-      const newUsersMap = { ...usersMap }
-
-      await Promise.all(
-        histories.map(async (h) => {
-          const userId = h.updatedBy
-          if (userId && !newUsersMap[userId]) {
-            try {
-              const user = await getUserById(userId)
-              newUsersMap[userId] = user
-            } catch (err) {
-              console.error('Lỗi khi lấy thông tin user:', err)
-              newUsersMap[userId] = { name: 'Không rõ' } // fallback
-            }
-          }
-        })
-      )
-
-      setUsersMap(newUsersMap)
-    }
-
-    fetchUsers()
-  }, [histories])
 
   if (!order) return null
 
@@ -66,6 +37,8 @@ const ViewOrderModal = ({
     paymentMethod,
     paymentStatus,
     discountAmount,
+    shippingAddressId,
+    userId,
     status,
     isDelivered,
     createdAt,
@@ -73,7 +46,6 @@ const ViewOrderModal = ({
     note
   } = order
   const handleTabChange = (e, newValue) => setTab(newValue)
-
   return (
     <Dialog
       open={open}
@@ -127,15 +99,15 @@ const ViewOrderModal = ({
             </Typography>
             <Typography>
               {' '}
-              <strong>Người nhận:</strong> {shippingAddress?.fullName}
+              <strong>Người nhận:</strong> {shippingAddressId?.fullName}
             </Typography>
             <Typography>
               <strong>SĐT: </strong>
-              {shippingAddress?.phone}
+              {shippingAddressId?.phone}
             </Typography>
             <Typography>
               <strong>Địa chỉ giao hàng: </strong>
-              {`${shippingAddress?.address}, ${shippingAddress?.ward}, ${shippingAddress?.district}, ${shippingAddress?.city}`}
+              {`${shippingAddressId?.address}, ${shippingAddressId?.ward}, ${shippingAddressId?.district}, ${shippingAddressId?.city}`}
             </Typography>
             <Typography>
               <strong>Phương thức thanh toán:</strong>{' '}
@@ -257,7 +229,7 @@ const ViewOrderModal = ({
                   </Typography>
                   <Typography>
                     <strong>Người cập nhật:</strong>{' '}
-                    {usersMap[history.updatedBy]?.name
+                    {userId?.name
                       ?.toLowerCase()
                       .split(' ')
                       .map(
@@ -266,6 +238,10 @@ const ViewOrderModal = ({
                       .join(' ') ||
                       '' ||
                       history.updatedBy}
+                  </Typography>
+                  <Typography>
+                    <strong>Quyền: </strong>
+                    {userId.role === 'admin' ? 'QUẢN TRỊ' : 'KHÁCH HÀNG'}
                   </Typography>
                   <Typography>
                     <strong>Thời gian:</strong>{' '}

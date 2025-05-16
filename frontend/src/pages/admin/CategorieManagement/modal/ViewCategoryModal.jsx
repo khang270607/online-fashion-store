@@ -27,8 +27,7 @@ const ViewCategoryModal = ({ open, onClose, category }) => {
             }}
             sx={{
               ...StyleAdmin.InputCustom,
-              ...StyleAdmin.InputCustom.CursorNone,
-              ...StyleAdmin.InputCustom.InputViews
+              ...StyleAdmin.InputCustom.CursorNone
             }}
           />
           {/* Mô tả - chỉ đọc */}
@@ -44,8 +43,7 @@ const ViewCategoryModal = ({ open, onClose, category }) => {
             }}
             sx={{
               ...StyleAdmin.InputCustom,
-              ...StyleAdmin.InputCustom.CursorNone,
-              ...StyleAdmin.InputCustom.InputViews
+              ...StyleAdmin.InputCustom.CursorNone
             }}
           />
         </form>

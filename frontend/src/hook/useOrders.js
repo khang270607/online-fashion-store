@@ -3,7 +3,6 @@ import {
   getOrders,
   getOrderItems,
   getOrderHistories,
-  getShippingAddress,
   updateOrder
 } from '~/services/orderService'
 
@@ -47,16 +46,6 @@ const useOrders = () => {
     }
   }
 
-  const getShippingAddressById = async (addressId) => {
-    try {
-      const address = await getShippingAddress(addressId)
-      return address
-    } catch (error) {
-      console.error('Lỗi khi lấy địa chỉ giao hàng:', error)
-      return null
-    }
-  }
-
   const updateOrderById = async (orderId, updateData) => {
     try {
       const updatedOrder = await updateOrder(orderId, updateData)
@@ -74,7 +63,6 @@ const useOrders = () => {
     fetchOrders,
     getOrderDetailsByOrderId,
     getOrderHistoriesByOrderId,
-    getShippingAddressById,
     updateOrderById
   }
 }

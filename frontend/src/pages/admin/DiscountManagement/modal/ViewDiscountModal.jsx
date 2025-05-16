@@ -19,7 +19,6 @@ import {
 import StyleAdmin from '~/components/StyleAdmin.jsx'
 const ViewDiscountModal = ({ open, onClose, discount }) => {
   if (!discount) return null
-
   return (
     <Dialog open={open} onClose={onClose} fullWidth maxWidth='lg'>
       <DialogTitle>Chi tiết mã giảm giá</DialogTitle>
@@ -36,8 +35,7 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone,
-                ...StyleAdmin.InputCustom.InputViews
+                ...StyleAdmin.InputCustom.CursorNone
               }}
             />
             <TextField
@@ -52,8 +50,7 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone,
-                ...StyleAdmin.InputCustom.InputViews
+                ...StyleAdmin.InputCustom.CursorNone
               }}
             />
             <TextField
@@ -69,12 +66,16 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone,
-                ...StyleAdmin.InputCustom.InputViews
+                ...StyleAdmin.InputCustom.CursorNone
               }}
             />
             <FormControlLabel
-              control={<Checkbox checked={discount.isActive} disabled />}
+              control={
+                <Checkbox
+                  checked={discount.isActive}
+                  InputProps={{ readOnly: true }}
+                />
+              }
               label='Kích hoạt'
             />
           </Box>
@@ -90,8 +91,7 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone,
-                ...StyleAdmin.InputCustom.InputViews
+                ...StyleAdmin.InputCustom.CursorNone
               }}
             />
             <TextField
@@ -103,8 +103,7 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone,
-                ...StyleAdmin.InputCustom.InputViews
+                ...StyleAdmin.InputCustom.CursorNone
               }}
             />
             <TextField
@@ -116,8 +115,7 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone,
-                ...StyleAdmin.InputCustom.InputViews
+                ...StyleAdmin.InputCustom.CursorNone
               }}
             />
             <TextField
@@ -129,8 +127,7 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone,
-                ...StyleAdmin.InputCustom.InputViews
+                ...StyleAdmin.InputCustom.CursorNone
               }}
             />
             <TextField
@@ -142,8 +139,7 @@ const ViewDiscountModal = ({ open, onClose, discount }) => {
               InputProps={{ readOnly: true }}
               sx={{
                 ...StyleAdmin.InputCustom,
-                ...StyleAdmin.InputCustom.CursorNone,
-                ...StyleAdmin.InputCustom.InputViews
+                ...StyleAdmin.InputCustom.CursorNone
               }}
             />
           </Box>

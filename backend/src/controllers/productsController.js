@@ -17,7 +17,7 @@ const createProduct = async (req, res, next) => {
 const getProductList = async (req, res, next) => {
   try {
     // Lấy danh sách Danh mục sản phẩm từ tầng Service chuyển qua
-    const result = await productsService.getProductList()
+    const result = await productsService.getProductList(req.query)
 
     // Có kết quả thì trả về Client
     res.status(StatusCodes.OK).json(result)

@@ -16,14 +16,6 @@ const verifyId = (req, res, next) => {
 const paymentTransaction = async (req, res, next) => {
   // Xác thực dữ liệu đầu vào correctCondition: điều kiện đúng
   const correctCondition = Joi.object({
-    orderId: Joi.string().hex().length(24).allow(null).required(),
-
-    method: Joi.string()
-      .valid('COD', 'momo', 'vnpay', 'paypal', 'credit_card')
-      .required(),
-
-    transactionId: Joi.string().allow(null, ''),
-
     status: Joi.string().valid('Pending', 'Completed', 'Failed').required(),
 
     paidAt: Joi.date().allow(null),

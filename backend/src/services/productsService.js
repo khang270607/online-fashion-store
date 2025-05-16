@@ -15,7 +15,11 @@ const createProduct = async (reqBody) => {
       categoryId: reqBody.categoryId,
       quantity: reqBody.quantity,
       slug: slugify(reqBody.name),
-      destroy: false
+      destroy: false,
+
+      origin: reqBody.origin,
+      sizes: reqBody.sizes,
+      colors: reqBody.colors
     }
 
     const Product = await ProductModel.create(newProduct)
@@ -26,9 +30,16 @@ const createProduct = async (reqBody) => {
   }
 }
 
-const getProductList = async () => {
+const getProductList = async (reqQuery) => {
   // eslint-disable-next-line no-useless-catch
   try {
+    const { page, limit, search, category } = reqQuery
+
+    console.log('page', page)
+    console.log('limit', limit)
+    console.log('search', search)
+    console.log('category', category)
+
     const result = await ProductModel.find({ destroy: false })
       .populate({
         path: 'categoryId',

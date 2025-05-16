@@ -6,37 +6,26 @@ import { authMiddleware } from '~/middlewares/authMiddleware'
 
 const Router = express.Router()
 
-// Tạo Sản phẩm mới
-Router.route('/').post(
-  paymentTransactionsValidation.paymentTransaction,
-  paymentTransactionsController.createPaymentTransaction
-)
-
-// Danh sách Sản phẩm
+// Danh sách Giao dịch thanh toán theo Order
 Router.route('/').get(paymentTransactionsController.getPaymentTransactionList)
 
-// Lấy thông tin một Sản phẩm.
+// Lấy thông tin một Giao dịch thanh toán.
 Router.route('/:paymentTransactionId').get(
   paymentTransactionsValidation.verifyId,
   paymentTransactionsController.getPaymentTransaction
 )
 
-// Cập nhật thông tin Sản phẩm
+// Cập nhật thông tin Giao dịch thanh toán
 Router.route('/:paymentTransactionId').patch(
   paymentTransactionsValidation.verifyId,
   paymentTransactionsValidation.paymentTransaction,
   paymentTransactionsController.updatePaymentTransaction
 )
 
-// Xoá Sản phẩm (Xóa mềm)
+// Xoá Giao dịch thanh toán (Xóa mềm)
 Router.route('/:paymentTransactionId').delete(
   paymentTransactionsValidation.verifyId,
   paymentTransactionsController.deletePaymentTransaction
-)
-
-// Lấy danh sách sản phẩm theo Danh mục
-Router.route('/category/:categoryId').get(
-  paymentTransactionsController.getListPaymentTransactionOfCategory
 )
 
 export const paymentTransactionsRoute = Router

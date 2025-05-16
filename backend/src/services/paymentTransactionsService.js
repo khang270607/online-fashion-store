@@ -3,40 +3,19 @@ import { StatusCodes } from 'http-status-codes'
 import { PaymentTransactionModel } from '~/models/PaymentTransactionModel'
 import ApiError from '~/utils/ApiError'
 import { slugify } from '~/utils/formatters'
+import mongoose from 'mongoose'
 
-const createPaymentTransaction = async (reqBody) => {
+const getPaymentTransactionList = async (orderId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const newPaymentTransaction = {
-      name: reqBody.name,
-      description: reqBody.description,
-      price: reqBody.price,
-      image: reqBody.image,
-      categoryId: reqBody.categoryId,
-      quantity: reqBody.quantity,
-      slug: slugify(reqBody.name),
-      destroy: false
+    if (!orderId || !mongoose.Types.ObjectId.isValid(orderId)) {
+      throw new ApiError(
+        StatusCodes.BAD_REQUEST,
+        'Thiếu tham số orderId trong query string (?orderId=...) hoặc orderId không tồn tại'
+      )
     }
 
-    const PaymentTransaction = await PaymentTransactionModel.create(
-      newPaymentTransaction
-    )
-
-    return PaymentTransaction
-  } catch (err) {
-    throw err
-  }
-}
-
-const getPaymentTransactionList = async () => {
-  // eslint-disable-next-line no-useless-catch
-  try {
-    const result = await PaymentTransactionModel.find({ destroy: false })
-      .populate({
-        path: 'categoryId',
-        select: 'name description slug _id'
-      })
-      .lean()
+    const result = await PaymentTransactionModel.find({ orderId }).lean()
 
     return result
   } catch (err) {
@@ -47,19 +26,14 @@ const getPaymentTransactionList = async () => {
 const getPaymentTransaction = async (paymentTransactionId) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await PaymentTransactionModel.findById({
-      _id: paymentTransactionId,
-      destroy: false
+    const result = await PaymentTransactionModel.findOne({
+      _id: paymentTransactionId
     })
       .populate({
-        path: 'categoryId',
-        select: 'name description slug _id'
+        path: 'orderId',
+        select: '-destroy'
       })
       .lean()
-
-    if (!result) {
-      throw new ApiError(StatusCodes.NOT_FOUND, 'Không tồn tại ID này.')
-    }
 
     return result
   } catch (err) {
@@ -72,7 +46,7 @@ const updatePaymentTransaction = async (paymentTransactionId, reqBody) => {
   try {
     const updatedPaymentTransaction =
       await PaymentTransactionModel.findOneAndUpdate(
-        { _id: paymentTransactionId, destroy: false },
+        { _id: paymentTransactionId },
         reqBody,
         {
           new: true,
@@ -108,25 +82,9 @@ const deletePaymentTransaction = async (paymentTransactionId) => {
   }
 }
 
-const getListPaymentTransactionOfCategory = async (categoryId) => {
-  // eslint-disable-next-line no-useless-catch
-  try {
-    const ListPaymentTransaction = await PaymentTransactionModel.find({
-      categoryId: categoryId,
-      destroy: false
-    }).lean()
-
-    return ListPaymentTransaction
-  } catch (err) {
-    throw err
-  }
-}
-
 export const paymentTransactionsService = {
-  createPaymentTransaction,
   getPaymentTransactionList,
   getPaymentTransaction,
   updatePaymentTransaction,
-  deletePaymentTransaction,
-  getListPaymentTransactionOfCategory
+  deletePaymentTransaction
 }

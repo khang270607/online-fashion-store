@@ -8,6 +8,7 @@ import { couponsService } from '~/services/couponsService'
 import { ProductModel } from '~/models/ProductModel'
 import { OrderItemModel } from '~/models/OrderItemModel'
 import { OrderStatusHistoryModel } from '~/models/OrderStatusHistoryModel'
+import { PaymentTransactionModel } from '~/models/PaymentTransactionModel'
 
 const createOrder = async (userId, reqBody) => {
   // eslint-disable-next-line no-useless-catch
@@ -85,6 +86,7 @@ const createOrder = async (userId, reqBody) => {
       isDelivered: false
     }
 
+    // Lưu vào Order
     const Order = await OrderModel.create(newOrder)
 
     // Lưu vào OrderItems
@@ -105,7 +107,22 @@ const createOrder = async (userId, reqBody) => {
       await OrderItemModel.create(orderItemData)
     }
 
+    // Cập nhật lại số lượng sản phẩm trong DB
+
+    // Xóa sản phẩm trong giỏ hàng
     await CartModel.updateOne({ userId }, { $set: { cartItems: [] } })
+
+    // Tạo Payment Transaction
+    const paymentTransactionInfo = {
+      orderId: Order._id,
+      method: reqBody.paymentMethod,
+      transactionId: null,
+      status: 'Pending',
+      paidAt: null,
+      note: reqBody.note || null
+    }
+
+    await PaymentTransactionModel.create(paymentTransactionInfo)
 
     return Order
   } catch (err) {

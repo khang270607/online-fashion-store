@@ -22,6 +22,21 @@ const Cart = () => {
     if (cart?.cartItems) setCartItems(cart.cartItems)
   }, [cart])
 
+  // Kiểm tra đã chọn hết chưa
+  const allSelected = cartItems.length > 0 && selectedItems.length === cartItems.length
+  // Kiểm tra chọn một phần
+  const someSelected = selectedItems.length > 0 && selectedItems.length < cartItems.length
+
+  // Chọn / bỏ chọn tất cả
+  const handleSelectAll = () => {
+    if (allSelected) {
+      setSelectedItems([])
+    } else {
+      const allIds = cartItems.map(item => item.productId?._id).filter(Boolean)
+      setSelectedItems(allIds)
+    }
+  }
+
   const handleSelect = (id) => {
     setSelectedItems(prev =>
       prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
@@ -33,7 +48,6 @@ const Cart = () => {
       ? val.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
       : '0₫'
 
-  // Hàm cắt chuỗi tối đa maxLength ký tự, thêm ... nếu dài hơn
   const truncate = (str, maxLength) => {
     if (!str) return ''
     return str.length > maxLength ? str.slice(0, maxLength) + '...' : str
@@ -97,7 +111,14 @@ const Cart = () => {
       <Table size='medium' sx={{ minWidth: 650 }}>
         <TableHead>
           <TableRow>
-            <TableCell padding="checkbox" sx={{ width: 50 }} />
+            <TableCell padding="checkbox" sx={{ width: 50 }}>
+              <Checkbox
+                indeterminate={someSelected}
+                checked={allSelected}
+                onChange={handleSelectAll}
+                color="primary"
+              />
+            </TableCell>
             <TableCell align='left' sx={{ fontWeight: 'bold' }}>Sản phẩm</TableCell>
             <TableCell align='center' sx={{ fontWeight: 'bold', width: 120 }}>Giá</TableCell>
             <TableCell align='center' sx={{ fontWeight: 'bold', width: 130 }}>Số lượng</TableCell>

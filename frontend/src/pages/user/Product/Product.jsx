@@ -41,7 +41,7 @@ const SidebarContainer = styled(Box)(({ theme }) => ({
   '& .MuiTypography-h6': {
     color: theme.palette.primary.dark,
     fontWeight: 600,
-    marginBottom: theme.spacing(1),
+    marginBottom: theme.spacing(1)
   },
 }))
 
@@ -49,7 +49,7 @@ const FilterTitle = styled(Typography)(({ theme }) => ({
   fontWeight: 500,
   color: theme.palette.text.primary,
   marginTop: theme.spacing(2),
-  marginBottom: theme.spacing(1),
+  marginBottom: theme.spacing(1)
 }))
 
 const Product = () => {

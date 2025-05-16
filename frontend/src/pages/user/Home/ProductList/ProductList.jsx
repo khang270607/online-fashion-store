@@ -8,27 +8,27 @@ import {
 } from '@mui/material'
 import { addToCart, getCart } from '~/services/cartService'
 import useProducts from '~/hook/useProducts'
-import { useDispatch, } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setCartItems } from '~/redux/cart/cartSlice'
 import ProductCard from '~/components/ProductCards/ProductCards'
+
 const ProductList = () => {
   const { products } = useProducts()
-  const [snackbar, setSnackbar] = useState(null) // { type: 'success' | 'error' | 'max', message: string }
+  const [snackbar, setSnackbar] = useState(null) // { type: 'success' | 'error' | 'warning', message: string }
   const [isAdding, setIsAdding] = useState({})
   const dispatch = useDispatch()
-  // const cart = useSelector((state) => state.cart)
+
   const handleAddToCart = async (product) => {
     if (isAdding[product._id]) return
     setIsAdding(prev => ({ ...prev, [product._id]: true }))
 
     try {
-      // OPTIONAL: fetch latest cart if unsure about Redux sync
       const updatedCart = await getCart()
       const existingItem = updatedCart?.cartItems?.find(
         item => item.productId._id === product._id
       )
       const currentQty = existingItem?.quantity || 0
-      const maxQty = product.quantity // optionally fetch from latest product API too
+      const maxQty = product.quantity
 
       if (currentQty >= maxQty) {
         setSnackbar({ type: 'warning', message: 'Bạn đã thêm tối đa số lượng tồn kho!' })
@@ -51,11 +51,29 @@ const ProductList = () => {
     }
   }
 
+  // Chia products thành 2 nhóm mỗi nhóm 4 sản phẩm
+  const first4Products = products.slice(0, 4)
+  const next4Products = products.slice(4, 8)
+
   return (
     <Box sx={{ backgroundColor: '#03235e', p: 2, borderRadius: 3, m: 2, boxShadow: 3 }}>
-      <Grid container justifyContent="center" alignItems="center" sx={{ mt: 5, gap: '20px' }}>
-        {products.slice(0, 8).map(product => (
-          <Grid item xs={12} sm={6} md={4} key={product._id}>
+      {/* 4 products */}
+      <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 5 }}>
+        {first4Products.map(product => (
+          <Grid item xs={12} sm={6} md={3} key={product._id}>
+            <ProductCard
+              product={product}
+              handleAddToCart={handleAddToCart}
+              isAdding={!!isAdding[product._id]}
+            />
+          </Grid>
+        ))}
+      </Grid>
+
+      {/* 4 products */}
+      <Grid container justifyContent="center" alignItems="center" spacing={2} sx={{ mt: 3 }}>
+        {next4Products.map(product => (
+          <Grid item xs={12} sm={6} md={3} key={product._id}>
             <ProductCard
               product={product}
               handleAddToCart={handleAddToCart}
@@ -88,4 +106,3 @@ const ProductList = () => {
 }
 
 export default ProductList
-

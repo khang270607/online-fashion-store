@@ -11,7 +11,7 @@ const OrderSchema = new Schema(
     },
     couponId: {
       type: Schema.Types.ObjectId,
-      ref: 'Coupon'
+      ref: 'ListCoupon'
     },
     couponCode: {
       type: String,

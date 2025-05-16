@@ -5,35 +5,22 @@ import ApiError from '~/utils/ApiError'
 import validObjectId from '~/utils/validObjectId'
 
 const verifyId = (req, res, next) => {
-  const orderId = req.params.orderId
+  const paymentTransactionId = req.params.paymentTransactionId
 
   // Kiểm tra format ObjectId
-  validObjectId(orderId, next)
+  validObjectId(paymentTransactionId, next)
 
   next()
 }
 
-const orderItem = async (req, res, next) => {
+const paymentTransaction = async (req, res, next) => {
   // Xác thực dữ liệu đầu vào correctCondition: điều kiện đúng
   const correctCondition = Joi.object({
-    orderId: Joi.string() // ID đơn hàng (ObjectId)
-      .length(24) // đúng 24 ký tự hex
-      .hex()
-      .required(), // bắt buộc
+    status: Joi.string().valid('Pending', 'Completed', 'Failed').required(),
 
-    productId: Joi.string() // ID sản phẩm (ObjectId)
-      .length(24)
-      .hex()
-      .required(), // bắt buộc
+    paidAt: Joi.date().allow(null),
 
-    quantity: Joi.number() // Số lượng đặt
-      .integer() // phải là số nguyên
-      .min(1) // tối thiểu 1
-      .required(), // bắt buộc
-
-    priceAtOrder: Joi.number() // Giá tại thời điểm đặt
-      .min(0) // không âm
-      .required() // bắt buộc
+    note: Joi.string().trim().allow('', null)
   })
 
   try {
@@ -52,7 +39,7 @@ const orderItem = async (req, res, next) => {
   }
 }
 
-export const orderItemsValidation = {
+export const paymentTransactionsValidation = {
   verifyId,
-  orderItem
+  paymentTransaction
 }

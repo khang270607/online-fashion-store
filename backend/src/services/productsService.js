@@ -15,7 +15,11 @@ const createProduct = async (reqBody) => {
       categoryId: reqBody.categoryId,
       quantity: reqBody.quantity,
       slug: slugify(reqBody.name),
-      destroy: false
+      destroy: false,
+
+      origin: reqBody.origin,
+      sizes: reqBody.sizes,
+      colors: reqBody.colors
     }
 
     const Product = await ProductModel.create(newProduct)
@@ -26,17 +30,33 @@ const createProduct = async (reqBody) => {
   }
 }
 
-const getProductList = async () => {
+const getProductList = async (reqQuery) => {
   // eslint-disable-next-line no-useless-catch
   try {
-    const result = await ProductModel.find({ destroy: false })
-      .populate({
-        path: 'categoryId',
-        select: 'name description slug _id'
-      })
-      .lean()
+    let { page, limit, search, category, origin } = reqQuery
 
-    return result
+    page = parseInt(page, 10)
+    limit = parseInt(limit, 10)
+
+    if (isNaN(page) || page < 1) page = 1
+    if (isNaN(limit) || limit < 1) limit = 10
+
+    const filter = { destroy: false }
+
+    console.log('page', page)
+    console.log('limit', limit)
+    console.log('search', search)
+    console.log('category', category)
+    console.log('origin', origin)
+
+    // const result = await ProductModel.find({ destroy: false })
+    //   .populate({
+    //     path: 'categoryId',
+    //     select: 'name description slug _id'
+    //   })
+    //   .lean()
+
+    return []
   } catch (err) {
     throw err
   }

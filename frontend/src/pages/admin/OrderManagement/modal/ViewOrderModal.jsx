@@ -276,7 +276,7 @@ const ViewOrderModal = ({
                   {orderDetails.map((item) => (
                     <TableRow key={item._id}>
                       <TableCell>
-                        {item.product?.name || 'Không có tên'}
+                        {item?.name || 'Không có tên'}
                       </TableCell>
                       <TableCell align='right'>{item.quantity}</TableCell>
                       <TableCell align='right'>

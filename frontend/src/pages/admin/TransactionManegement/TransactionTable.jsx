@@ -38,16 +38,19 @@ const TransactionTable = ({
               <CircularProgress size={24} />
             </TableCell>
           </TableRow>
-        ) : transactions.length > 0 ? (
-          transactions.map((transaction) => (
-            <TransactionRow
-              key={transaction._id}
-              transaction={transaction}
-              onView={onView}
-              onEdit={onEdit}
-              onDelete={onDelete}
-            />
-          ))
+        ) : transactions.filter((transaction) => !transaction.destroy).length >
+          0 ? (
+          transactions
+            .filter((transaction) => !transaction.destroy)
+            .map((transaction) => (
+              <TransactionRow
+                key={transaction._id}
+                transaction={transaction}
+                onView={onView}
+                onEdit={onEdit}
+                onDelete={onDelete}
+              />
+            ))
         ) : (
           <TableRow>
             <TableCell colSpan={8} align='center'>

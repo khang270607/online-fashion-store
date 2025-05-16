@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Box,
   Grid,
@@ -13,10 +13,16 @@ import { setCartItems } from '~/redux/cart/cartSlice'
 import ProductCard from '~/components/ProductCards/ProductCards'
 
 const ProductList = () => {
-  const { products } = useProducts()
+  const { products, fetchProducts } = useProducts()
   const [snackbar, setSnackbar] = useState(null) // { type: 'success' | 'error' | 'warning', message: string }
   const [isAdding, setIsAdding] = useState({})
   const dispatch = useDispatch()
+
+  useEffect(() => {
+    fetchProducts()
+  }, [fetchProducts])
+
+  
 
   const handleAddToCart = async (product) => {
     if (isAdding[product._id]) return

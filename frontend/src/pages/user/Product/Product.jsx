@@ -54,7 +54,7 @@ const FilterTitle = styled(Typography)(({ theme }) => ({
 
 const Product = () => {
   const dispatch = useDispatch()
-  const { products: allProducts } = useProducts()
+  const { products: allProducts, fetchProducts } = useProducts()
   const [categories, setCategories] = useState([])
   const [loadingCategories, setLoadingCategories] = useState(true)
   const [errorCategories, setErrorCategories] = useState(null)
@@ -72,7 +72,7 @@ const Product = () => {
       }
     }
 
-    fetchCategories()
+    fetchCategories(), fetchProducts()
   }, [])
 
 

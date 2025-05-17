@@ -17,7 +17,7 @@ const TopBar = styled(Box)(({ theme }) => ({
   alignItems: 'center',
   zIndex: 1302,
   [theme.breakpoints.down('sm')]: {
-    height: '30px',
+    height: '40px',
     fontSize: '0.8rem'
   }
 }))
@@ -54,15 +54,15 @@ function Topbar() {
               ? `${coupon.amount}%`
               : `${formatCurrencyShort(coupon.amount)}`
           const min = coupon.minOrderValue
-            ? `cho đơn hàng tối thiểu ${formatCurrencyShort(coupon.minOrderValue)}`
+            ? `CHO ĐƠN HÀNG TỐI THIỂU ${formatCurrencyShort(coupon.minOrderValue)}`
             : ''
-          return `🎁 Voucher ${value} ${min}`
+          return `🎁 VOUCHER ${value} ${min}`
         })
 
         const mockTexts = [
-          '🚚 Free ship với đơn hàng từ 1 triệu',
-          '💸 Giảm 3 triệu cho đơn hàng 4 triệu',
-          '🎉 Ưu đãi siêu hot mỗi ngày tại shop của bạn'
+          '🚚 FREE SHIP VỚI ĐƠN HÀNG TRÊN 1 TRIỆU',
+          '💸 GIẢM GIÁ LÊN ĐÊN 99%',
+          '🎉 ƯU ĐÃI SIÊU HOT MỖI NGÀY TẠI FASHION STORE'
         ]
 
         const finalText = [...apiTexts, ...mockTexts].join('   ') // chỉ khoảng trắng, không có dấu "-"

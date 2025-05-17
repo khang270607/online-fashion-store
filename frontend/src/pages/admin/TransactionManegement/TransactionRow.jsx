@@ -3,7 +3,7 @@ import { TableCell, TableRow, IconButton, Tooltip, Chip } from '@mui/material'
 import RemoveRedEyeIcon from '@mui/icons-material/RemoveRedEye'
 import BorderColorIcon from '@mui/icons-material/BorderColor'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import useOrderAdmin from '~/hook/useOrderAdmin.js'
+import useOrderAdmin from '~/hook/admin/useOrder.js'
 import {
   StyledTableCell,
   StyledTableRow

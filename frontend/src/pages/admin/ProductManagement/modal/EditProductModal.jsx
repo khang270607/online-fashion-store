@@ -18,7 +18,7 @@ import {
 import DeleteIcon from '@mui/icons-material/Delete'
 import EditIcon from '@mui/icons-material/Edit'
 import { useForm, Controller } from 'react-hook-form'
-import useCategories from '~/hook/useCategories.js'
+import useCategories from '~/hook/admin/useCategories.js'
 import StyleAdmin from '~/components/StyleAdmin.jsx'
 
 const EditProductModal = ({ open, onClose, product, onSave }) => {

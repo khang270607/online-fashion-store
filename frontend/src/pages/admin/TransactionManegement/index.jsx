@@ -5,8 +5,8 @@ import TransactionPagination from './TransactionPagination'
 import ViewTransactionModal from './modal/ViewTransactionModal'
 import EditTransactionModal from './modal/EditTransactionModal'
 import DeleteTransactionModal from './modal/DeleteTransactionModal'
-import useTransactions from '~/hook/useTransactions'
-// import useOrderAdmin from '~/hook/useOrderAdmin.js'
+import useTransactions from '~/hook/admin/useTransactions'
+// import useOrder from '~/hook/useOrder.js'
 
 const TransactionManagement = () => {
   const [page, setPage] = useState(1)

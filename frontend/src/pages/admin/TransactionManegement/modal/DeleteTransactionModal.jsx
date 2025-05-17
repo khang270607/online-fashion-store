@@ -16,6 +16,10 @@ const DeleteTransactionModal = ({
   onDelete,
   loading
 }) => {
+  const handleDelete = async () => {
+    await onDelete(transaction._id)
+    onClose()
+  }
   return (
     <Dialog
       open={open}
@@ -58,7 +62,7 @@ const DeleteTransactionModal = ({
         <Button
           variant='contained'
           color='error'
-          onClick={onDelete}
+          onClick={handleDelete}
           disabled={loading}
         >
           {loading ? 'Đang xoá' : 'Xoá'}

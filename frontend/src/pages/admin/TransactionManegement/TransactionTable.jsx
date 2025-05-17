@@ -43,7 +43,7 @@ const TransactionTable = ({
       <TableBody>
         {loading ? (
           <StyledTableRow>
-            <StyledTableCell colSpan={8} align='center'>
+            <StyledTableCell colSpan={9} align='center'>
               <CircularProgress size={24} />
             </StyledTableCell>
           </StyledTableRow>
@@ -63,7 +63,7 @@ const TransactionTable = ({
             ))
         ) : (
           <StyledTableRow>
-            <StyledTableCell colSpan={8} align='center'>
+            <StyledTableCell colSpan={9} align='center'>
               Không có giao dịch nào.
             </StyledTableCell>
           </StyledTableRow>

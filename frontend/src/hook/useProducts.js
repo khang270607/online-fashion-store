@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { getProducts } from '~/services/productService'
+import { getProducts, getProductById } from '~/services/productService'
 
 const useProducts = (initialPage = 1, limit = 10) => {
   const [products, setProducts] = useState([])
@@ -13,13 +13,18 @@ const useProducts = (initialPage = 1, limit = 10) => {
     setTotalPages(Math.max(1, Math.ceil(total / limit))) // tính tổng số trang
     setLoading(false)
   }
-
+  const fetchProductById = async (productId) => {
+    setLoading(true)
+    const product = await getProductById(productId)
+    setLoading(false)
+    return product
+  }
   // useEffect(() => {
   //   fetchProducts(initialPage) // gọi khi hook được render lần đầu
   //   console.log('số trang', initialPage)
   // }, [initialPage])
 
-  return { products, totalPages, fetchProducts, loading }
+  return { products, totalPages, fetchProducts, loading, fetchProductById }
 }
 
 export default useProducts

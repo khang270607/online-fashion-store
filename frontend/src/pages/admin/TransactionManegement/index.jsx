@@ -6,6 +6,7 @@ import ViewTransactionModal from './modal/ViewTransactionModal'
 import EditTransactionModal from './modal/EditTransactionModal'
 import DeleteTransactionModal from './modal/DeleteTransactionModal'
 import useTransactions from '~/hook/useTransactions'
+// import useOrderAdmin from '~/hook/useOrderAdmin.js'
 
 const TransactionManagement = () => {
   const [page, setPage] = useState(1)
@@ -91,6 +92,7 @@ const TransactionManagement = () => {
           onClose={() => setOpenEdit(false)}
           transaction={selectedTransaction}
           onUpdate={handleUpdateTransaction}
+          loading={loading}
         />
       )}
 
@@ -100,6 +102,7 @@ const TransactionManagement = () => {
           onClose={() => setOpenDelete(false)}
           transaction={selectedTransaction}
           onDelete={handleDeleteTransaction}
+          loading={loading}
         />
       )}
     </>

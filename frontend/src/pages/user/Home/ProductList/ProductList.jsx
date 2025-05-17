@@ -15,11 +15,6 @@ const ProductList = () => {
   useEffect(() => {
     fetchProducts()
   }, [])
-<<<<<<< HEAD
-
-  
-=======
->>>>>>> 9cfa12b30a6a961656e4c900b9ffdb3c3ade794d
 
   const handleAddToCart = async (product) => {
     if (isAdding[product._id]) return

@@ -8,7 +8,6 @@ import {
   CircularProgress,
   Tooltip
 } from '@mui/material'
-import ContentCopyIcon from '@mui/icons-material/ContentCopy'
 import { getDiscounts } from '~/services/discountService'
 
 const CouponList = () => {
@@ -108,7 +107,6 @@ const CouponList = () => {
                     <Typography
                       variant='caption'
                       color='text.secondary'
-                      mt={0.5}
                       display='block'
                     >
                       {minOrderText}
@@ -128,7 +126,6 @@ const CouponList = () => {
                         mt: 2
                       }}
                       onClick={() => handleCopy(coupon.code)}
-                      startIcon={<ContentCopyIcon />}
                       fullWidth
                     >
                       Sao chép

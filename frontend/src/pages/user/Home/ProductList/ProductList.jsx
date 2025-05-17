@@ -56,8 +56,8 @@ const ProductList = () => {
   }
 
   // Chia products thành 2 nhóm mỗi nhóm 4 sản phẩm
-  const first4Products = products.slice(0, 4)
-  const next4Products = products.slice(4, 8)
+  const first4Products = Array.isArray(products) ? products.slice(0, 4) : []
+  const next4Products = Array.isArray(products) ? products.slice(4, 8) : []
 
   return (
     <Box

@@ -1,0 +1,141 @@
+/*thẻ*/
+a {
+    text-decoration: none;
+}
+
+:root {
+    --bg-color: var(--primary-color);
+}
+
+.admin-layout {
+    display: flex;
+}
+
+/* AppBar */
+.app-bar {
+    position: fixed;
+    z-index: 1201; /* Đảm bảo AppBar nằm trên Drawer */
+    /*transition: width 0.2s ease, margin 0.2s ease;*/
+    padding-right: 0 !important;
+}
+
+/* Khi Drawer mở */
+.app-bar.open {
+    margin-left: 240px;
+    width: calc(100% - 270px) !important;
+    /*transition: width 0.2s ease, margin 0.2s ease;*/
+
+}
+
+/* Nội dung chính */
+.main-content {
+    flex-grow: 1;
+    padding: 24px;
+    margin-left: 80px;
+    margin-top: 78px;
+    /*transition: width 0.2s ease, margin 0.2s ease;*/
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Khi Drawer mở */
+.main-content.open {
+    width: calc(100% - 270px);
+    /*margin-left: 240px;*/
+    /*transition: width 0.2s ease;*/
+
+}
+
+/* Drawer */
+.drawer {
+    flex-shrink: 0;
+}
+
+/* Khi Drawer mở */
+.drawer.open {
+    width: 270px;
+}
+
+.admin-layout .app-bar {
+    margin-left: -80px;
+    width: calc(100% - 80px);
+    /*z-index: 9999;*/
+}
+.admin-layout.open .main-content {
+    margin-left: 270px;
+    overflow-x: hidden;
+    /*transition: margin 0.2s ease;*/
+}
+/* Drawer paper */
+.drawer-paper {
+    width: 260px;
+    box-sizing: border-box;
+}
+/* Drawer HeaderAdmin */
+.drawer-header {
+    display: flex;
+    align-items: center;
+    padding: 0 8px;
+    min-height: 64px; /* Đảm bảo chiều cao khớp với AppBar */
+    justify-content: flex-start;
+}
+
+.Drawer-header {
+    background: var(--bg-color);
+    position: relative;
+    height: 64px;
+
+}
+
+/* List Item trong Drawer */
+.list-item {
+    padding: 0;
+    border-top: 1px solid #aaa;
+}
+.drawer-list > .drawer-link:first-child > .list-item {
+    border-top: none;
+}
+
+.list-item-button {
+    display: flex;
+    align-items: center;
+}
+
+.list-item-icon {
+    min-width: 40px;
+}
+
+.list-item-text {
+    font-size: 16px;
+}
+
+/* Link trong Drawer */
+.drawer-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.app-bar--header {
+    background: var(--bg-color);
+    color: white;
+}
+
+
+/*::-webkit-scrollbar,*/
+/*::-webkit-scrollbar {*/
+/*    border-radius: 0;*/
+/*    width: 5px;*/
+/*    height: 6px;*/
+/*}*/
+
+/*::-webkit-scrollbar-thumb,*/
+/*::-webkit-scrollbar-thumb {*/
+/*    border-radius: 4px;*/
+/*    background-color: #aaa;*/
+/*}*/
+
+/*::-webkit-scrollbar-track,*/
+/*::-webkit-scrollbar-track {*/
+/*    border-radius: 0;*/
+/*    background-color:  #16182333;*/
+/*}*/

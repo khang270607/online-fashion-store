@@ -49,11 +49,17 @@ const START_SERVER = () => {
   app.use(errorHandlingMiddleware)
 
   // Ruuning server
-  server.listen(env.APP_PORT, env.APP_HOST, () => {
-    console.log(
-      '\x1b[32m%s\x1b[0m',
-      `Xin chào Dev!, Tôi đang chạy tại HOST: ${env.APP_HOST} - PORT: ${env.APP_PORT}`
-    )
+  // server.listen(env.APP_PORT, env.APP_HOST, () => {
+  //   console.log(
+  //     '\x1b[32m%s\x1b[0m',
+  //     `Xin chào Dev!, Tôi đang chạy tại HOST: ${env.APP_HOST} - PORT: ${env.APP_PORT}`
+  //   )
+  // })
+  
+  const PORT = process.env.PORT || env.APP_PORT || 3000
+
+  server.listen(PORT, '0.0.0.0', () => {
+    console.log('\x1b[32m%s\x1b[0m', `Server đang chạy tại PORT: ${PORT}`)
   })
 
   // Thực hiện các tác vụ cleanup trước khi dừng server

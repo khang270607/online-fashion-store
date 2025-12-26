@@ -19,7 +19,7 @@ if (process.env.BUILD_MODE === 'prod') {
   // apiRoot = 'https://api-fashion-store.onrender.com'
   apiRoot = 'https://online-fashion-store-98p3.onrender.com'
 }
-
+ 
 // export const API_ROOT = 'http://localhost:8017'
 export const API_ROOT = apiRoot
 

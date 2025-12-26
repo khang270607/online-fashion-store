@@ -1,16 +1,27 @@
-let apiRoot = 'https://sunny-rhino-partly.ngrok-free.app'
+// let apiRoot = 'https://sunny-rhino-partly.ngrok-free.app'
+
+// if (process.env.BUILD_MODE === 'dev') {
+//   apiRoot = 'https://sunny-rhino-partly.ngrok-free.app'
+// }
+
+// if (process.env.BUILD_MODE === 'prod') {
+//   // apiRoot = 'https://api-fashion-store.onrender.com'
+//   apiRoot = 'https://sunny-rhino-partly.ngrok-free.app'
+// }
+
+let apiRoot = 'https://online-fashion-store-98p3.onrender.com'
 
 if (process.env.BUILD_MODE === 'dev') {
-  apiRoot = 'https://sunny-rhino-partly.ngrok-free.app'
+  apiRoot = 'https://online-fashion-store-98p3.onrender.com'
 }
 
 if (process.env.BUILD_MODE === 'prod') {
   // apiRoot = 'https://api-fashion-store.onrender.com'
-  apiRoot = 'https://sunny-rhino-partly.ngrok-free.app'
+  apiRoot = 'https://online-fashion-store-98p3.onrender.com'
 }
 
-export const API_ROOT = 'http://localhost:8017'
-// export const API_ROOT = apiRoot
+// export const API_ROOT = 'http://localhost:8017'
+export const API_ROOT = apiRoot
 
 export const filterDate = [
   { label: 'Hôm nay', value: 'today' },

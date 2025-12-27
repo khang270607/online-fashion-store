@@ -20,8 +20,8 @@ if (process.env.BUILD_MODE === 'prod') {
   apiRoot = 'https://online-fashion-store-98p3.onrender.com'
 }
  
-export const API_ROOT = 'http://localhost:8017'
-// export const API_ROOT = apiRoot
+// export const API_ROOT = 'http://localhost:8017'
+export const API_ROOT = apiRoot
 
 export const filterDate = [
   { label: 'Hôm nay', value: 'today' },

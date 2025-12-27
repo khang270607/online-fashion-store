@@ -39,7 +39,7 @@ import { optimizeCloudinaryUrl } from '~/utils/cloudinary'
 const uploadToCloudinary = async (file, folder = CloudinaryImageFolder) => {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('upload_preset', 'demo_unsigned')
+  formData.append('upload_preset', 'image_upload')
   formData.append('folder', folder)
 
   const isVideo = file.type.startsWith('video/')

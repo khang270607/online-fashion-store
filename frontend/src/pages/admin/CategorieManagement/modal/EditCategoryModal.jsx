@@ -24,7 +24,7 @@ import { getProducts } from '~/services/admin/productService.js'
 const uploadToCloudinary = async (file, folder = CloudinaryCategory) => {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('upload_preset', 'demo_unsigned')
+  formData.append('upload_preset', 'category_upload')
   formData.append('folder', folder)
 
   const res = await fetch(URI, {

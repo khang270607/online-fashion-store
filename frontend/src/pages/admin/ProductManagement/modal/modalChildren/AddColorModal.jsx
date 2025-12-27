@@ -20,13 +20,13 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import useColors from '~/hooks/admin/useColor'
 import AddColorModal from '~/pages/admin/ColorManagement/modal/AddColorModal.jsx'
 import useColorPalettes from '~/hooks/admin/useColorPalettes.js'
-const URI = 'https://api.cloudinary.com/v1_1/dkwsy9sph/image/upload'
+const URI = 'https://api.cloudinary.com/v1_1/dlarjcddt/image/upload'
 const CloudinaryColor = 'color_upload'
 
 const uploadToCloudinary = async (file, folder = CloudinaryColor) => {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('upload_preset', 'demo_unsigned')
+  formData.append('upload_preset', 'image_upload')
   formData.append('folder', folder)
 
   const res = await fetch(URI, {

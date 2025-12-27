@@ -37,7 +37,7 @@ import { URI, CLOUD_FOLDER } from '~/utils/constants'
 const uploadToCloudinary = async (file) => {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('upload_preset', 'demo_unsigned')
+  formData.append('upload_preset', 'image_upload')
   formData.append('folder', CLOUD_FOLDER)
   const res = await fetch(URI, { method: 'POST', body: formData })
   const data = await res.json()

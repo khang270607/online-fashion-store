@@ -10,7 +10,7 @@ import { CloudinaryProduct, URI } from '~/utils/constants'
 const uploadToCloudinary = async (file, folder = CloudinaryProduct) => {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('upload_preset', 'demo_unsigned')
+  formData.append('upload_preset', 'image_upload')
   formData.append('folder', folder)
 
   const res = await fetch(URI, {

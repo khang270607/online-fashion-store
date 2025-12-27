@@ -32,7 +32,7 @@ import DescriptionEditor from '~/components/EditContent/DescriptionEditor.jsx'
 const uploadToCloudinary = async (file, folder = CloudinaryColor) => {
   const formData = new FormData()
   formData.append('file', file)
-  formData.append('upload_preset', 'demo_unsigned')
+  formData.append('upload_preset', 'image_upload')
   formData.append('folder', folder)
 
   const res = await fetch(URI, {

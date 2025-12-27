@@ -13,9 +13,9 @@ import {
 } from '@mui/material'
 import useProfile from '~/hooks/useUserProfile.js'
 
-const CLOUDINARY_URI = 'https://api.cloudinary.com/v1_1/dkwsy9sph/image/upload'
-const UPLOAD_PRESET = 'demo_unsigned'
-const CLOUD_FOLDER = 'user_avatar'
+const CLOUDINARY_URI = 'https://api.cloudinary.com/v1_1/dlarjcddt/image/upload'
+const UPLOAD_PRESET = 'user_avatar'
+const CLOUD_FOLDER = 'upload_fashion'
 
 const uploadToCloudinary = async (file) => {
   const formData = new FormData()

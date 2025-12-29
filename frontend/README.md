@@ -9,5 +9,3 @@
 cài đặt:
 yarn add react-router-dom 
 yarn add @mui/icons-material
-
-fix upload image

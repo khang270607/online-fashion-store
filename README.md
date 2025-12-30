@@ -120,3 +120,14 @@ Hoạt động ổn định, không phát sinh lỗi nghiêm trọng
 Giao diện thân thiện, dễ sử dụng
 
 Mã nguồn rõ ràng, dễ mở rộng và bảo trì
+
+## YÊU CẦU MÔI TRƯỜNG:
+
+-   NodeJS: v22.12.0
+-   NVM (Có thể cài hoặc không): version mới nhất
+-   Git: version mới nhất
+-   Yarn: version mới nhất
+
+cài đặt ở frontend và backend :
+yarn add react-router-dom
+yarn add @mui/icons-material

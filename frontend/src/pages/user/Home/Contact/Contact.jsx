@@ -48,9 +48,9 @@ const Contact = () => {
           style={{ width: 40, height: 40 }}
         />
       ),
-      title: 'Liên hệ : 0346896599',
+      title: 'Liên hệ : 0772167821',
       color: 'white',
-      action: 'tel:0346896599',
+      action: 'tel:0772167821',
       delay: 0
     },
     {
@@ -62,7 +62,7 @@ const Contact = () => {
         />
       ),
       title: 'Zalo',
-      action: 'https://zalo.me/0346896599',
+      action: 'https://zalo.me/0772167821',
       delay: 150
     },
     {
